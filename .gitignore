@@ -1,0 +1,8 @@
+# 构建产物（./build.sh 生成）
+dist/
+release-build/
+test-build/
+phone-test/
+# 本地 Claude Code skill（第三方，按需自行安装）
+.claude/
+.DS_Store
