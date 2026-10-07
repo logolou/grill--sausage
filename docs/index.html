@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>校门口烤肠摊</title>
+  <link rel="stylesheet" href="./assets/style.css?v=261006210702" />
+</head>
+<body>
+  <div id="app">
+    <div class="coach" id="coach" hidden></div>
+    <header class="hud" id="hud"></header>
+    <section class="gate">
+      <div class="gate-top">
+        <div class="sign"><span>实验二小</span></div>
+        <div class="speaker" id="speaker"><div class="h">收款音箱</div><div class="e idle">等待收款…</div></div>
+      </div>
+      <div class="queue" id="queue"></div>
+    </section>
+    <section class="grill" id="grill">
+      <div class="grill-h"><h2>烤肠锅</h2><span id="grillInfo"></span><span id="fireCtl"></span></div>
+      <div class="slots" id="slots"></div>
+      <div class="gtools" id="gtools"></div>
+    </section>
+    <section class="box" id="trayBox"></section>
+    <div class="log" id="log"></div>
+  </div>
+  <div class="overlay" id="overlay" hidden></div>
+  <script src="./assets/main.js?v=261006210702"></script>
+</body>
+</html>

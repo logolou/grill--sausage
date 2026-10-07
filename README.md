@@ -4,6 +4,8 @@
 
 做成了 **小红书小工具**（离线 zip 包），纯原生 HTML / CSS / JS，没有任何依赖。
 
+**在线试玩：https://logolou.github.io/grill--sausage/** （建议用手机打开，竖屏玩）
+
 ## 玩法
 
 - 10 个关卡 + 无尽模式，第 1 关是摊主老王的手把手教学
@@ -20,9 +22,10 @@
 | `app/` | 粘锅手感测试版源码 |
 | `audio-src/` | 背景音乐原文件和裁剪后的片段 |
 | `icon/` | 小工具图标 |
+| `docs/` | 在线试玩页面（由 `build.sh` 生成，GitHub Pages 发布） |
 | `build.sh` | 打包脚本 |
 
-每个版本目录里：`index.html` 入口，`assets/main.js` 游戏逻辑，`assets/style.css` 样式，`assets/bgm-data.js` 背景音乐（base64，小工具包不允许放音频文件，所以由 WebAudio 解码播放）。
+每个版本目录里：`index.html` 入口，`assets/main.js` 游戏逻辑，`assets/style.css` 样式，`assets/bgm-data.js` 背景音乐。
 
 ## 本地运行
 
@@ -30,7 +33,7 @@
 cd versions/stable-v30 && python3 -m http.server 8765
 ```
 
-浏览器打开 http://localhost:8765 。网址加 `#unlock` 解锁全部关卡，加 `#resetitems` 清空升级和道具，加 `#debug` 打开调试接口。
+浏览器打开 http://localhost:8765 。
 
 ## 打包
 
@@ -38,7 +41,7 @@ cd versions/stable-v30 && python3 -m http.server 8765
 ./build.sh
 ```
 
-生成 `dist/sausage-stall.zip`（正式版）和 `dist/sausage-stall-test-sticky.zip`（测试版），会自动给资源加版本号防缓存。装了 minitool-zip-builder skill 时会顺便跑包体审计。
+生成 `dist/sausage-stall.zip`（正式版）和 `dist/sausage-stall-test-sticky.zip`（测试版），并把正式版同步到 `docs/`（GitHub Pages 在线试玩用），会自动给资源加版本号防缓存。装了 minitool-zip-builder skill 时会顺便跑包体审计。
 
 ## 音乐
 

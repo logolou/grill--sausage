@@ -21,3 +21,5 @@ rm -rf test-build release-build && mkdir -p test-build release-build
 (cd release-build && unzip -q ../dist/sausage-stall.zip)
 SP="$PWD/phone-test"   # 手机局域网测试目录（放在项目里，避免临时目录被系统清掉）
 rm -rf "$SP" && mkdir -p "$SP" && (cd "$SP" && unzip -q ../dist/sausage-stall.zip) && echo "手机测试已更新（版本 $STAMP）"
+# GitHub Pages 在线试玩（main 分支 /docs）
+rm -rf docs && mkdir -p docs && (cd docs && unzip -q ../dist/sausage-stall.zip) && touch docs/.nojekyll
