@@ -1433,6 +1433,10 @@ document.addEventListener('pointerdown', function (e) {
   var a = el.getAttribute('data-act'), i = +el.getAttribute('data-i');
   e.preventDefault();
   if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else render(); return; }
+  if (a === 'tstart') { hideTitle(); return menu(); }
+  if (a === 'tsettings') return titleSettings();
+  if (a === 'tmusic') { G.music = !musicOn(); save(); syncMusic(); return titleSettings(); }
+  if (a === 'tclose') return hideOverlay();
   if (a === 'menu') return menu();
   if (a === 'intro') return intro(i);
   if (a === 'go') return startLevel(i);
@@ -1522,6 +1526,70 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
+/* ============ 开始画面：长卷从上往下摇 → 标题浮现 → 开始游戏 / 设置 ============ */
+var TITLE_IMG = './assets/img/title/';
+var TITLE_STOP = .805;   // 镜头最后停的位置：屏幕底边落在长图从上往下 80.5% 处（路边）
+function showTitle() {
+  var ts = document.createElement('div'); ts.id = 'title'; ts.className = 'ts';
+  ts.innerHTML = '<i class="ts-tint top"></i><i class="ts-tint bot"></i><div class="ts-col"><i class="ts-pattern"></i><img class="ts-bg" alt="" src="' + TITLE_IMG + 'title_pan_bg.webp">' +
+    '<img class="ts-logo" alt="我在学校门口买烤肠" src="' + TITLE_IMG + 'logo_title.webp">' +
+    '<div class="ts-btns"><button class="ts-btn start" data-act="tstart"><img alt="开始游戏" src="' + TITLE_IMG + 'btn_start.webp"></button>' +
+    '<button class="ts-btn set" data-act="tsettings"><img alt="设置" src="' + TITLE_IMG + 'btn_settings.webp"></button></div>' +
+    '<div class="ts-load">加载中…</div></div>';
+  document.body.appendChild(ts);
+  var LAY = {logo:[3.5, 23.2, 93.1], start:[18.6, 56.9, 62.8], set:[20.7, 68.3, 58.6]};   // 左 / 上 / 宽，单位 %
+  [['.ts-logo', LAY.logo], ['.ts-btn.start', LAY.start], ['.ts-btn.set', LAY.set]].forEach(function (p) {
+    var el = ts.querySelector(p[0]); el.style.left = p[1][0] + '%'; el.style.top = p[1][1] + '%'; el.style.width = p[1][2] + '%';
+  });
+  // iPhone Safari 会用页面底色给顶部状态栏 / 底部工具栏染色：开始画面期间换成画面里天空和路边的颜色
+  setBarColor('#9F76CA'); document.body.style.backgroundColor = '#C47C5C';
+  var col = ts.querySelector('.ts-col'), bg = ts.querySelector('.ts-bg'), imgs = ts.querySelectorAll('img'), left = imgs.length, started = false, done = false;
+  function finish() {
+    if (done) return; done = true;
+    bg.style.transition = 'none'; bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)';
+    ts.className = 'ts ready logo-on btns-on';
+  }
+  function panDist() { return Math.max(0, bg.offsetHeight * TITLE_STOP - col.clientHeight); }
+  function go() {
+    if (started) return; started = true;
+    ts.className = 'ts ready';
+    // 先停在长图顶部（星空），下一帧开始往下摇到校门口
+    bg.style.transform = 'translate3d(0,0,0)';
+    setTimeout(function () {
+      if (done) return;
+      bg.style.transition = 'transform 2.8s cubic-bezier(.45,0,.2,1)';
+      bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)';
+    }, 250);
+    setTimeout(function () { if (!done) ts.className = 'ts ready logo-on'; }, 2900);
+    setTimeout(function () { if (!done) { done = true; ts.className = 'ts ready logo-on btns-on'; } }, 3600);
+  }
+  for (var n = 0; n < imgs.length; n++) {
+    if (imgs[n].complete) left--; else imgs[n].onload = imgs[n].onerror = function () { if (--left <= 0) go(); };
+  }
+  if (left <= 0) go();
+  setTimeout(go, 4000);   // 图片太慢也别一直卡在加载
+  // 摇镜头时点一下屏幕直接跳到最后
+  ts.addEventListener('pointerdown', function (e) { if (started && !done && !e.target.closest('[data-act]')) finish(); });
+  window.addEventListener('resize', function () { if (done && bg.parentNode) { bg.style.transition = 'none'; bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)'; } });
+}
+function setBarColor(c) {
+  var m = document.querySelector('meta[name="theme-color"]');
+  if (!c) { if (m) m.parentNode.removeChild(m); return; }
+  if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
+  m.content = c;
+}
+function hideTitle() {
+  var ts = $('title'); if (!ts) return;
+  setBarColor(null); document.body.style.backgroundColor = '';
+  ts.className += ' out';
+  setTimeout(function () { if (ts.parentNode) ts.parentNode.removeChild(ts); }, 350);
+}
+function titleSettings() {
+  showOverlay('<div class="kicker">设置</div><h1>设置</h1>' +
+    '<div class="actions"><button class="b wide" data-act="tmusic">背景音乐：' + (musicOn() ? '开' : '关') + '</button>' +
+    '<button class="b red wide" data-act="tclose">好的</button></div>');
+}
+
 /* 开场：摆一个营业中的样子，再弹出关卡列表 */
 startLevel(Math.min(G.cleared, 9), true);
 R.paused = true; R.demo = true; R.tut = null; $('coach').hidden = true;
@@ -1529,7 +1597,7 @@ R.slots[0].s = {a:52, b:31, down:'b'};
 R.slots[1].s = {a:74, b:70, down:'a'};
 R.boxes[0].items = [{band:'嫩', sauce:'番茄', spice:null}];
 spawn(); spawn(); R.cust[0].pat *= .6;
-render(); fit(); menu();
+render(); fit(); showTitle();
 requestAnimationFrame(loop);
 
 /* 调试入口：仅在地址带 #debug 时暴露，供快进测试 */

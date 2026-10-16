@@ -635,3 +635,33 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 .log .m{display:inline-block;max-width:100%;background:rgba(25,32,40,.86);color:#F3F1E6;border-radius:14px;padding:5px 12px;font-size:12px;box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .log .m ~ .m{display:none}
 .log .m.bad{color:#FFB4A8}.log .m.good{color:#B9F3C4}
+
+/* ===== 开始画面 ===== */
+.ts{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9;background:#9F76CA;overflow:hidden;transition:opacity .35s}
+.ts.out{opacity:0;pointer-events:none}
+.ts-col{position:relative;width:100%;max-width:480px;height:100%;margin:0 auto;overflow:hidden}
+.ts-pattern{position:absolute;top:0;right:0;bottom:0;left:0;background-image:url(img/title/loading_bg.webp);background-size:100% auto;background-repeat:repeat-y}
+/* Safari 用顶 / 底边元素的背景色给状态栏、工具栏染色：顶部天空紫，底部路边色 */
+.ts-tint{position:absolute;left:0;right:0;height:2px}
+.ts-tint.top{top:0;background-color:#9F76CA}
+.ts-tint.bot{bottom:0;background-color:#C47C5C}
+.ts-bg{position:absolute;left:0;top:0;width:100%;height:auto;display:block;opacity:0;transition:opacity .4s;will-change:transform}
+.ts.ready .ts-bg{opacity:1}
+.ts-load{position:absolute;left:0;right:0;top:50%;text-align:center;color:#FFF4E3;font-weight:700;letter-spacing:.2em;transition:opacity .3s}
+.ts.ready .ts-load{opacity:0}
+.ts-logo{position:absolute;left:7%;width:86%;top:5%;opacity:0;transform:translateY(-24px) scale(.7);pointer-events:none}
+.ts.logo-on .ts-logo{-webkit-animation:tsLogo .8s cubic-bezier(.2,1.4,.4,1) forwards, tsBob 3s 1s ease-in-out infinite;animation:tsLogo .8s cubic-bezier(.2,1.4,.4,1) forwards, tsBob 3s 1s ease-in-out infinite}
+@-webkit-keyframes tsLogo{0%{opacity:0;-webkit-transform:translateY(-24px) scale(.7)}60%{opacity:1}100%{opacity:1;-webkit-transform:translateY(0) scale(1)}}
+@keyframes tsLogo{0%{opacity:0;transform:translateY(-24px) scale(.7)}60%{opacity:1}100%{opacity:1;transform:translateY(0) scale(1)}}
+@-webkit-keyframes tsBob{0%,100%{opacity:1;-webkit-transform:translateY(0)}50%{opacity:1;-webkit-transform:translateY(-6px)}}
+@keyframes tsBob{0%,100%{opacity:1;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}}
+.ts-btns{position:absolute;top:0;right:0;bottom:0;left:0;pointer-events:none}
+.ts-btn{position:absolute;display:block;padding:0;background:none;border:0;pointer-events:auto;opacity:0;transform:translateY(30px);transition:opacity .45s,transform .45s cubic-bezier(.2,1.3,.4,1)}
+.ts-btn img{display:block;width:100%;height:auto;pointer-events:none}
+.ts-btn.start{width:66%}
+.ts-btn.set{width:46%;transition-delay:.12s}
+.ts.btns-on .ts-btn{opacity:1;transform:translateY(0)}
+.ts-btn:active img{transform:scale(.95)}
+.ts.btns-on .ts-btn.start img{-webkit-animation:tsPulse 1.6s .8s ease-in-out infinite;animation:tsPulse 1.6s .8s ease-in-out infinite}
+@-webkit-keyframes tsPulse{0%,100%{-webkit-transform:scale(1)}50%{-webkit-transform:scale(1.04)}}
+@keyframes tsPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}

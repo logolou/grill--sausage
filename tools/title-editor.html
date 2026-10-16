@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>开始画面摆放器</title>
+<style>
+  :root{--ink:#2B2233;--dim:#7A6F85;--line:#E3DAEA;--acc:#E0833F;--bg:#F6F2F8;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC",sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-wrap:wrap;gap:24px;padding:20px;align-items:flex-start;min-height:100vh}
+  .frame{position:relative;flex:none;overflow:hidden;border-radius:28px;box-shadow:0 0 0 8px #222,0 10px 40px rgba(0,0,0,.25);background:#000;touch-action:none;user-select:none}
+  .frame .bg{position:absolute;left:0;bottom:0;width:100%;pointer-events:none}
+  .el{position:absolute;cursor:grab;outline:2px dashed transparent;outline-offset:2px}
+  .el img{display:block;width:100%;pointer-events:none}
+  .el:hover{outline-color:rgba(255,255,255,.7)}
+  .el.sel{outline-color:#4FA3FF}
+  .el .rz{position:absolute;right:-8px;bottom:-8px;width:16px;height:16px;border-radius:50%;background:#4FA3FF;border:2px solid #fff;cursor:nwse-resize;display:none}
+  .el.sel .rz{display:block}
+  .el .tx{position:absolute;left:0;right:0;top:0;bottom:6%;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.08em;color:#7A3410;pointer-events:none;font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
+    text-shadow:0 2px 0 #fff,0 -2px 0 #fff,2px 0 0 #fff,-2px 0 0 #fff,1.5px 1.5px 0 #fff,-1.5px 1.5px 0 #fff,1.5px -1.5px 0 #fff,-1.5px -1.5px 0 #fff,0 4px 0 rgba(122,52,16,.35)}
+  .el .tx.set{color:#8A4A1C;letter-spacing:.12em}
+  .guide{position:absolute;top:0;bottom:0;left:50%;width:0;border-left:1px dashed #4FA3FF;display:none;pointer-events:none}
+  .guide.on{display:block}
+  .panel{width:300px;background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+  h1{font-size:17px;margin-bottom:4px}
+  p.tip{font-size:12px;color:var(--dim);line-height:1.6;margin-bottom:12px}
+  label{display:block;font-size:12px;color:var(--dim);margin:10px 0 4px}
+  select,button{font:inherit;font-size:13px;border-radius:8px;border:1px solid var(--line);padding:6px 10px;background:#fff;color:var(--ink);cursor:pointer}
+  button.pri{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  table{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px;font-variant-numeric:tabular-nums}
+  td,th{padding:4px 2px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-weight:500}
+  tr.sel td{color:#1F6FD1;font-weight:700}
+  .saved{font-size:12px;color:#2E8B57;margin-top:8px;min-height:16px}
+</style>
+</head>
+<body>
+<div class="frame" id="frame">
+  <img class="bg" id="bg" src="./assets/img/title/title_pan_bg.webp" alt="">
+  <div class="guide" id="guide"></div>
+</div>
+<div class="panel">
+  <h1>开始画面摆放器</h1>
+  <p class="tip">拖动标题和按钮摆位置，拖右下角蓝点改大小。靠近正中间会自动吸附居中。摆好后跟 Claude 说一声「好了」，它会直接读取这里的位置。</p>
+  <label>预览机型</label>
+  <select id="dev">
+    <option value="375x812">iPhone X / 11 Pro（375×812）</option>
+    <option value="390x844">iPhone 12–15（390×844）</option>
+    <option value="430x932">iPhone Pro Max（430×932）</option>
+    <option value="360x780">安卓常见（360×780）</option>
+    <option value="375x667">iPhone 8 / SE（375×667）</option>
+  </select>
+  <table><thead><tr><th>部件</th><th>左 %</th><th>上 %</th><th>宽 %</th></tr></thead><tbody id="tb"></tbody></table>
+  <label>镜头最后停在哪：<b id="stopv"></b></label>
+  <input type="range" id="stop" min="60" max="100" step="0.5" style="width:100%">
+  <p class="tip" style="margin:4px 0 0">数值越小，停得越靠上（露出更多天空）；100 = 摇到最底。</p>
+  <div class="row"><button class="pri" id="save">保存</button><button id="reset">恢复默认</button></div>
+  <div class="saved" id="saved"></div>
+</div>
+<script>
+var IMG = './assets/img/title/';
+var DEF = {logo:{x:7,y:5,w:86}, start:{x:17,y:72,w:66}, settings:{x:27,y:83,w:46}, stop:84};
+var NAMES = {logo:'标题字', start:'开始游戏', settings:'设置'};
+var FILES = {logo:'logo_title.webp', start:'btn_start.webp', settings:'btn_settings.webp'};
+var TEXT = {};
+var FS = {};
+var L; try { L = JSON.parse(localStorage.getItem('titleLayout')) || null; } catch (e) { L = null; }
+L = L || JSON.parse(JSON.stringify(DEF));
+if (L.stop == null) L.stop = DEF.stop;
+window.titleLayout = L;
+var frame = document.getElementById('frame'), sel = null, els = {};
+function size() { var v = document.getElementById('dev').value.split('x'); frame.style.width = v[0] + 'px'; frame.style.height = v[1] + 'px'; }
+Object.keys(DEF).forEach(function (k) {
+  var d = document.createElement('div'); d.className = 'el'; d.dataset.k = k;
+  d.innerHTML = '<img src="' + IMG + FILES[k] + '" alt="">' + (TEXT[k] ? '<span class="tx' + (k === 'settings' ? ' set' : '') + '">' + TEXT[k] + '</span>' : '') + '<i class="rz"></i>'; frame.appendChild(d); els[k] = d;
+});
+function place() {
+  Object.keys(els).forEach(function (k) { var e = els[k], v = L[k]; e.style.left = v.x + '%'; e.style.top = v.y + '%'; e.style.width = v.w + '%'; e.classList.toggle('sel', k === sel);
+    var t = e.querySelector('.tx'); if (t) t.style.fontSize = (e.offsetWidth * FS[k] * (v.fs || 1)).toFixed(1) + 'px'; });
+  var bg = document.getElementById('bg'), fh = frame.clientHeight, bh = bg.offsetHeight;
+  bg.style.bottom = 'auto'; bg.style.top = (-Math.max(0, bh * L.stop / 100 - fh)) + 'px';
+  document.getElementById('stop').value = L.stop; document.getElementById('stopv').textContent = L.stop + '%';
+  document.getElementById('tb').innerHTML = Object.keys(NAMES).map(function (k) { var v = L[k]; return '<tr class="' + (k === sel ? 'sel' : '') + '"><td>' + NAMES[k] + '</td><td>' + v.x.toFixed(1) + '</td><td>' + v.y.toFixed(1) + '</td><td>' + v.w.toFixed(1) + '</td></tr>'; }).join('');
+}
+var drag = null;
+frame.addEventListener('pointerdown', function (e) {
+  var el = e.target.closest('.el'); if (!el) { sel = null; place(); return; }
+  sel = el.dataset.k; var r = frame.getBoundingClientRect(), v = L[sel];
+  drag = {k:sel, rz:e.target.classList.contains('rz'), sx:e.clientX, sy:e.clientY, v:{x:v.x, y:v.y, w:v.w}, W:r.width, H:r.height};
+  frame.setPointerCapture(e.pointerId); place(); e.preventDefault();
+});
+frame.addEventListener('pointermove', function (e) {
+  if (!drag) return;
+  var dx = (e.clientX - drag.sx) / drag.W * 100, dy = (e.clientY - drag.sy) / drag.H * 100, v = L[drag.k];
+  if (drag.rz) { v.w = Math.max(10, Math.min(100, drag.v.w + dx)); }
+  else {
+    v.x = drag.v.x + dx; v.y = drag.v.y + dy;
+    var center = v.x + v.w / 2, g = document.getElementById('guide');
+    if (Math.abs(center - 50) < 1.5) { v.x = 50 - v.w / 2; g.classList.add('on'); } else g.classList.remove('on');
+  }
+  place();
+});
+frame.addEventListener('pointerup', function () { drag = null; document.getElementById('guide').classList.remove('on'); });
+function save() { localStorage.setItem('titleLayout', JSON.stringify(L)); window.titleLayout = L; document.getElementById('saved').textContent = '已保存 ' + new Date().toLocaleTimeString(); }
+document.getElementById('save').onclick = save;
+document.getElementById('reset').onclick = function () { L = JSON.parse(JSON.stringify(DEF)); window.titleLayout = L; place(); save(); };
+document.getElementById('dev').onchange = function () { size(); place(); };
+document.getElementById('stop').oninput = function () { L.stop = +this.value; place(); };
+document.getElementById('bg').onload = place;
+function fsStep(d) { if (!sel || !L[sel].fs) { document.getElementById('saved').textContent = '先点中一个按钮'; return; } L[sel].fs = Math.max(.5, Math.min(2, Math.round((L[sel].fs + d) * 100) / 100)); place(); }
+size(); place();
+</script>
+</body>
+</html>
