@@ -1528,11 +1528,12 @@ function loop() {
 
 /* ============ 开始画面：长卷从上往下摇 → 标题浮现 → 开始游戏 / 设置 ============ */
 var TITLE_IMG = './assets/img/title/';
+var TITLE_W = 375, TITLE_H = 812;   // 开始画面按这个尺寸设计（和摆放器一致），到手机上整体等比缩放
 var TITLE_STOP = .805;   // 镜头最后停的位置：屏幕底边落在长图从上往下 80.5% 处（路边）
 function showTitle() {
   var ts = document.createElement('div'); ts.id = 'title'; ts.className = 'ts';
   ts.innerHTML = '<i class="ts-tint top"></i><i class="ts-tint bot"></i><div class="ts-col"><i class="ts-pattern"></i><img class="ts-bg" alt="" src="' + TITLE_IMG + 'title_pan_bg.webp">' +
-    '<img class="ts-logo" alt="我在学校门口买烤肠" src="' + TITLE_IMG + 'logo_title.webp">' +
+    '<canvas class="ts-orbit back"></canvas><img class="ts-logo" alt="我在学校门口买烤肠" src="' + TITLE_IMG + 'logo_title.webp"><canvas class="ts-orbit front"></canvas>' +
     '<div class="ts-btns"><button class="ts-btn start" data-act="tstart"><img alt="开始游戏" src="' + TITLE_IMG + 'btn_start.webp"></button>' +
     '<button class="ts-btn set" data-act="tsettings"><img alt="设置" src="' + TITLE_IMG + 'btn_settings.webp"></button></div>' +
     '<div class="ts-load">加载中…</div></div>';
@@ -1543,7 +1544,14 @@ function showTitle() {
   });
   // iPhone Safari 会用页面底色给顶部状态栏 / 底部工具栏染色：开始画面期间换成画面里天空和路边的颜色
   setBarColor('#9F76CA'); document.body.style.backgroundColor = '#C47C5C';
-  var col = ts.querySelector('.ts-col'), bg = ts.querySelector('.ts-bg'), imgs = ts.querySelectorAll('img'), left = imgs.length, started = false, done = false;
+  var stage = ts.querySelector('.ts-col');
+  function fitStage() {
+    var W = ts.clientWidth, H = ts.clientHeight, sc = Math.max(W / TITLE_W, H / TITLE_H);
+    stage.style.transform = 'translate(-50%,-50%) scale(' + sc.toFixed(4) + ')';
+  }
+  fitStage();
+  var orbit = startOrbit(ts, LAY.logo);
+  var col = stage, bg = ts.querySelector('.ts-bg'), imgs = ts.querySelectorAll('img'), left = imgs.length, started = false, done = false;
   function finish() {
     if (done) return; done = true;
     bg.style.transition = 'none'; bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)';
@@ -1570,7 +1578,62 @@ function showTitle() {
   setTimeout(go, 4000);   // 图片太慢也别一直卡在加载
   // 摇镜头时点一下屏幕直接跳到最后
   ts.addEventListener('pointerdown', function (e) { if (started && !done && !e.target.closest('[data-act]')) finish(); });
-  window.addEventListener('resize', function () { if (done && bg.parentNode) { bg.style.transition = 'none'; bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)'; } });
+  window.addEventListener('resize', function () { fitStage(); orbit.resize(); if (done && bg.parentNode) { bg.style.transition = 'none'; bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)'; } });
+}
+// 标题流星：从「校」「门」上方的天空出发，往左下划，先钻到标题背后，再从「买」「烤」之间穿出来，闪一下消失；隔几秒再来一颗
+function startOrbit(ts, lay) {
+  var cvs = ts.querySelectorAll('.ts-orbit'), back = cvs[0], front = cvs[1], cb = back.getContext('2d'), cf = front.getContext('2d');
+  var lw = TITLE_W * lay[2] / 100, lh = lw * 400 / 640, lx = TITLE_W * lay[0] / 100, ly = TITLE_H * lay[1] / 100;   // 标题图 640×400
+  function L(u, v) { return [lx + lw * u, ly + lh * v]; }   // 标题图里的相对坐标 → 画布坐标
+  var S = L(.70, -.5), C = L(.64, .06), E = L(.44, .65);   // 起点（校门上方天空）、弯道控制点、终点（买烤之间）
+  var CROSS = 1;   // 走到两行字中间的缝（标题图高度 46% 处）之前在标题背后，之后在标题前面
+  for (var cu = 0; cu <= 1; cu += .01) if (pt(cu)[1] >= ly + lh * .43) { CROSS = cu; break; }
+  var CYCLE = 3.8, FLY = 1.1, k = 1, raf = 0, t0 = now(), sparks = [];
+  function resize() {
+    var r = ts.querySelector('.ts-col').getBoundingClientRect();
+    k = Math.min(3, (window.devicePixelRatio || 1) * r.width / TITLE_W);
+    [back, front].forEach(function (c) { c.width = TITLE_W * k; c.height = TITLE_H * k; });
+  }
+  function pt(u) { var a = 1 - u; return [a * a * S[0] + 2 * a * u * C[0] + u * u * E[0], a * a * S[1] + 2 * a * u * C[1] + u * u * E[1]]; }
+  function star(c, x, y, r, rot, alpha) {
+    var g = c.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, 'rgba(255,255,255,' + alpha + ')'); g.addColorStop(.3, 'rgba(255,236,170,' + (alpha * .9) + ')'); g.addColorStop(1, 'rgba(255,190,80,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill();
+    c.save(); c.translate(x, y); c.rotate(rot); c.scale(r / 18, r / 18); c.fillStyle = 'rgba(255,255,255,' + alpha + ')';
+    c.beginPath(); c.moveTo(0, -11); c.lineTo(2, -2); c.lineTo(11, 0); c.lineTo(2, 2); c.lineTo(0, 11); c.lineTo(-2, 2); c.lineTo(-11, 0); c.lineTo(-2, -2); c.closePath(); c.fill(); c.restore();
+  }
+  function draw() {
+    raf = requestAnimationFrame(draw);
+    [cb, cf].forEach(function (c) { c.setTransform(k, 0, 0, k, 0, 0); c.clearRect(0, 0, TITLE_W, TITLE_H); c.lineCap = 'round'; });
+    if (ts.className.indexOf('logo-on') < 0) return;
+    var t = ((now() - t0) / 1000 + CYCLE - 1) % CYCLE;   // 标题出来 1 秒后第一颗
+    if (t < FLY) {
+      var u = t / FLY; u = u * u * (3 - 2 * u);   // 先快后慢的划过
+      var N = 34, TR = .42;
+      for (var n = N; n > 0; n--) {   // 光尾
+        var u1 = Math.max(0, u - TR * n / N), u2 = Math.max(0, u - TR * (n - 1) / N), p1 = pt(u1), p2 = pt(u2), f = 1 - n / N;
+        var c = u2 > CROSS ? cf : cb;
+        c.beginPath(); c.moveTo(p1[0], p1[1]); c.lineTo(p2[0], p2[1]);
+        c.strokeStyle = 'rgba(255,' + (225 + 30 * f | 0) + ',' + (150 + 105 * f | 0) + ',' + Math.min(1, Math.pow(f, 1.2) * 1.1).toFixed(3) + ')';
+        c.shadowColor = 'rgba(255,200,90,.9)'; c.shadowBlur = 10 * f; c.lineWidth = 1 + 5 * f; c.stroke(); c.shadowBlur = 0;
+      }
+      var h = pt(u), hc = u > CROSS ? cf : cb;
+      star(hc, h[0], h[1], 16 + 6 * u, t * 6, 1);
+      if (Math.random() < .5) sparks.push({x:h[0], y:h[1], vx:(Math.random() - .5) * 30, vy:Math.random() * 25 + 5, life:1, front:u > CROSS});
+    } else if (t < FLY + .7) {   // 穿出来后在「买」「烤」之间闪一下
+      var q = (t - FLY) / .7;
+      star(cf, E[0], E[1], 22 + 16 * Math.sin(q * Math.PI), q * 3, 1 - q);
+      if (q < .15) for (var m = 0; m < 3; m++) sparks.push({x:E[0], y:E[1], vx:(Math.random() - .5) * 90, vy:(Math.random() - .7) * 70, life:1, front:true});
+    }
+    sparks = sparks.filter(function (sp) {
+      sp.life -= .03; sp.x += sp.vx / 60; sp.y += sp.vy / 60; sp.vy += .8; if (sp.life <= 0) return false;
+      var c2 = sp.front ? cf : cb; c2.fillStyle = 'rgba(255,230,160,' + (sp.life * .9).toFixed(3) + ')';
+      c2.beginPath(); c2.arc(sp.x, sp.y, 1.6 * sp.life + .4, 0, Math.PI * 2); c2.fill(); return true;
+    });
+  }
+  resize(); draw();
+  ts.__orbitStop = function () { cancelAnimationFrame(raf); };
+  return {resize:resize};
 }
 function setBarColor(c) {
   var m = document.querySelector('meta[name="theme-color"]');
@@ -1580,6 +1643,7 @@ function setBarColor(c) {
 }
 function hideTitle() {
   var ts = $('title'); if (!ts) return;
+  if (ts.__orbitStop) ts.__orbitStop();
   setBarColor(null); document.body.style.backgroundColor = '';
   ts.className += ' out';
   setTimeout(function () { if (ts.parentNode) ts.parentNode.removeChild(ts); }, 350);

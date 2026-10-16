@@ -19,6 +19,7 @@
   .el .tx{position:absolute;left:0;right:0;top:0;bottom:6%;display:flex;align-items:center;justify-content:center;font-weight:900;letter-spacing:.08em;color:#7A3410;pointer-events:none;font-family:"PingFang SC","Hiragino Sans GB",sans-serif;
     text-shadow:0 2px 0 #fff,0 -2px 0 #fff,2px 0 0 #fff,-2px 0 0 #fff,1.5px 1.5px 0 #fff,-1.5px 1.5px 0 #fff,1.5px -1.5px 0 #fff,-1.5px -1.5px 0 #fff,0 4px 0 rgba(122,52,16,.35)}
   .el .tx.set{color:#8A4A1C;letter-spacing:.12em}
+  .mask{position:absolute;z-index:5;pointer-events:none;box-shadow:0 0 0 999px rgba(30,30,40,.55);outline:2px solid rgba(255,255,255,.8)}
   .guide{position:absolute;top:0;bottom:0;left:50%;width:0;border-left:1px dashed #4FA3FF;display:none;pointer-events:none}
   .guide.on{display:block}
   .panel{width:300px;background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
@@ -39,18 +40,20 @@
 <div class="frame" id="frame">
   <img class="bg" id="bg" src="./assets/img/title/title_pan_bg.webp" alt="">
   <div class="guide" id="guide"></div>
+  <div class="mask" id="mask"></div>
 </div>
 <div class="panel">
   <h1>开始画面摆放器</h1>
   <p class="tip">拖动标题和按钮摆位置，拖右下角蓝点改大小。靠近正中间会自动吸附居中。摆好后跟 Claude 说一声「好了」，它会直接读取这里的位置。</p>
   <label>预览机型</label>
   <select id="dev">
-    <option value="375x812">iPhone X / 11 Pro（375×812）</option>
-    <option value="390x844">iPhone 12–15（390×844）</option>
-    <option value="430x932">iPhone Pro Max（430×932）</option>
+    <option value="390x664">iPhone 12–15 · Safari（390×664）</option>
+    <option value="390x844">iPhone 12–15 · 全屏 / 小红书（390×844）</option>
+    <option value="430x750">iPhone Pro Max · Safari（430×750）</option>
+    <option value="375x553">iPhone SE · Safari（375×553）</option>
     <option value="360x780">安卓常见（360×780）</option>
-    <option value="375x667">iPhone 8 / SE（375×667）</option>
   </select>
+  <p class="tip" style="margin:4px 0 0">画布固定 375×812，到手机上整体等比缩放；灰色区域是这台手机上会被裁掉、看不到的部分。</p>
   <table><thead><tr><th>部件</th><th>左 %</th><th>上 %</th><th>宽 %</th></tr></thead><tbody id="tb"></tbody></table>
   <label>镜头最后停在哪：<b id="stopv"></b></label>
   <input type="range" id="stop" min="60" max="100" step="0.5" style="width:100%">
@@ -70,8 +73,14 @@ L = L || JSON.parse(JSON.stringify(DEF));
 if (L.stop == null) L.stop = DEF.stop;
 window.titleLayout = L;
 var frame = document.getElementById('frame'), sel = null, els = {};
-function size() { var v = document.getElementById('dev').value.split('x'); frame.style.width = v[0] + 'px'; frame.style.height = v[1] + 'px'; }
-Object.keys(DEF).forEach(function (k) {
+function size() {
+  frame.style.width = '375px'; frame.style.height = '812px';
+  var v = document.getElementById('dev').value.split('x'), W = +v[0], H = +v[1], sc = Math.max(W / 375, H / 812);
+  var vw = W / sc, vh = H / sc, cx = (375 - vw) / 2, cy = (812 - vh) / 2;
+  var m = document.getElementById('mask');
+  m.style.left = cx + 'px'; m.style.top = cy + 'px'; m.style.width = vw + 'px'; m.style.height = vh + 'px';
+}
+Object.keys(NAMES).forEach(function (k) {
   var d = document.createElement('div'); d.className = 'el'; d.dataset.k = k;
   d.innerHTML = '<img src="' + IMG + FILES[k] + '" alt="">' + (TEXT[k] ? '<span class="tx' + (k === 'settings' ? ' set' : '') + '">' + TEXT[k] + '</span>' : '') + '<i class="rz"></i>'; frame.appendChild(d); els[k] = d;
 });
