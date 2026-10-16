@@ -1532,10 +1532,10 @@ var TITLE_W = 375, TITLE_H = 812;   // 开始画面按这个尺寸设计（和�
 var TITLE_STOP = .805;   // 镜头最后停的位置：屏幕底边落在长图从上往下 80.5% 处（路边）
 function showTitle() {
   var ts = document.createElement('div'); ts.id = 'title'; ts.className = 'ts';
-  ts.innerHTML = '<i class="ts-tint top"></i><i class="ts-tint bot"></i><div class="ts-col"><i class="ts-pattern"></i><img class="ts-bg" alt="" src="' + TITLE_IMG + 'title_pan_bg.webp">' +
-    '<canvas class="ts-orbit back"></canvas><img class="ts-logo" alt="我在学校门口买烤肠" src="' + TITLE_IMG + 'logo_title.webp"><canvas class="ts-orbit front"></canvas>' +
-    '<div class="ts-btns"><button class="ts-btn start" data-act="tstart"><img alt="开始游戏" src="' + TITLE_IMG + 'btn_start.webp"></button>' +
-    '<button class="ts-btn set" data-act="tsettings"><img alt="设置" src="' + TITLE_IMG + 'btn_settings.webp"></button></div>' +
+  ts.innerHTML = '<i class="ts-tint top"></i><i class="ts-tint bot"></i><div class="ts-col"><i class="ts-pattern"></i><img class="ts-bg" alt="" src="' + TITLE_IMG + 'title_pan_bg.webp?v=' + BUILD_V + '">' +
+    '<canvas class="ts-orbit back"></canvas><img class="ts-logo" alt="我在学校门口买烤肠" src="' + TITLE_IMG + 'logo_title.webp?v=' + BUILD_V + '"><canvas class="ts-orbit front"></canvas>' +
+    '<div class="ts-btns"><button class="ts-btn start" data-act="tstart"><img alt="开始游戏" src="' + TITLE_IMG + 'btn_start.webp?v=' + BUILD_V + '"></button>' +
+    '<button class="ts-btn set" data-act="tsettings"><img alt="设置" src="' + TITLE_IMG + 'btn_settings.webp?v=' + BUILD_V + '"></button></div>' +
     '<div class="ts-load">加载中…</div></div>';
   document.body.appendChild(ts);
   var LAY = {logo:[3.5, 23.2, 93.1], start:[18.6, 56.9, 62.8], set:[20.7, 68.3, 58.6]};   // 左 / 上 / 宽，单位 %
