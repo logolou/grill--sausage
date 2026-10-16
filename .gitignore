@@ -6,3 +6,5 @@ phone-test/
 # 本地 Claude Code skill（第三方，按需自行安装）
 .claude/
 .DS_Store
+shuohao-skills/
+art/
