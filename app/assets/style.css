@@ -597,7 +597,9 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 .sharecard{display:block;width:100%;max-width:340px;margin:4px auto 0;border-radius:14px;box-shadow:0 6px 18px rgba(0,0,0,.18);-webkit-touch-callout:default;-webkit-user-select:auto;user-select:auto}
 
 /* 铲锅巴：蹭一下锅巴变淡一点 */
-.slot-btn.dirt.p1{opacity:.62}
+.slot-btn.dirt.p1{opacity:.75}
+.slot-btn.dirt.p2{opacity:.5}
+.slot-btn.dirt:active{transform:scale(.96)}
 .slot-btn.dirt .rubdots{display:block;font-size:12px;letter-spacing:2px;margin-top:2px;color:#F3C79A}
 
 /* ===== 布局：锅做大、打包台收小、底部文字改成浮在画面上的小提示 ===== */

@@ -24,7 +24,7 @@ var LEVELS = [
   {name:'放学高峰', time:150, goal:{money:30}, slots:4, pat:40, spawn:[3.8,5.8], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.45, runner:.2, feat:['oil','skewer'],
    news:['全校一起放学：顾客来得更快、更没耐心，要两根的更多了。']},
   {name:'锅底要铲', time:150, goal:{money:40}, slots:4, pat:39, spawn:[4,6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.4, runner:.22, feat:['oil','skewer','scrape'],
-   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要用手指在锅巴上来回蹭两下铲掉才能再用。','新酱料：甜辣。']},
+   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要在锅巴上连点 3 下铲掉才能再用。','新酱料：甜辣。']},
   {name:'校门口之王', time:180, goal:{money:50,hearts:12}, slots:4, pat:39, spawn:[3.5,5.6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.45, runner:.25, feat:['oil','skewer','scrape'],
    news:['最终关：钱和爱心两个目标都要达成。']},
   {name:'无尽模式', endless:true, time:0, goal:{}, slots:4, pat:44, spawn:[5,7.5], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.35, runner:.12, feat:['oil'],
@@ -278,7 +278,7 @@ var SKEWER_TUT = [
 var SKEWER_MAX = 4;   // 串好的肠最多备几根
 var SCRAPE_TUT = [
   {text:'第九关！老王来提个醒：锅用久了会结锅巴。每个锅位烤完 3 根肠，或者烤焦一根，就会结一层锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
-  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——用手指按住它，<b>来回蹭两下</b>，把锅巴铲干净！', spot:'scrape0', rub:'[data-rub="0"]', wait:'scrape',
+  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>连点 3 下</b>把锅巴铲干净！', spot:'scrape0', hand:'[data-rub="0"]', wait:'scrape',
    enter:function () { R.slots[0].s = null; R.slots[0].dirt = true; R.slots[0].scrub = 0; }},
   {text:'铲干净了！忙起来也要留意锅巴，别让锅位闲着。<br>另外这关多了新酱料「甜辣」，看清客人要哪种酱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true}
 ];
@@ -326,25 +326,12 @@ function pageRect(sel) {
 }
 function startGuide(st) {
   clearGuide();
-  if (!st.hand && !st.handFn && !st.drag && !st.dragFn && !st.rub) return;
+  if (!st.hand && !st.handFn && !st.drag && !st.dragFn) return;
   guideEl = document.createElement('div');
   guideEl.className = 'guide ' + (st.drag || st.dragFn ? 'drag' : 'tap');
   guideEl.innerHTML = '<i class="ring"></i><i class="ring r2"></i><span class="hand">👆</span>';
   document.body.appendChild(guideEl);
-  if (st.rub) {
-    // 蹭的引导：手指在目标上左右来回
-    guideEl.className = 'guide drag';
-    var wob = function () {
-      var p = pageRect(st.rub); if (!p) { guideEl.style.opacity = '0'; return; }
-      guideEl.style.opacity = '';
-      if (guideEl.animate) guideEl.animate([
-        {left:(p.x - 22) + 'px', top:p.y + 'px'}, {left:(p.x + 22) + 'px', top:p.y + 'px'},
-        {left:(p.x - 22) + 'px', top:p.y + 'px'}, {left:(p.x + 22) + 'px', top:p.y + 'px'}, {left:(p.x - 22) + 'px', top:p.y + 'px'}
-      ], {duration:1400, easing:'ease-in-out', fill:'forwards'});
-      else { guideEl.style.left = p.x + 'px'; guideEl.style.top = p.y + 'px'; }
-    };
-    wob(); guideTimer = setInterval(wob, 1700);
-  } else if (st.hand || st.handFn) {
+  if (st.hand || st.handFn) {
     // 点击引导：手指在目标上反复按下，光圈扩散；目标没出现时先隐藏
     var place = function () {
       var sel = st.handFn ? st.handFn() : st.hand, p = sel && pageRect(sel);
@@ -540,6 +527,7 @@ function act(a, i) {
   switch (a) {
     case 'place':
       if (sl.s || sl.dirt) return;
+      if (sl.cleanT && now() - sl.cleanT < 600) return;   // 刚铲完锅巴，连点的下一下不算放肠
       if (R.stock <= 0) { log('没有串好的肠了，先点「串一根」', 'bad'); return; }
       if (R.stock !== Infinity) R.stock--;
       sl.s = {a:0, b:0, down:'a'}; R.net -= COST; ding(300, .06);
@@ -1049,9 +1037,9 @@ function render() {
   slotsEl.innerHTML = R.slots.map(function (sl, i) {
     var lockTut = !!st && i !== 0;
     if (sl.dirt) {
-      var rubbed = Math.floor((sl.scrub || 0) / 2);
-      return '<div class="slot"><div class="slot-btn dirt p' + rubbed + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '">铲锅巴<small>来回蹭 ' + SCRAPE_RUBS + ' 下</small><span class="rubdots">' +
-        new Array(SCRAPE_RUBS + 1).join('·').split('').map(function (x, k) { return k < rubbed ? '●' : '○'; }).join('') + '</span></div></div>';
+      var hit = sl.scrub || 0;
+      return '<div class="slot"><div class="slot-btn dirt p' + hit + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '">铲锅巴<small>连点 ' + SCRAPE_TAPS + ' 下</small><span class="rubdots">' +
+        new Array(SCRAPE_TAPS + 1).join('·').split('').map(function (x, k) { return k < hit ? '●' : '○'; }).join('') + '</span></div></div>';
     }
     if (!sl.s) {
       var can = R.stock > 0;
@@ -1432,12 +1420,12 @@ document.addEventListener('pointerdown', function (e) {
     var bk2 = +bagEl.getAttribute('data-bag');
     if (!R || R.over || R.paused || !R.boxes[bk2] || R.boxes[bk2].stage !== 'box') return;
     if (!tutAllows('serve')) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return; }
-    startBagDrag(e, bk2); return;
+    startBagDrag(e, bk2); watchTarget(e.target); return;
   }
   var itemEl = e.target.closest('[data-item]');
   if (itemEl && R && !R.over && !R.paused && !R.tut) {
     var kj = itemEl.getAttribute('data-item').split('-'), ib = R.boxes[+kj[0]];
-    if (ib && ib.stage === 'open' && ib.items[+kj[1]]) { e.preventDefault(); startItemDrag(e, +kj[0], +kj[1]); return; }
+    if (ib && ib.stage === 'open' && ib.items[+kj[1]]) { e.preventDefault(); startItemDrag(e, +kj[0], +kj[1]); watchTarget(e.target); return; }
   }
   var rubEl = e.target.closest('[data-rub]');
   if (rubEl) {
@@ -1445,7 +1433,7 @@ document.addEventListener('pointerdown', function (e) {
     if (!R || R.over || R.paused) return;
     var rst = tutStep();
     if (rst && !tutAllows('scrape') && !(rst.free && rst.free.scrape)) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return; }
-    rub = {id:e.pointerId, i:+rubEl.getAttribute('data-rub'), lx:e.clientX, ly:e.clientY, ax:{dir:0, run:0}, ay:{dir:0, run:0}, moved:false};
+    scrapeTap(+rubEl.getAttribute('data-rub'));
     return;
   }
   var tool = e.target.closest('[data-tool]');
@@ -1453,7 +1441,7 @@ document.addEventListener('pointerdown', function (e) {
     e.preventDefault();
     if (tool.disabled || !R || R.over || R.paused) return;
     if (!tutAllows('topping')) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return; }
-    startDrag(tool, e); return;
+    startDrag(tool, e); watchTarget(e.target); return;
   }
   var el = e.target.closest('[data-act]'); if (!el) return;
   if (el.disabled) { if (tutStep()) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); } return; }
@@ -1479,39 +1467,35 @@ document.addEventListener('pointerdown', function (e) {
   if (a === 'tutskip') { tutEnd(); return; }
   act(a, i);
 });
-// 铲锅巴：手指在锅巴上来回蹭。每朝一个方向滑够 18px 算一笔，一来一回（2 笔）算蹭一下，蹭够 SCRAPE_RUBS 下就铲掉
-var SCRAPE_RUBS = 2, rub = null;
-function rubAxis(st, d) {
-  if (!d) return false;
-  var sg = d > 0 ? 1 : -1;
-  if (sg !== st.dir) { st.dir = sg; st.run = 0; st.done = false; }
-  st.run += Math.abs(d);
-  if (!st.done && st.run >= 18) { st.done = true; return true; }
-  return false;
+// 铲锅巴：在锅巴上连点 SCRAPE_TAPS 下铲掉（不用左右划：手机上横划容易触发「返回 / 退出」手势）
+var SCRAPE_TAPS = 3;
+function scrapeTap(i) {
+  var sl = R.slots[i]; if (!sl || !sl.dirt) return;
+  sl.scrub = (sl.scrub || 0) + 1;
+  ding(150 + Math.random() * 60, .07, .4, 'sawtooth');
+  if (sl.scrub >= SCRAPE_TAPS) { sl.cleanT = now(); act('scrape', i); return; }
+  render();
 }
-function rubMove(e) {
-  if (!rub || e.pointerId !== rub.id) return;
-  e.preventDefault();
-  var dx = e.clientX - rub.lx, dy = e.clientY - rub.ly; rub.lx = e.clientX; rub.ly = e.clientY;
-  var sl = R && R.slots[rub.i]; if (!sl || !sl.dirt || R.over || R.paused) { rub = null; return; }
-  if (Math.abs(dx) >= Math.abs(dy) ? rubAxis(rub.ax, dx) : rubAxis(rub.ay, dy)) {
-    sl.scrub = (sl.scrub || 0) + 1; rub.moved = true;
-    ding(150 + Math.random() * 60, .06, .35, 'sawtooth');
-    if (sl.scrub >= SCRAPE_RUBS * 2) { var ri = rub.i; rub = null; act('scrape', ri); return; }
-    render();
-  }
+// 拖拽事件路由。手指按住的元素可能在重绘时被换掉，换掉后 iOS 不再把 move / up 冒泡到 document，
+// 所以除了 document，也在最初按下的元素上直接监听，同一个事件只处理一次。
+function onPtrMove(e) { if (e.__seen) return; e.__seen = true; moveDrag(e); }
+function onPtrUp(e) { if (e.__seen) return; e.__seen = true; endDrag(e); }
+function onPtrCancel(e) { if (e.__seen) return; e.__seen = true; cancelDrag(e); }
+function watchTarget(el) {
+  if (!el || !el.addEventListener) return;
+  el.addEventListener('pointermove', onPtrMove);
+  el.addEventListener('pointerup', onPtrUp);
+  el.addEventListener('pointercancel', onPtrCancel);
+  var off = function () {
+    el.removeEventListener('pointermove', onPtrMove); el.removeEventListener('pointerup', onPtrUp);
+    el.removeEventListener('pointercancel', onPtrCancel); document.removeEventListener('pointerup', off, true); document.removeEventListener('pointercancel', off, true);
+    el.removeEventListener('pointerup', off); el.removeEventListener('pointercancel', off);
+  };
+  setTimeout(function () { el.addEventListener('pointerup', off); el.addEventListener('pointercancel', off); document.addEventListener('pointerup', off, true); document.addEventListener('pointercancel', off, true); }, 0);
 }
-function rubEnd(e) {
-  if (!rub || e.pointerId !== rub.id) return;
-  if (!rub.moved) log('锅巴粘得牢，要用手指在上面来回蹭两下', 'bad');
-  rub = null;
-}
-document.addEventListener('pointermove', rubMove, {passive:false});
-document.addEventListener('pointerup', rubEnd);
-document.addEventListener('pointercancel', function (e) { if (rub && e.pointerId === rub.id) rub = null; });
-document.addEventListener('pointermove', moveDrag);
-document.addEventListener('pointerup', endDrag);
-document.addEventListener('pointercancel', cancelDrag);
+document.addEventListener('pointermove', onPtrMove);
+document.addEventListener('pointerup', onPtrUp);
+document.addEventListener('pointercancel', onPtrCancel);
 document.addEventListener('visibilitychange', function () {
   if (document.hidden && R && !R.over && !R.demo && !R.paused) menu();
   syncMusic();
