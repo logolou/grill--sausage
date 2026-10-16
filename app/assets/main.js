@@ -1600,16 +1600,21 @@ function startOrbit(ts, lay) {
   var cvs = ts.querySelectorAll('.ts-orbit'), back = cvs[0], front = cvs[1], cb = back.getContext('2d'), cf = front.getContext('2d');
   var lw = TITLE_W * lay[2] / 100, lh = lw * 400 / 640, lx = TITLE_W * lay[0] / 100, ly = TITLE_H * lay[1] / 100;   // 标题图 640×400
   function L(u, v) { return [lx + lw * u, ly + lh * v]; }   // 标题图里的相对坐标 → 画布坐标
-  var S = L(.70, -.5), C = L(.64, .06), E = L(.44, .65);   // 起点（校门上方天空）、弯道控制点、终点（买烤之间）
-  var CROSS = 1;   // 走到两行字中间的缝（标题图高度 46% 处）之前在标题背后，之后在标题前面
-  for (var cu = 0; cu <= 1; cu += .01) if (pt(cu)[1] >= ly + lh * .43) { CROSS = cu; break; }
-  var CYCLE = 3.8, FLY = 1.1, k = 1, raf = 0, t0 = now(), sparks = [];
+  // 圆弧：绕标题中心顺时针转大半圈、半径越转越小（螺旋收进来）。
+  // 从「校」「门」上方出发 → 绕到标题右边（这段在字背后）→ 从右边绕出来到字前面 → 收到「买」「烤」之间
+  var A0 = -72 * Math.PI / 180, A1 = 100 * Math.PI / 180, OX = .48, OY = .32, RX = .52, RY = .6, SHRINK = .45;
+  var CROSS = (5 * Math.PI / 180 - A0) / (A1 - A0);   // 转过标题右边（约 5°）之前在背后，之后在前面
+  var E = pt(1);
+  var CYCLE = 4.2, FLY = 1.6, k = 1, raf = 0, t0 = now(), sparks = [];
   function resize() {
     var r = ts.querySelector('.ts-col').getBoundingClientRect();
     k = Math.min(3, (window.devicePixelRatio || 1) * r.width / TITLE_W);
     [back, front].forEach(function (c) { c.width = TITLE_W * k; c.height = TITLE_H * k; });
   }
-  function pt(u) { var a = 1 - u; return [a * a * S[0] + 2 * a * u * C[0] + u * u * E[0], a * a * S[1] + 2 * a * u * C[1] + u * u * E[1]]; }
+  function pt(u) {
+    var a = A0 + (A1 - A0) * u, sc = 1 - (1 - SHRINK) * Math.pow(u, 1.5);
+    return L(OX + Math.cos(a) * RX * sc, OY + Math.sin(a) * RY * sc);
+  }
   function star(c, x, y, r, rot, alpha) {
     var g = c.createRadialGradient(x, y, 0, x, y, r);
     g.addColorStop(0, 'rgba(255,255,255,' + alpha + ')'); g.addColorStop(.3, 'rgba(255,236,170,' + (alpha * .9) + ')'); g.addColorStop(1, 'rgba(255,190,80,0)');
@@ -1623,8 +1628,8 @@ function startOrbit(ts, lay) {
     if (ts.className.indexOf('logo-on') < 0) return;
     var t = ((now() - t0) / 1000 + CYCLE - 1) % CYCLE;   // 标题出来 1 秒后第一颗
     if (t < FLY) {
-      var u = t / FLY; u = u * u * (3 - 2 * u);   // 先快后慢的划过
-      var N = 34, TR = .42;
+      var u = t / FLY; u = 1 - Math.pow(1 - u, 2.2);   // 先快后慢地绕过来
+      var N = 44, TR = .38;
       for (var n = N; n > 0; n--) {   // 光尾
         var u1 = Math.max(0, u - TR * n / N), u2 = Math.max(0, u - TR * (n - 1) / N), p1 = pt(u1), p2 = pt(u2), f = 1 - n / N;
         var c = u2 > CROSS ? cf : cb;
