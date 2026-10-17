@@ -1515,7 +1515,7 @@ document.addEventListener('visibilitychange', function () {
 /* ============ 防误触：不让页面被放大、滑动、回弹或弹出系统菜单 ============ */
 (function guardTouch() {
   var opt = {passive:false};
-  function inScroller(t) { return t && t.closest && t.closest('.overlay'); }
+  function inScroller(t) { return t && t.closest && t.closest('.overlay, .lvmap'); }   // 弹窗和关卡地图可以上下滑
   // 双指缩放、页面拖动 / 回弹 / 下拉；弹窗内部仍可上下滑
   document.addEventListener('touchmove', function (e) {
     if (e.touches && e.touches.length > 1) { e.preventDefault(); return; }
@@ -1688,7 +1688,7 @@ function showMap() {
   hideOverlay(); hideMap();
   var open = Math.min(G.cleared + 1, 10), cur = Math.min(G.cleared, 9);   // 已解锁的站点数 / 当前该玩的那一关
   var mp = document.createElement('div'); mp.id = 'lvmap'; mp.className = 'lvmap' + (G.cleared >= ENDLESS ? ' has-bar' : '');
-  var h = '<div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_' + (open < 10 ? '0' : '') + open + '.webp?v=' + BUILD_V + '">';
+  var h = '<i class="lm-tint top"></i><i class="lm-tint bot"></i><div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_' + (open < 10 ? '0' : '') + open + '.webp?v=' + BUILD_V + '">';
   MAP_NODES.forEach(function (n, i) {
     h += '<button class="lm-node' + (i < open ? ' open' : ' lock') + (i === cur && G.cleared < 10 ? ' cur' : '') + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 7.5) + '%;top:' + (n[1] / 16.24) + '%" aria-label="第 ' + (i + 1) + ' 关"></button>';
   });
@@ -1702,6 +1702,8 @@ function showMap() {
     (G.cleared >= ENDLESS ? '<div class="lm-bar"><button class="lm-pill hot" data-act="intro" data-i="' + ENDLESS + '">无尽模式</button></div>' : '');
   mp.innerHTML = h;
   document.body.appendChild(mp);
+  // Safari 状态栏 / 工具栏跟着地图的颜色走（不再是开始画面的紫色）
+  setBarColor('#D68550'); document.body.style.backgroundColor = '#BC7D5A';
   // 先滚到当前站点附近
   var img = mp.querySelector('.lm-bg');
   function scrollCur() { var n = MAP_NODES[cur]; mp.scrollTop = Math.max(0, mp.scrollHeight * n[1] / 1624 - mp.clientHeight * .6); }
@@ -1716,7 +1718,7 @@ function showItemShop() {
   showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(false) +
     '<div class="actions"><button class="b wide" data-act="mapclose">返回地图</button></div>');
 }
-function hideMap() { var m = $('lvmap'); if (m && m.parentNode) m.parentNode.removeChild(m); }
+function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = ''; } }
 function mapNode(i) {
   if (i > G.cleared) {
     var b = document.querySelector('.lm-node[data-i="' + i + '"]'); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); }
