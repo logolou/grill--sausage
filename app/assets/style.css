@@ -668,3 +668,30 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 /* 标题流星星轨：两层画布，后一层在标题字背后 */
 .ts-orbit{position:absolute;left:0;top:0;width:375px;height:812px;pointer-events:none;opacity:0;transition:opacity .6s .4s}
 .ts.logo-on .ts-orbit{opacity:1}
+
+/* ===== 关卡地图 ===== */
+.lvmap{position:fixed;top:0;right:0;bottom:0;left:0;z-index:8;background:#C98A5C;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.lm-stage{position:relative;width:100%;max-width:480px;margin:0 auto}
+.lvmap.has-bar::after{content:"";display:block;height:calc(var(--sab) + 64px)}   /* 底部按钮栏的位置，让第 1 关能滚到按钮上面 */
+.lm-bg{display:block;width:100%;height:auto}
+.lm-node{position:absolute;width:19%;height:9%;margin-left:-9.5%;margin-top:-4.5%;border-radius:50%;background:transparent;border:0;padding:0;touch-action:manipulation}
+.lm-node.cur::before{content:"\25BC";position:absolute;left:50%;top:-48%;margin-left:-.5em;font-size:32px;line-height:1;color:#FFE27A;text-shadow:0 2px 0 #B8661E,0 0 8px rgba(255,200,80,.8);-webkit-animation:lmBob 1s ease-in-out infinite;animation:lmBob 1s ease-in-out infinite;pointer-events:none}
+@-webkit-keyframes lmBob{0%,100%{-webkit-transform:translateY(0)}50%{-webkit-transform:translateY(6px)}}
+@keyframes lmBob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.lm-node.nope{-webkit-animation:shakeX .4s;animation:shakeX .4s}
+.lm-hud{position:fixed;left:0;right:0;top:0;height:0;max-width:480px;margin:0 auto;pointer-events:none}
+.lm-ico{position:relative;pointer-events:auto;display:block;width:50px;padding:0;background:none;border:0;-webkit-filter:drop-shadow(0 3px 4px rgba(80,30,0,.35));filter:drop-shadow(0 3px 4px rgba(80,30,0,.35))}
+.lm-ico img{display:block;width:100%;height:auto}
+.lm-ico small{display:block;margin-top:1px;font-size:11px;font-weight:800;color:#FFF6E4;text-align:center;white-space:nowrap;text-shadow:0 1px 0 #7A3A12,0 0 3px #7A3A12}
+.lm-ico:active{transform:scale(.92)}
+.lm-ico.back{position:absolute;left:12px;top:calc(var(--sat) + 12px);width:35px}
+.lm-bank{position:absolute;left:54px;top:calc(var(--sat) + 11px);width:118px;pointer-events:none}
+.lm-bank img{display:block;width:100%;height:auto}
+.lm-bank b{position:absolute;left:36%;right:8%;top:0;bottom:0;display:flex;align-items:center;font-size:16px;font-weight:900;color:#7A3A12}
+.lm-ico.music{position:absolute;right:12px;top:calc(var(--sat) + 10px);width:38px}
+.lm-side{position:fixed;left:10px;top:calc(var(--sat) + 66px)}
+.lm-side .lm-ico{margin-bottom:8px}
+.lm-toast{position:fixed;left:50%;top:45%;transform:translate(-50%,-50%);padding:10px 18px;border-radius:14px;background:rgba(40,20,10,.82);color:#FFF4DE;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:3;white-space:nowrap}
+.lm-toast.on{-webkit-animation:lmToast 1.8s forwards;animation:lmToast 1.8s forwards}
+@-webkit-keyframes lmToast{0%{opacity:0}10%,75%{opacity:1}100%{opacity:0}}
+@keyframes lmToast{0%{opacity:0}10%,75%{opacity:1}100%{opacity:0}}

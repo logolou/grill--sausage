@@ -364,6 +364,7 @@ var clearDemo = clearGuide;
 /* ============ 一局 ============ */
 var R = null, nextId = 1;
 function startLevel(i, demo) {
+  if (!demo) hideMap();
   var L = LEVELS[i];
   var n = L.slots, slots = [];
   for (var k = 0; k < n; k++) slots.push({s:null, dirt:false, count:0});
@@ -1146,6 +1147,7 @@ function menu() {
   clearGuide();
   var cur = Math.min(G.cleared, 9);
   var inGame = R && !R.over && !R.demo;
+  if (!inGame) return showMap();
   showOverlay('<div class="kicker">' + (inGame ? '已暂停 · 第 ' + (R.i + 1) + ' 关 · ' + R.L.name : '放学时间 · 17:00 · 实验二小东门') + '</div>' +
     '<h1>校门口<em>烤肠摊</em></h1>' +
     (inGame ? pauseShop(R.L.endless) : '') +
@@ -1447,13 +1449,17 @@ document.addEventListener('pointerdown', function (e) {
   if (el.disabled) { if (tutStep()) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); } return; }
   var a = el.getAttribute('data-act'), i = +el.getAttribute('data-i');
   e.preventDefault();
-  if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else render(); return; }
+  if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else if (el.closest('#lvmap')) el.querySelector('img').src = './assets/img/ui/' + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp?v=' + BUILD_V; else render(); return; }
   if (a === 'tstart') { hideTitle(); return menu(); }
   if (a === 'tsettings') return titleSettings();
   if (a === 'tmusic') { G.music = !musicOn(); save(); syncMusic(); return titleSettings(); }
   if (a === 'tclose') return hideOverlay();
   if (a === 'menu') return menu();
   if (a === 'intro') return intro(i);
+  if (a === 'mapnode') return mapNode(i);
+  if (a === 'mapclose') { hideOverlay(); var bk = document.querySelector('#lvmap .lm-bank b'); if (bk) bk.textContent = '¥' + G.bank; return; }
+  if (a === 'maphome') { hideMap(); return showTitle(); }
+  if (a === 'mapitems') { menuShopOpen = true; return showItemShop(); }
   if (a === 'go') return startLevel(i);
   if (a === 'shop') return shop();
   if (a === 'resume') { R.paused = false; hideOverlay(); last = now(); var ts = tutStep(); if (ts) startGuide(ts); return; }
@@ -1672,6 +1678,57 @@ function titleSettings() {
   showOverlay('<div class="kicker">设置</div><h1>设置</h1>' +
     '<div class="actions"><button class="b wide" data-act="tmusic">背景音乐：' + (musicOn() ? '开' : '关') + '</button>' +
     '<button class="b red wide" data-act="tclose">好的</button></div>');
+}
+
+/* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
+// 站点中心（地图图 750×1624 的坐标），1 在最下面，10 在校门口
+var MAP_TOP10 = 188;   // 第 10 关石头顶边的 y（地图坐标）
+var MAP_NODES = [[345,1545],[540,1415],[398,1250],[262,1022],[618,870],[475,722],[228,605],[309,460],[615,340],[505,240]];
+function showMap() {
+  hideOverlay(); hideMap();
+  var open = Math.min(G.cleared + 1, 10), cur = Math.min(G.cleared, 9);   // 已解锁的站点数 / 当前该玩的那一关
+  var mp = document.createElement('div'); mp.id = 'lvmap'; mp.className = 'lvmap' + (G.cleared >= ENDLESS ? ' has-bar' : '');
+  var h = '<div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_' + (open < 10 ? '0' : '') + open + '.webp?v=' + BUILD_V + '">';
+  MAP_NODES.forEach(function (n, i) {
+    h += '<button class="lm-node' + (i < open ? ' open' : ' lock') + (i === cur && G.cleared < 10 ? ' cur' : '') + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 7.5) + '%;top:' + (n[1] / 16.24) + '%" aria-label="第 ' + (i + 1) + ' 关"></button>';
+  });
+  var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
+  h += '</div><div class="lm-hud">' +
+    '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
+    '<div class="lm-bank"><img alt="" src="' + UI + 'ui_bank.webp' + V + '"><b>¥' + G.bank + '</b></div>' +
+    '<button class="lm-ico music" data-act="music" aria-label="背景音乐"><img alt="" src="' + UI + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp' + V + '"></button>' +
+    '<div class="lm-side"><button class="lm-ico" data-act="shop" aria-label="升级小摊"><img alt="" src="' + UI + 'ui_upgrade.webp' + V + '"><small>升级小摊</small></button>' +
+    '<button class="lm-ico" data-act="mapitems" aria-label="道具商店"><img alt="" src="' + UI + 'ui_shop.webp' + V + '"><small>道具商店</small></button></div></div>' +
+    (G.cleared >= ENDLESS ? '<div class="lm-bar"><button class="lm-pill hot" data-act="intro" data-i="' + ENDLESS + '">无尽模式</button></div>' : '');
+  mp.innerHTML = h;
+  document.body.appendChild(mp);
+  // 先滚到当前站点附近
+  var img = mp.querySelector('.lm-bg');
+  function scrollCur() { var n = MAP_NODES[cur]; mp.scrollTop = Math.max(0, mp.scrollHeight * n[1] / 1624 - mp.clientHeight * .6); }
+  function alignSide() {
+    var st = mp.querySelector('.lm-stage').getBoundingClientRect(), side = mp.querySelector('.lm-side');
+    if (st.height) side.style.top = Math.max(60, st.top + st.height * MAP_TOP10 / 1624) + 'px';
+  }
+  if (img.complete) { scrollCur(); alignSide(); } else img.onload = function () { scrollCur(); alignSide(); };
+  mp.addEventListener('scroll', alignSide);
+}
+function showItemShop() {
+  showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(false) +
+    '<div class="actions"><button class="b wide" data-act="mapclose">返回地图</button></div>');
+}
+function hideMap() { var m = $('lvmap'); if (m && m.parentNode) m.parentNode.removeChild(m); }
+function mapNode(i) {
+  if (i > G.cleared) {
+    var b = document.querySelector('.lm-node[data-i="' + i + '"]'); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); }
+    ding(180, .12); mapToast('先通过第 ' + (G.cleared + 1) + ' 关才能解锁');
+    return;
+  }
+  ding(880, .06); intro(i);
+}
+function mapToast(t) {
+  var m = $('lvmap'); if (!m) return;
+  var o = m.querySelector('.lm-toast'); if (!o) { o = document.createElement('div'); o.className = 'lm-toast'; m.appendChild(o); }
+  o.textContent = t; o.classList.remove('on'); void o.offsetWidth; o.classList.add('on');
 }
 
 /* 开场：摆一个营业中的样子，再弹出关卡列表 */
