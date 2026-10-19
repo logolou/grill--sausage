@@ -713,7 +713,7 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .lp-ribbon{position:relative;z-index:2;margin:0 -19% -38px;height:116px;background:url(img/pop/ribbon.webp) center/100% 100% no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-bottom:18px}
 .lp-ribbon small{position:relative;top:-10px;margin-bottom:-6px;font-size:13px;font-weight:800;letter-spacing:.12em;color:#B24A1E;opacity:.85}
 .lp-ribbon b{font-size:27px;font-weight:900;color:#FFF8EC;letter-spacing:.04em;line-height:1.15;text-shadow:0 2px 0 #C2471C,0 -1px 0 #C2471C,1.5px 0 0 #C2471C,-1.5px 0 0 #C2471C,0 3px 4px rgba(120,30,0,.35);white-space:nowrap}
-.lp-panel{position:relative;z-index:1;background:url(img/pop/panel.webp) center/100% 100% no-repeat;padding:50px 28px 30px;text-align:center;color:#6B4A36}
+.lp-panel{position:relative;z-index:1;background:url(img/pop/panel.webp) center/100% 100% no-repeat;padding:30px 28px 30px;text-align:center;color:#6B4A36}
 .lp-sec{font-size:12px;font-weight:800;letter-spacing:.2em;color:#D9A18A;margin:6px 0 6px}
 .lp-goal{display:inline-block;min-width:70%;padding:8px 16px;border-radius:999px;background:#F1DFD3;box-shadow:inset 0 2px 4px rgba(140,90,60,.18);font-size:20px;font-weight:900;color:#A65A3A}
 .lp-goal em{font-style:normal;color:#C2471C}
@@ -730,7 +730,7 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .lp-item{width:31%;display:flex;flex-direction:column;align-items:center}
 .lp-item.off{opacity:.45}
 .lp-slot{position:relative;width:58px;height:58px;background:url(img/pop/slot.webp) center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center}
-.lp-slot img{width:70%;height:auto}
+.lp-slot img{width:63%;height:auto}
 .lp-cnt{position:absolute;right:-4px;top:-4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#F05A3A;color:#fff;font-style:normal;font-size:12px;font-weight:900;line-height:20px;box-shadow:0 0 0 2px #FFF8EC}
 .lp-item b{font-size:12px;font-weight:800;color:#8A5A40;margin:4px 0 3px;white-space:nowrap}
 .lp-buy{padding:2px 12px;border-radius:999px;border:0;background:linear-gradient(180deg,#FFD36B,#F5A623);color:#7A3A12;font-weight:900;font-size:13px;box-shadow:0 2px 0 #C97D12}
