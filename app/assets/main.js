@@ -1661,11 +1661,11 @@ function startOrbit(ts, lay) {
   ts.__orbitStop = function () { cancelAnimationFrame(raf); };
   return {resize:resize};
 }
+// 状态栏颜色：页面里固定有一个 theme-color，只改颜色不删（删了 Safari 会一直沿用上一次的颜色）
 function setBarColor(c) {
   var m = document.querySelector('meta[name="theme-color"]');
-  if (!c) { if (m) m.parentNode.removeChild(m); return; }
   if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
-  m.content = c;
+  m.content = c || '#D68550';
 }
 function hideTitle() {
   var ts = $('title'); if (!ts) return;
@@ -1704,9 +1704,11 @@ function showMap() {
     '<button class="lm-ico" data-act="mapitems" aria-label="道具商店"><img alt="" src="' + UI + 'ui_shop.webp' + V + '"><small>道具商店</small></button></div></div>' +
     (G.cleared >= ENDLESS ? '<div class="lm-bar"><button class="lm-pill hot" data-act="intro" data-i="' + ENDLESS + '">无尽模式</button></div>' : '');
   mp.innerHTML = h;
+  var mapUrl = './assets/img/map/map_' + (open < 10 ? '0' : '') + open + '.webp?v=' + BUILD_V;
+  mp.style.backgroundImage = 'url("' + mapUrl + '"), url("' + mapUrl + '")';
   document.body.appendChild(mp);
   // Safari 状态栏 / 工具栏跟着地图的颜色走（不再是开始画面的紫色）
-  setBarColor('#D68550'); document.body.style.backgroundColor = '#BC7D5A';
+  setBarColor('#D68550'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#D68550';
   // 先滚到当前站点附近
   var img = mp.querySelector('.lm-bg');
   function scrollCur() { var n = MAP_NODES[cur]; mp.scrollTop = Math.max(0, mp.scrollHeight * n[1] / 1624 - mp.clientHeight * .6); }
@@ -1721,7 +1723,7 @@ function showItemShop() {
   showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(false) +
     '<div class="actions"><button class="b wide" data-act="mapclose">返回地图</button></div>');
 }
-function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = ''; } }
+function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = ''; } }
 function mapNode(i) {
   if (i > G.cleared) {
     var b = document.querySelector('.lm-node[data-i="' + i + '"]'); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); }

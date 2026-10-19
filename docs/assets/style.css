@@ -661,7 +661,8 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 .ts.logo-on .ts-orbit{opacity:1}
 
 /* ===== 关卡地图 ===== */
-.lvmap{position:fixed;top:0;right:0;bottom:0;left:0;z-index:8;background:#BC7D5A;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.lvmap{position:fixed;top:0;right:0;bottom:0;left:0;z-index:8;background-color:#BC7D5A;background-position:center top,center bottom;background-size:100% auto,100% auto;background-repeat:no-repeat,no-repeat;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:none}
+@media (min-width:481px){.lvmap{background-size:480px auto,480px auto}}
 .lm-stage{position:relative;width:100%;max-width:480px;margin:0 auto}
 .lvmap.has-bar::after{content:"";display:block;height:calc(var(--sab) + 64px)}   /* 底部按钮栏的位置，让第 1 关能滚到按钮上面 */
 .lm-bg{display:block;width:100%;height:auto}
