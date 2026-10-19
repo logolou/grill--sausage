@@ -1683,8 +1683,8 @@ function showMap() {
   if (G.cleared < 10) { var dg = MAP_DIGITS[cur]; h += '<i class="lm-arrow" style="left:' + (dg[0] / 7.5) + '%;top:' + ((dg[1] - 30) / 16.24) + '%"><b>▼</b></i>'; }
   h += '</div><div class="lm-hud">' +
     '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
-    '<div class="lm-bank"><img alt="" src="' + UI + 'ui_bank.webp' + V + '"><b>¥' + G.bank + '</b></div>' +
-    '<button class="lm-ico music" data-act="music" aria-label="背景音乐"><img alt="" src="' + UI + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp' + V + '"></button>' +
+    '<div class="lm-bank"><img alt="" src="' + UI + 'ui_bank.webp' + V + '"><b>¥' + G.bank + '</b><button class="lm-plus" data-act="mapitems" aria-label="道具商店"></button></div>' +
+    '<button class="lm-ico set" data-act="tsettings" aria-label="设置"><img alt="" src="' + UI + 'ui_settings.webp' + V + '"></button>' +
     '<div class="lm-side"><button class="lm-ico" data-act="shop" aria-label="升级小摊"><img alt="" src="' + UI + 'ui_upgrade.webp' + V + '"><small>升级小摊</small></button>' +
     '<button class="lm-ico" data-act="mapitems" aria-label="道具商店"><img alt="" src="' + UI + 'ui_shop.webp' + V + '"><small>道具商店</small></button></div></div>' +
     (G.cleared >= ENDLESS ? '<div class="lm-bar"><button class="lm-pill hot" data-act="intro" data-i="' + ENDLESS + '">无尽模式</button></div>' : '');
