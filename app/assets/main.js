@@ -1197,7 +1197,7 @@ function intro(i) {
     return '<div class="lp-item' + (off ? ' off' : '') + '"><div class="lp-slot"><img alt="" src="./assets/img/items/' + it.id + '.webp' + V + '">' +
       (have ? '<i class="lp-cnt">' + have + '</i>' : '') + '</div><b>' + (it.bar || it.name) + '</b>' +
       '<button class="lp-buy" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>¥' + it.cost + '</button></div>';
-  }).join('') + '</div><div class="lp-bank">存款 ¥' + G.bank + '</div>';
+  }).join('') + '</div><div class="lp-bank"><i>存款</i><b>¥' + G.bank + '</b></div>';
   showOverlay('<div class="lp">' +
     '<div class="lp-ribbon"><small>' + (L.endless ? '课外活动' : '第 ' + (i + 1) + ' 关') + '</small><b>' + L.name.replace('教学关·', '') + '</b></div>' +
     '<div class="lp-panel">' +
