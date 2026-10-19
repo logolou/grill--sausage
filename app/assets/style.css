@@ -675,7 +675,6 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 .lvmap.has-bar::after{content:"";display:block;height:calc(var(--sab) + 64px)}   /* 底部按钮栏的位置，让第 1 关能滚到按钮上面 */
 .lm-bg{display:block;width:100%;height:auto}
 .lm-node{position:absolute;width:19%;height:9%;margin-left:-9.5%;margin-top:-4.5%;border-radius:50%;background:transparent;border:0;padding:0;touch-action:manipulation}
-.lm-node.cur::before{content:"\25BC";position:absolute;left:50%;top:-48%;margin-left:-.5em;font-size:32px;line-height:1;color:#FFE27A;text-shadow:0 2px 0 #B8661E,0 0 8px rgba(255,200,80,.8);-webkit-animation:lmBob 1s ease-in-out infinite;animation:lmBob 1s ease-in-out infinite;pointer-events:none}
 @-webkit-keyframes lmBob{0%,100%{-webkit-transform:translateY(0)}50%{-webkit-transform:translateY(6px)}}
 @keyframes lmBob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 .lm-node.nope{-webkit-animation:shakeX .4s;animation:shakeX .4s}
@@ -699,3 +698,5 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 .lvmap .lm-tint{position:fixed;left:0;right:0;height:2px;pointer-events:none}
 .lvmap .lm-tint.top{top:0;background-color:#D68550}
 .lvmap .lm-tint.bot{bottom:0;background-color:#BC7D5A}
+.lm-arrow{position:absolute;width:0;height:0;pointer-events:none;z-index:2}
+.lm-arrow b{position:absolute;left:-20px;bottom:0;width:40px;text-align:center;font-size:30px;line-height:1;color:#FFE27A;text-shadow:0 2px 0 #B8661E,0 0 8px rgba(255,200,80,.8);-webkit-animation:lmBob 1s ease-in-out infinite;animation:lmBob 1s ease-in-out infinite}

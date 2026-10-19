@@ -1667,7 +1667,9 @@ function titleSettings() {
 
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
 // 站点中心（地图图 750×1624 的坐标），1 在最下面，10 在校门口
-var MAP_TOP10 = 188;   // 第 10 关石头顶边的 y（地图坐标）
+var MAP_TOP10 = 188;
+// 当前关（金色石头）上数字的中心，按每张地图实测（每张图石头位置略有不同）；小三角放在数字正上方
+var MAP_DIGITS = [[346,1509],[540,1383],[402,1217],[298,1020],[610,846],[470,709],[230,579],[307,439],[612,314],[503,219]];   // 第 10 关石头顶边的 y（地图坐标）
 var MAP_NODES = [[345,1545],[540,1415],[398,1250],[262,1022],[618,870],[475,722],[228,605],[309,460],[615,340],[505,240]];
 function showMap() {
   hideOverlay(); hideMap();
@@ -1678,6 +1680,7 @@ function showMap() {
     h += '<button class="lm-node' + (i < open ? ' open' : ' lock') + (i === cur && G.cleared < 10 ? ' cur' : '') + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 7.5) + '%;top:' + (n[1] / 16.24) + '%" aria-label="第 ' + (i + 1) + ' 关"></button>';
   });
   var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
+  if (G.cleared < 10) { var dg = MAP_DIGITS[cur]; h += '<i class="lm-arrow" style="left:' + (dg[0] / 7.5) + '%;top:' + ((dg[1] - 30) / 16.24) + '%"><b>▼</b></i>'; }
   h += '</div><div class="lm-hud">' +
     '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
     '<div class="lm-bank"><img alt="" src="' + UI + 'ui_bank.webp' + V + '"><b>¥' + G.bank + '</b></div>' +
