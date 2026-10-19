@@ -1182,12 +1182,11 @@ function intro(i) {
     return '<div class="lp-item' + (off ? ' off' : '') + '"><div class="lp-slot"><img alt="" src="./assets/img/items/' + it.id + '.webp' + V + '">' +
       (have ? '<i class="lp-cnt">' + have + '</i>' : '') + '</div><b>' + (it.bar || it.name) + '</b>' +
       '<button class="lp-buy" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>¥' + it.cost + '</button></div>';
-  }).join('') + '</div><div class="lp-bank"><i>存款</i><b>¥' + G.bank + '</b></div>';
+  }).join('') + '</div><div class="lp-bank">存款 ¥' + G.bank + '</div>';
   showOverlay('<div class="lp">' +
     '<div class="lp-ribbon"><small>' + (L.endless ? '课外活动' : '第 ' + (i + 1) + ' 关') + '</small><b>' + L.name.replace('教学关·', '') + '</b></div>' +
     '<div class="lp-panel">' +
       '<div class="lp-sec">过关目标</div><div class="lp-goal">' + goal.join('<span class="plus">+</span>') + '</div>' +
-      '<div class="lp-info"><span><i>营业</i>' + (L.endless ? '不限时' : fmtT(L.time).replace(/^0/, '')) + '</span><span><i>锅位</i>' + L.slots + ' 个</span></div>' +
       (boost ? '<div class="lp-div"></div>' + boost : '') +
       '<button class="lp-play" data-act="go" data-i="' + i + '"><img alt="" src="' + POP + 'play.webp' + V + '"><span>' + (L.tutorial ? '开始教学' : '开始出摊') + '</span></button>' +
     '</div>' +
