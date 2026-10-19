@@ -1167,14 +1167,35 @@ function goalCards(L) {
     '<div class="gc"><span>营业时间</span><b>' + L.time + ' 秒</b></div>' +
     '<div class="gc"><span>锅位</span><b>' + L.slots + ' 个</b></div></div>';
 }
+// 关卡开场弹窗：星星 + 飘带标题 + 奶油面板（目标 / 营业时间 / 本关新内容 / 带上道具）+ 开始按钮
+var introIdx = 0;
 function intro(i) {
-  var L = LEVELS[i];
-  showOverlay('<div class="kicker">' + (L.endless ? '课外活动' : '第 ' + (i + 1) + ' 关 / 共 10 关') + '</div><h1>' + L.name + '</h1>' +
-    goalCards(L) +
-    '<ul class="rules">' + L.news.map(function (n) { return '<li>' + n + '</li>'; }).join('') +
-    '</ul>' +
-    '<div class="actions"><button class="b red" data-act="go" data-i="' + i + '">' + (L.tutorial ? '开始教学' : '开始出摊') + '</button><button class="b" data-act="menu">返回</button>' +
-    '</div>' + (L.tutorial ? '' : pauseShop(!!L.endless)));
+  introIdx = i;
+  var L = LEVELS[i], POP = './assets/img/pop/', V = '?v=' + BUILD_V, done = !L.endless && i < G.cleared;
+  var g = L.goal || {}, goal = [];
+  if (L.endless) goal.push('口碑 ❤' + ENDLESS_HEARTS + '，扣光收摊');
+  else { if (g.money != null) goal.push('净赚 <em>¥' + g.money + '</em>'); if (g.hearts != null) goal.push('<em>❤ ' + g.hearts + '</em> 颗'); }
+  var stars = '';
+  for (var k = 0; k < 3; k++) stars += '<img class="s' + k + '" alt="" src="' + POP + (done ? 'star' : 'star_empty') + '.webp' + V + '">';
+  var boost = L.tutorial ? '' : '<div class="lp-sec">带上道具</div><div class="lp-boost">' + ITEMS.map(function (it, idx) {
+    var off = it.id === 'hourglass' && L.endless, have = G.items[it.id] || 0;
+    return '<div class="lp-item' + (off ? ' off' : '') + '"><div class="lp-slot"><img alt="" src="./assets/img/items/' + it.id + '.webp' + V + '">' +
+      (have ? '<i class="lp-cnt">' + have + '</i>' : '') + '</div><b>' + (it.bar || it.name) + '</b>' +
+      '<button class="lp-buy" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>¥' + it.cost + '</button></div>';
+  }).join('') + '</div><div class="lp-bank">存款 ¥' + G.bank + '</div>';
+  showOverlay('<div class="lp">' +
+    '<div class="lp-stars">' + stars + '</div>' +
+    '<div class="lp-ribbon"><small>' + (L.endless ? '课外活动' : '第 ' + (i + 1) + ' 关') + '</small><b>' + L.name.replace('教学关·', '') + '</b></div>' +
+    '<div class="lp-panel">' +
+      '<div class="lp-sec">过关目标</div><div class="lp-goal">' + goal.join('<span class="plus">+</span>') + '</div>' +
+      '<div class="lp-info"><span><i>营业</i>' + (L.endless ? '不限时' : fmtT(L.time).replace(/^0/, '')) + '</span><span><i>锅位</i>' + L.slots + ' 个</span></div>' +
+      '<div class="lp-div"></div>' +
+      '<div class="lp-sec">' + (L.tutorial ? '老王带你学' : '本关新内容') + '</div><ul class="lp-news">' + L.news.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul>' +
+      (boost ? '<div class="lp-div"></div>' + boost : '') +
+      '<button class="lp-play" data-act="go" data-i="' + i + '"><img alt="" src="' + POP + 'play.webp' + V + '"><span>' + (L.tutorial ? '开始教学' : '开始出摊') + '</span></button>' +
+    '</div>' +
+    '<button class="lp-back" data-act="menu" aria-label="返回"><img alt="" src="./assets/img/ui/ui_back.webp' + V + '"></button>' +
+  '</div>', 'lvpop');
 }
 function finish(win, why) {
   R.over = true; clearDemo(); render();
@@ -1376,6 +1397,7 @@ function toggleResultShop(btn, endless) {
   var ps = card.querySelector('.pshop'); if (ps.scrollIntoView) ps.scrollIntoView({block:'nearest'});
 }
 function refreshItemStrip() {
+  if (document.querySelector('#overlay .lp-boost')) return intro(introIdx);
   var box = document.querySelector('#overlay .pshop'); if (!box) return;
   var tmp = document.createElement('div'); tmp.innerHTML = pauseShop(box.getAttribute('data-endless') === '1');
   box.parentNode.replaceChild(tmp.firstChild, box);
