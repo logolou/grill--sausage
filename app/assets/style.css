@@ -703,3 +703,10 @@ body{position:fixed;top:0;right:0;bottom:0;left:0;touch-action:manipulation}
 .lvmap .lm-tint.bot{bottom:0;background-color:#BC7D5A}
 .lm-arrow{position:absolute;width:0;height:0;pointer-events:none;z-index:2}
 .lm-arrow b{position:absolute;left:-20px;bottom:0;width:40px;text-align:center;font-size:30px;line-height:1;color:#FFE27A;text-shadow:0 2px 0 #B8661E,0 0 8px rgba(255,200,80,.8);-webkit-animation:lmBob 1s ease-in-out infinite;animation:lmBob 1s ease-in-out infinite}
+
+/* iPhone「添加到主屏幕」全屏打开时，状态栏透明，但页面高度会少算一截状态栏高度，底部空出一条：
+   全屏层都往下多延伸一个状态栏高度补上（Safari 里状态栏高度是 0，不受影响） */
+.ts,.lvmap,.overlay{bottom:calc(0px - env(safe-area-inset-top, 0px))}
+html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
+.lvmap::after{height:calc(var(--sab) + env(safe-area-inset-top, 0px) + 24px)}
+.lvmap.has-bar::after{height:calc(var(--sab) + env(safe-area-inset-top, 0px) + 70px)}
