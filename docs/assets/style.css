@@ -1169,3 +1169,5 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #app.scene .timebar{left:96px;right:12px}
 .knob span{bottom:auto;top:-30px}
 .oilcan{left:650px}
+.sc-qr img{transform:scaleX(-1)}
+#app.scene .slot-btn{border:0;background:none}
