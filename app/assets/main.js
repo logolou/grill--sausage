@@ -1826,14 +1826,18 @@ function loadLevel(i) {
   if (loading) return;
   loading = true; hideOverlay(); clearGuide();
   var ld = document.createElement('div'); ld.id = 'loader'; ld.className = 'ld';
-  ld.innerHTML = '<div class="ld-box"><div class="ld-saus"><div class="ld-body"><div class="ld-fill"></div></div><i class="ld-stick"></i></div>' +
+  // 胖乎乎的卡通烤肠剪影 + 竹签；两道烤纹是镂空的。用裁剪矩形从下往上露出实心那层当进度
+  var SAUS = '<path d="M30 6c11 0 19 8 19 20v42c0 12-8 20-19 20S11 80 11 68V26C11 14 19 6 30 6z"/><rect x="27" y="84" width="6" height="40" rx="3"/>';
+  var CUTS = '<path d="M18 34l24-9M18 50l24-9M18 66l24-9" stroke="#E3864A" stroke-width="3.2" stroke-linecap="round" fill="none"/>';
+  ld.innerHTML = '<div class="ld-box"><svg class="ld-saus" viewBox="0 0 60 128" aria-hidden="true"><defs><clipPath id="ldClip"><rect class="ld-clip" x="0" y="128" width="60" height="0"/></clipPath></defs>' +
+    '<g fill="#F7C795" opacity=".3">' + SAUS + '</g><g fill="#F7C795" clip-path="url(#ldClip)">' + SAUS + '</g>' + CUTS + '</svg>' +
     '<div class="ld-txt">LOADING<span>...</span></div></div>';
   document.body.appendChild(ld);
   setBarColor('#E0833F');
-  var fill = ld.querySelector('.ld-fill'), t0 = now(), DUR = 1300;
+  var clip = ld.querySelector('.ld-clip'), t0 = now(), DUR = 1300;
   (function step() {
     var k = Math.min(1, (now() - t0) / DUR), e = 1 - Math.pow(1 - k, 2.2);
-    fill.style.height = (e * 100).toFixed(1) + '%';
+    clip.setAttribute('y', (128 - 128 * e).toFixed(1)); clip.setAttribute('height', (128 * e).toFixed(1));
     if (k < 1) return requestAnimationFrame(step);
     // 加载完：在加载画面后面开局，再淡出
     startLevel(i);
