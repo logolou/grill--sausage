@@ -1241,3 +1241,15 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .guide.tap .ring.r2{border:0}
 #app.scene .coach{background:#FFF9EE !important;background-image:linear-gradient(180deg,#FFFBF3,#FBEEDC) !important}
 .guide .hand{left:-24px;top:-70px}
+/* 教学框微调：去掉步数标签、王姐缩小、小手缩小、字重统一、按钮不用数黑体 */
+#app.scene .coach .step{display:none}
+#app.scene .coach{padding:18px 22px 14px 132px;min-height:160px}
+#app.scene .coach .who{height:175px;left:6px}
+#app.scene .coach p{margin-top:0;font-size:23px;font-weight:700}
+#app.scene .coach p b,#app.scene .coach .lesson b{font-weight:700}
+#app.scene .coach .row button,#app.scene .coach .skip{font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;font-weight:700}
+#app.scene .coach .row button{font-size:21px}
+#app.scene .coach .skip{font-size:18px}
+.guide .hand{width:36px;left:-16px;top:-48px}
+.guide .ring{left:-20px;top:-20px;width:40px;height:40px}
+.guide .hand{width:22px;left:-9px;top:-30px}.guide .ring{left:-14px;top:-14px;width:28px;height:28px}
