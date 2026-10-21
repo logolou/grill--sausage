@@ -959,10 +959,9 @@ function custArt(c) {
   var id = 'kid01';
   for (var n = 0; n < CUST_ART.length; n++) if (c.name.indexOf(CUST_ART[n][0]) >= 0) { id = CUST_ART[n][1]; break; }
   var r = c.pat / c.patMax, st = 'wait';
+  // 只用三种表情：等待 / 耐心快没了着急 / 做错了或等太久生气
   if (c.state === 'wait') st = r > .35 ? 'wait' : 'anxious';
-  else if (c.state === 'flee') st = 'sneak';
-  else if (c.state === 'paying') st = c.review === 'bad' ? 'angry' : 'happy';
-  else if (c.state === 'leave') st = c.served && c.review !== 'bad' ? 'walk' : 'angry';
+  else if (c.review === 'bad' || (c.state === 'leave' && !c.served)) st = 'angry';
   return './assets/img/cust/' + id + '_' + st + '.webp?v=' + BUILD_V;
 }
 var BAND_ICON = {'嫩':'tender', '脆':'crispy', '微焦':'charred'};
