@@ -952,3 +952,4 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .sp-ribbon b{font-size:26px}
 .sp.deco .sp-bank{width:48%;margin-top:14px;margin-bottom:14px}
 .sp-bank b{left:24%;right:2%;top:5.5%;bottom:8.5%}   /* 正好落在奶油色槽的中间 */
+.lm-stat.heart b{font-size:13px;letter-spacing:.06em}
