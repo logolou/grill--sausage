@@ -25,3 +25,4 @@ rm -rf "$SP" && mkdir -p "$SP" && (cd "$SP" && unzip -q ../dist/sausage-stall.zi
 rm -rf docs && mkdir -p docs && (cd docs && unzip -q ../dist/sausage-stall.zip) && touch docs/.nojekyll
 # 开始画面摆放器（手机测试服里 /editor.html）
 cp tools/title-editor.html phone-test/editor.html
+cp tools/scene-editor.html phone-test/scene-editor.html

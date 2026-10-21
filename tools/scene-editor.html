@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>主界面摆放器</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang SC",sans-serif;background:#F6F2F8;color:#2B2233;display:flex;flex-wrap:wrap;gap:20px;padding:16px;align-items:flex-start}
+.frame{position:relative;flex:none;width:360px;height:640px;overflow:hidden;border-radius:24px;box-shadow:0 0 0 8px #222,0 10px 40px rgba(0,0,0,.25);background:#000 url(./assets/img/scene/bg.webp) 0 0/100% 100%;touch-action:none;user-select:none}
+.el{position:absolute;cursor:grab;outline:2px dashed transparent;outline-offset:1px}
+.el img{display:block;width:100%;pointer-events:none}
+.el.box{background:rgba(47,74,59,.75);border-radius:8px;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.el:hover{outline-color:rgba(255,255,255,.8)}.el.sel{outline-color:#4FA3FF}
+.el .rz{position:absolute;right:-7px;bottom:-7px;width:14px;height:14px;border-radius:50%;background:#4FA3FF;border:2px solid #fff;display:none;cursor:nwse-resize}
+.el.sel .rz{display:block}
+.mask{position:absolute;z-index:999;pointer-events:none;box-shadow:0 0 0 999px rgba(30,30,40,.5);outline:2px solid rgba(255,255,255,.8)}
+.panel{width:320px;background:#fff;border-radius:14px;padding:14px}
+h1{font-size:16px;margin-bottom:4px}.tip{font-size:12px;color:#7A6F85;line-height:1.6;margin-bottom:8px}
+select,button{font:inherit;font-size:13px;border-radius:8px;border:1px solid #E3DAEA;padding:5px 9px;background:#fff;cursor:pointer}
+.pri{background:#E0833F;border-color:#E0833F;color:#fff;font-weight:700}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+ul{list-style:none;max-height:300px;overflow:auto;border:1px solid #EEE;border-radius:8px}
+li{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;font-size:12px;border-bottom:1px solid #F3EEF6;cursor:pointer}
+li.sel{background:#EAF3FF;color:#1F6FD1;font-weight:700}
+li label{display:flex;align-items:center;gap:4px}
+.saved{font-size:12px;color:#2E8B57;min-height:16px}
+</style></head><body>
+<div class="frame" id="frame"><div class="mask" id="mask"></div></div>
+<div class="panel">
+<h1>主界面摆放器</h1>
+<p class="tip">画布是 720×1280 的主界面（这里按一半显示）。拖动摆位置，拖右下角蓝点改大小；列表里点名字可以选中，勾掉「显示」可以先藏起来。灰色是该机型会被裁掉的区域。摆好点「保存」，跟 Claude 说一声。</p>
+<select id="dev"><option value="390x664">iPhone · Safari（390×664）</option><option value="390x844">iPhone · 全屏 / 小红书（390×844）</option><option value="375x553">iPhone SE · Safari</option><option value="360x780">安卓常见（360×780）</option></select>
+<div class="row"><button id="up">上移一层</button><button id="down">下移一层</button></div>
+<ul id="list"></ul>
+<div class="row"><button class="pri" id="save">保存</button><button id="reset">恢复默认</button></div>
+<div class="saved" id="saved"></div>
+</div>
+<script>
+var DEF = [{"k": "hud", "name": "顶部信息栏（占位）", "img": null, "x": 20, "y": 30, "w": 680}, {"k": "cust1", "name": "客人 1", "img": "cust1", "x": 40, "y": 250, "w": 150}, {"k": "cust2", "name": "客人 2", "img": "cust2", "x": 285, "y": 250, "w": 150}, {"k": "cust3", "name": "客人 3", "img": "cust3", "x": 530, "y": 250, "w": 150}, {"k": "bubble", "name": "订单气泡（示例）", "img": "bubble", "x": 60, "y": 150, "w": 120}, {"k": "qr", "name": "收款码", "img": "qr", "x": 10, "y": 528, "w": 175}, {"k": "grill", "name": "烤肠锅", "img": "grill", "x": 78, "y": 528, "w": 565}, {"k": "sausage", "name": "锅里的烤肠（示例）", "img": "sausage", "x": 175, "y": 600, "w": 62}, {"k": "oil", "name": "油壶", "img": "oil", "x": 612, "y": 571, "w": 99}, {"k": "sweetchili", "name": "甜辣酱", "img": "sweetchili", "x": 407, "y": 465, "w": 183}, {"k": "mustard", "name": "蜂蜜芥末", "img": "mustard", "x": 498, "y": 572, "w": 115}, {"k": "ketchup", "name": "番茄酱", "img": "ketchup", "x": 243, "y": 307, "w": 235}, {"k": "cumin", "name": "孜然", "img": "cumin", "x": 513, "y": 737, "w": 144}, {"k": "chili", "name": "辣椒", "img": "chili", "x": 476, "y": 723, "w": 190}, {"k": "raw_box", "name": "生肠盒（串签）", "img": "raw_box", "x": 20, "y": 960, "w": 120}, {"k": "stick_bundle", "name": "竹签", "img": "stick_bundle", "x": 20, "y": 1100, "w": 110}, {"k": "box_open", "name": "打包盒（开）", "img": "box_open", "x": 124, "y": 814, "w": 466}, {"k": "box_closed", "name": "打包盒（合）", "img": "box_closed", "x": 486, "y": 1002, "w": 212}];
+var S = 0.5, IMG = './assets/img/scene/';
+var L; try { L = JSON.parse(localStorage.getItem('sceneLayout')); } catch (e) {}
+if (!L || !L.length) L = JSON.parse(JSON.stringify(DEF));
+window.sceneLayout = L;
+var frame = document.getElementById('frame'), sel = null;
+function build() {
+  [].slice.call(frame.querySelectorAll('.el')).forEach(function (e) { e.remove(); });
+  L.forEach(function (it, z) {
+    var d = document.createElement('div'); d.className = 'el' + (it.img ? '' : ' box'); d.dataset.k = it.k; d.style.zIndex = z + 1;
+    d.innerHTML = (it.img ? '<img src="' + IMG + it.img + '.webp">' : it.name) + '<i class="rz"></i>';
+    if (it.hide) d.style.display = 'none';
+    frame.appendChild(d);
+  });
+  place();
+}
+function place() {
+  L.forEach(function (it) {
+    var e = frame.querySelector('.el[data-k="' + it.k + '"]'); if (!e) return;
+    e.style.left = it.x * S + 'px'; e.style.top = it.y * S + 'px'; e.style.width = it.w * S + 'px';
+    if (!it.img) e.style.height = (it.h || 80) * S + 'px';
+    e.classList.toggle('sel', it.k === sel);
+  });
+  document.getElementById('list').innerHTML = L.slice().reverse().map(function (it) {
+    return '<li data-k="' + it.k + '" class="' + (it.k === sel ? 'sel' : '') + '"><span>' + it.name + '</span><label><input type="checkbox" data-h="' + it.k + '"' + (it.hide ? '' : ' checked') + '>显示</label></li>';
+  }).join('');
+}
+function get(k) { for (var i = 0; i < L.length; i++) if (L[i].k === k) return L[i]; }
+var drag = null;
+frame.addEventListener('pointerdown', function (e) {
+  var el = e.target.closest('.el'); if (!el) { sel = null; place(); return; }
+  sel = el.dataset.k; var it = get(sel);
+  drag = {rz: e.target.classList.contains('rz'), sx: e.clientX, sy: e.clientY, x: it.x, y: it.y, w: it.w, h: it.h || 80};
+  frame.setPointerCapture(e.pointerId); place(); e.preventDefault();
+});
+frame.addEventListener('pointermove', function (e) {
+  if (!drag || !sel) return; var it = get(sel), dx = (e.clientX - drag.sx) / S, dy = (e.clientY - drag.sy) / S;
+  if (drag.rz) { it.w = Math.max(20, Math.round(drag.w + dx)); if (!it.img) it.h = Math.max(20, Math.round(drag.h + dy)); }
+  else { it.x = Math.round(drag.x + dx); it.y = Math.round(drag.y + dy); }
+  place();
+});
+frame.addEventListener('pointerup', function () { drag = null; });
+document.getElementById('list').addEventListener('click', function (e) {
+  var h = e.target.getAttribute('data-h'); if (h) { get(h).hide = !e.target.checked; build(); return; }
+  var li = e.target.closest('li'); if (li) { sel = li.dataset.k; place(); }
+});
+function move(d) { if (!sel) return; var i = L.indexOf(get(sel)), j = i + d; if (j < 0 || j >= L.length) return; var t = L[i]; L[i] = L[j]; L[j] = t; build(); }
+document.getElementById('up').onclick = function () { move(1); };
+document.getElementById('down').onclick = function () { move(-1); };
+document.getElementById('save').onclick = function () { localStorage.setItem('sceneLayout', JSON.stringify(L)); window.sceneLayout = L; document.getElementById('saved').textContent = '已保存 ' + new Date().toLocaleTimeString(); };
+document.getElementById('reset').onclick = function () { L = JSON.parse(JSON.stringify(DEF)); window.sceneLayout = L; build(); };
+function mask() {
+  var v = document.getElementById('dev').value.split('x'), W = +v[0], H = +v[1], sc = Math.max(W / 360, H / 640), vw = W / sc, vh = H / sc, m = document.getElementById('mask');
+  m.style.left = (360 - vw) / 2 + 'px'; m.style.top = (640 - vh) / 2 + 'px'; m.style.width = vw + 'px'; m.style.height = vh + 'px';
+}
+document.getElementById('dev').onchange = mask;
+build(); mask();
+</script></body></html>
