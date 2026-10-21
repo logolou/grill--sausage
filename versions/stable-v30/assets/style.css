@@ -1191,3 +1191,17 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #fireCtl .hl.on{background:#FFD65A;box-shadow:0 0 0 3px #F5A623}
 /* 加载字样：手写体 */
 .ld-txt{font-family:"Chalkboard SE","Chalkboard","Marker Felt","Noteworthy","Comic Sans MS",cursive !important;font-weight:700;letter-spacing:.12em}
+
+/* 锅 v2：四张火力状态图（关 / 小 / 中 / 大），旋钮顺时针拧 */
+#app.scene .grill{top:644px;height:294px}
+#app.scene .slot{top:8%;height:37%;width:19%}
+#app.scene .slot:nth-child(1){left:9%}#app.scene .slot:nth-child(2){left:29.3%}#app.scene .slot:nth-child(3){left:49.6%}#app.scene .slot:nth-child(4){left:69.6%}
+#app.scene .saus-area{top:0;height:100%}
+#app.scene .meters{bottom:-16px}
+#app.scene .pick{bottom:-74px}
+#fireCtl{left:77%;top:74%;width:15%;height:20%}
+.kl{position:absolute;font-style:normal;font-size:11px;line-height:1;color:#fff;opacity:.85;pointer-events:none;text-shadow:0 1px 1px rgba(0,0,0,.6)}
+.kl.k0{left:50%;top:-6px;transform:translateX(-50%)}
+.kl.k1{right:-12px;top:50%;transform:translateY(-50%)}
+.kl.k2{left:50%;bottom:-12px;transform:translateX(-50%)}
+.kl.k3{left:-12px;top:50%;transform:translateY(-50%)}

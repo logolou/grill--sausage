@@ -603,8 +603,13 @@ function act(a, i) {
       log('火力调到' + HEAT_LV[i].name + '火' + (i === 2 ? '，小心烤焦' : i === 0 ? '，烤得慢但稳' : ''), '');
       break;
     case 'fire':
-      R.fire = !R.fire; ding(R.fire ? 520 : 260, .12);
-      log(R.fire ? '点火了，锅要热一会儿' : '已停火，烤肠不会再继续烤', R.fire ? 'good' : '');
+      // 旋钮顺时针拧：关 → 小 → 中 → 大 → 关（没买「可调火力」时只有 关 ↔ 中）
+      if (!G.up.fire) { R.fire = !R.fire; R.heatLv = 1; }
+      else if (!R.fire) { R.fire = true; R.heatLv = 0; }
+      else if ((R.heatLv == null ? 1 : R.heatLv) < 2) R.heatLv = (R.heatLv == null ? 1 : R.heatLv) + 1;
+      else R.fire = false;
+      ding(R.fire ? 420 + R.heatLv * 120 : 260, .1);
+      log(!R.fire ? '已停火，烤肠不会再继续烤' : G.up.fire ? '火力：' + HEAT_LV[R.heatLv].name + '火' + (R.heatLv === 2 ? '，小心烤焦' : '') : '点火了，锅要热一会儿', R.fire ? 'good' : '');
       tutEvent('fire'); break;
     case 'cust': tapCust(R.cust.filter(function (c) { return c.id === i; })[0]); break;
   }
@@ -1054,11 +1059,10 @@ function render() {
   info.textContent = !R.fire ? (R.heat > .05 ? '正在熄火…' : '已停火') : R.heat < .95 ? '正在升温…' : ost === 2 ? '锅干了！快加油' : sticky ? '粘锅了！快加油' : '点烤肠翻面';
   info.className = sticky && R.fire ? 'warn' : '';
   $('grill').className = 'grill' + (R.heat < .5 ? ' off' : '');
-  $('gfire').style.opacity = (R.heat * .95).toFixed(2);
   var lv = R.heatLv == null ? 1 : R.heatLv;
-  setHTML('fireCtl', (G.up.fire ? '<span class="heat">' + HEAT_LV.map(function (h, k) {
-      return '<button class="hl' + (k === lv ? ' on' : '') + '" data-act="heatlv" data-i="' + k + '" aria-label="' + h.name + '火"><img alt="" src="' + SC + 'heat_' + 'sml'.charAt(k) + '.webp' + V + '"></button>';
-    }).join('') + '</span>' : '') +
+  var gs = !R.fire ? 'off' : 'sml'.charAt(G.up.fire ? lv : 1);
+  var gb = $('gbody'), gsrc = SC + 'grill_' + gs + '.webp' + V; if (gb.getAttribute('src') !== gsrc) gb.setAttribute('src', gsrc);
+  setHTML('fireCtl', (G.up.fire ? '<i class="kl k1">小</i><i class="kl k2">中</i><i class="kl k3">大</i>' : '<i class="kl k2">开</i>') +
     '<button class="knob' + (R.fire ? ' on' : '') + spot('fire') + '" data-act="fire" aria-label="' + (R.fire ? '停火' : '点火') + '"></button>');
   var slotsEl = $('slots'), html = '';
   for (var i = 0; i < 4; i++) {
