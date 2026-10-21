@@ -806,8 +806,27 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp-btn:active{transform:scale(.96)}
 .rp-icons{margin-top:12px}
 /* 结算：星星压在飘带上方；标题在飘带正中（飘带布面中心约在图高 36% 处） */
-.rp .rp-stars{position:relative;z-index:1;margin:0 0 -30px}   /* 星星下半截藏在飘带后面 */
-.rp .rp-stars img{width:78px;height:78px;margin:0 -4px 6px}
-.rp .rp-stars img.s1{width:108px;height:108px;margin-bottom:20px}
 .rp .lp-ribbon{padding-bottom:32px}
 .rp .lp-ribbon b{margin-right:-.04em}
+/* 过关星星：三颗挤在一起、中间那颗最大压在最前，下半截藏在飘带后；背后放射光 + 光晕 + 闪点 */
+.rp .rp-stars{position:relative;z-index:1;height:118px;margin:0 0 -26px;display:flex;justify-content:center;align-items:flex-end}
+.rp .rp-stars img{position:relative;width:104px;height:104px;margin:0 -30px 0;-webkit-filter:drop-shadow(0 4px 3px rgba(150,70,0,.3));filter:drop-shadow(0 4px 3px rgba(150,70,0,.3))}
+.rp .rp-stars img.s0{z-index:1;transform:rotate(-16deg) translateY(-6px)}
+.rp .rp-stars img.s2{z-index:1;transform:rotate(16deg) translateY(-6px)}
+.rp .rp-stars img.s1{z-index:2;width:140px;height:140px;margin-bottom:-4px}
+.rp-rays{position:absolute;left:50%;top:62%;width:440px;height:440px;margin:-220px 0 0 -220px;z-index:0;pointer-events:none;-webkit-animation:rpSpin 14s linear infinite;animation:rpSpin 14s linear infinite;opacity:.9}
+@-webkit-keyframes rpSpin{to{-webkit-transform:rotate(360deg)}}
+@keyframes rpSpin{to{transform:rotate(360deg)}}
+.rp-glow{position:absolute;left:50%;top:60%;width:260px;height:200px;margin:-100px 0 0 -130px;z-index:0;border-radius:50%;background:radial-gradient(ellipse at center,rgba(255,240,170,.95) 0,rgba(255,214,90,.55) 35%,rgba(255,190,60,0) 70%);pointer-events:none}
+.rp-spark{position:absolute;z-index:3;width:14px;height:14px;pointer-events:none;-webkit-animation:rpTw 1.6s ease-in-out infinite;animation:rpTw 1.6s ease-in-out infinite}
+.rp-spark::before,.rp-spark::after{content:"";position:absolute;left:50%;top:50%;background:#fff;border-radius:2px;box-shadow:0 0 6px 2px rgba(255,240,180,.9)}
+.rp-spark::before{width:2px;height:14px;margin:-7px 0 0 -1px}
+.rp-spark::after{width:14px;height:2px;margin:-1px 0 0 -7px}
+.rp-spark.k1{left:12%;top:18%}
+.rp-spark.k2{left:84%;top:10%;-webkit-animation-delay:.4s;animation-delay:.4s;transform:scale(.7)}
+.rp-spark.k3{left:28%;top:-6%;-webkit-animation-delay:.8s;animation-delay:.8s;transform:scale(.6)}
+.rp-spark.k4{left:70%;top:-10%;-webkit-animation-delay:1.1s;animation-delay:1.1s}
+.rp-spark.k5{left:94%;top:40%;-webkit-animation-delay:.6s;animation-delay:.6s;transform:scale(.55)}
+@-webkit-keyframes rpTw{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes rpTw{0%,100%{opacity:.15}50%{opacity:1}}
+.rp.win .lp-ribbon{z-index:4}

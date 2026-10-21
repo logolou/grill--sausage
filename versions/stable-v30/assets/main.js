@@ -1194,6 +1194,18 @@ function intro(i) {
   addBack('menu');
 }
 // 结算弹窗：飘带标题 + 三行成绩（金币 / 爱心或时间 / 成交）+ 存款条 + 主按钮 + 一排圆形小按钮（参考美术结算预览图）
+// 过关时星星背后的放射光（内联 SVG：16 道渐隐光束，慢慢转）
+var RAYS_SVG = (function () {
+  var r = '', n = 16;
+  for (var k = 0; k < n; k++) {
+    var a = k / n * Math.PI * 2, w = Math.PI / n * .55, R = 200;
+    var x1 = (Math.cos(a - w) * R).toFixed(1), y1 = (Math.sin(a - w) * R).toFixed(1), x2 = (Math.cos(a + w) * R).toFixed(1), y2 = (Math.sin(a + w) * R).toFixed(1);
+    r += '<path d="M0 0L' + x1 + ' ' + y1 + 'L' + x2 + ' ' + y2 + 'Z"/>';
+  }
+  return '<svg class="rp-rays" viewBox="-200 -200 400 400" aria-hidden="true"><defs><radialGradient id="rpRay" cx="0" cy="0" r="200" gradientUnits="userSpaceOnUse">' +
+    '<stop offset="0" stop-color="#FFF6C8" stop-opacity=".95"/><stop offset=".45" stop-color="#FFD35A" stop-opacity=".45"/><stop offset="1" stop-color="#FFB830" stop-opacity="0"/></radialGradient></defs>' +
+    '<g fill="url(#rpRay)">' + r + '</g></svg>';
+})();
 function resultPop(o) {
   var RES = './assets/img/res/', POP = './assets/img/pop/', V = '?v=' + BUILD_V, stars = '';
   if (o.win) for (var k = 0; k < 3; k++) stars += '<img class="s' + k + '" alt="" src="' + POP + 'star.webp' + V + '">';
@@ -1207,7 +1219,8 @@ function resultPop(o) {
     return '<button class="rp-ib" data-act="' + ic.act + '"' + (ic.i != null ? ' data-i="' + ic.i + '"' : '') + '><img alt="" src="' + RES + ic.img + '.webp' + V + '"><small>' + ic.label + '</small></button>';
   }).join('');
   showResult('<div class="lp rp' + (o.win ? ' win' : '') + '">' +
-    (stars ? '<div class="rp-stars">' + stars + '</div>' : '') +
+    (stars ? '<div class="rp-stars">' + RAYS_SVG + '<i class="rp-glow"></i>' + stars +
+      '<i class="rp-spark k1"></i><i class="rp-spark k2"></i><i class="rp-spark k3"></i><i class="rp-spark k4"></i><i class="rp-spark k5"></i></div>' : '') +
     '<div class="lp-ribbon"><b>' + o.title + '</b></div>' +
     '<div class="lp-panel">' +
       '<div class="rp-box"><div class="rp-cap">本关成绩</div><div class="rp-cells">' + cells + '</div></div>' +
