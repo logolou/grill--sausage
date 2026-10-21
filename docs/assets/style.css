@@ -796,3 +796,7 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp-btn.sub{background-image:url(img/res/btn2.webp);color:#A65A3A}
 .rp-btn:active{transform:scale(.96)}
 .rp-icons{margin-top:12px}
+/* 结算：星星压在飘带上方；标题在飘带正中（飘带布面中心约在图高 36% 处） */
+.rp .rp-stars{position:relative;z-index:3;margin:0 0 -30px}
+.rp .lp-ribbon{padding-bottom:32px}
+.rp .lp-ribbon b{margin-right:-.04em}

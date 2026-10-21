@@ -1222,9 +1222,9 @@ function resultPop(o) {
     return '<button class="rp-ib" data-act="' + ic.act + '"' + (ic.i != null ? ' data-i="' + ic.i + '"' : '') + '><img alt="" src="' + RES + ic.img + '.webp' + V + '"><small>' + ic.label + '</small></button>';
   }).join('');
   showResult('<div class="lp rp' + (o.win ? ' win' : '') + '">' +
+    (stars ? '<div class="rp-stars">' + stars + '</div>' : '') +
     '<div class="lp-ribbon"><b>' + o.title + '</b></div>' +
     '<div class="lp-panel">' +
-      (stars ? '<div class="rp-stars">' + stars + '</div>' : '') +
       '<div class="rp-box"><div class="rp-cap">本关成绩</div><div class="rp-cells">' + cells + '</div></div>' +
       '<div class="rp-btns">' + btn(o.primary, 'rp-btn main') + (o.secondary ? btn(o.secondary, 'rp-btn sub') : '') + '</div>' +
       (icons ? '<div class="rp-icons">' + icons + '</div>' : '') +
