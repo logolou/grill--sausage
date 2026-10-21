@@ -1870,7 +1870,6 @@ function showMap() {
   if (G.cleared < 10) { var dg = MAP_DIGITS[cur]; h += '<i class="lm-arrow" style="left:' + (dg[0] / 7.5) + '%;top:' + ((dg[1] - 30) / 16.24) + '%"><b>▼</b></i>'; }
   h += '</div><div class="lm-hud">' +
     '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
-    '<div class="lm-bank"><img alt="" src="' + UI + 'ui_bank.webp' + V + '"><b>¥' + G.bank + '</b><button class="lm-plus" data-act="mapitems" aria-label="道具商店"></button></div>' +
     '<div class="lm-stat star"><img alt="" src="' + UI + 'ui_star.webp' + V + '"><b>' + Math.min(G.cleared, 10) + '<small>/10</small></b></div>' +
     '<div class="lm-stat heart"><img alt="" src="' + UI + 'ui_heart.webp' + V + '"><b>无限</b></div>' +
     '<button class="lm-ico set" data-act="tsettings" aria-label="设置"><img alt="" src="' + UI + 'ui_settings.webp' + V + '"></button>' +

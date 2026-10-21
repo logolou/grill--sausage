@@ -946,3 +946,7 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .lm-stat.heart{left:168px}
 .lm-stat b{position:absolute;left:38%;right:8%;top:0;bottom:6%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#9A5B3A}
 .lm-stat b small{font-size:12px;font-weight:800;color:#C7A08A;margin-left:1px}
+/* 金币条去掉，星星 / 爱心条挪到第一排，和返回键同一行 */
+.lm-stat{top:calc(var(--sat) + 10px);height:35px}
+.lm-stat.star{left:60px}
+.lm-stat.heart{left:162px}
