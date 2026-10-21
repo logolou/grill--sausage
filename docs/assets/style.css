@@ -769,3 +769,30 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp-ib img{width:44px;height:44px;object-fit:contain;-webkit-filter:drop-shadow(0 2px 2px rgba(120,70,30,.25));filter:drop-shadow(0 2px 2px rgba(120,70,30,.25))}
 .rp-ib small{margin-top:2px;font-size:11px;font-weight:800;color:#B48A72}
 .rp-ib:active img{transform:scale(.92)}
+
+/* 页面返回键：固定在屏幕左上角 */
+.pg-back{position:fixed;left:17.5px;top:calc(var(--sat) + 10px);z-index:12;width:35px;padding:0;border:0;background:none;-webkit-filter:drop-shadow(0 3px 3px rgba(80,30,0,.35));filter:drop-shadow(0 3px 3px rgba(80,30,0,.35))}
+.pg-back img{display:block;width:100%}
+.pg-back:active{transform:scale(.92)}
+.overlay{padding-top:calc(var(--sat) + 56px)}
+/* 结算 v2：飘带 + 星星 + 虚线成绩框 + 等大的两个按钮 */
+.rp .lp-panel{padding:26px 24px 24px}
+.rp-stars{display:flex;justify-content:center;align-items:flex-end;margin:-2px 0 8px}
+.rp-stars img{width:52px;height:52px;margin:0 -1px;-webkit-filter:drop-shadow(0 3px 2px rgba(150,80,0,.25));filter:drop-shadow(0 3px 2px rgba(150,80,0,.25))}
+.rp-stars img.s1{width:70px;height:70px;margin-bottom:8px}
+.rp-stars img.s0{transform:rotate(-12deg)}
+.rp-stars img.s2{transform:rotate(12deg)}
+.rp-box{border:2px dashed #D9B59A;border-radius:18px;background:#F1DECC;padding:8px 4px 10px}
+.rp-cap{font-size:13px;font-weight:800;color:#B07A5C;letter-spacing:.15em;margin-bottom:4px}
+.rp-cells{display:flex;justify-content:space-around}
+.rp-cell{width:32%;display:flex;flex-direction:column;align-items:center}
+.rp-cell img{width:40px;height:40px;object-fit:contain}
+.rp-cell b{font-size:21px;font-weight:900;color:#A65A3A;line-height:1.2;margin-top:2px}
+.rp-cell b.bad{color:#C2471C}
+.rp-cell i{font-style:normal;font-size:11px;font-weight:700;color:#B48A72}
+.rp-btns{margin-top:14px}
+.rp-btn{display:block;width:78%;height:52px;margin:8px auto 0;padding:0 0 4px;border:0;background:center/100% 100% no-repeat;font-size:20px;font-weight:900;letter-spacing:.1em}
+.rp-btn.main{background-image:url(img/pop/play.webp);color:#fff;text-shadow:0 2px 0 #B83A1C,0 -1px 0 #B83A1C,1.5px 0 0 #B83A1C,-1.5px 0 0 #B83A1C}
+.rp-btn.sub{background-image:url(img/res/btn2.webp);color:#A65A3A}
+.rp-btn:active{transform:scale(.96)}
+.rp-icons{margin-top:12px}

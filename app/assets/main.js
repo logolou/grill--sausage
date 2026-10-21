@@ -1205,28 +1205,32 @@ function intro(i) {
       (boost ? '<div class="lp-div"></div>' + boost : '') +
       '<button class="lp-play" data-act="go" data-i="' + i + '"><img alt="" src="' + POP + 'play.webp' + V + '"><span>' + (L.tutorial ? '开始教学' : '开始出摊') + '</span></button>' +
     '</div>' +
-    '<button class="lp-back" data-act="menu" aria-label="返回"><img alt="" src="./assets/img/ui/ui_back.webp' + V + '"></button>' +
   '</div>', 'lvpop');
+  addBack('menu');
 }
 // 结算弹窗：飘带标题 + 三行成绩（金币 / 爱心或时间 / 成交）+ 存款条 + 主按钮 + 一排圆形小按钮（参考美术结算预览图）
 function resultPop(o) {
-  var RES = './assets/img/res/', V = '?v=' + BUILD_V;
-  var rows = o.stats.map(function (st) {
-    return '<div class="rp-row"><span class="rp-ic"><img alt="" src="' + RES + st.icon + '.webp' + V + '"></span><span class="rp-val"><b' + (st.bad ? ' class="bad"' : '') + '>' + st.val + '</b><i>' + st.label + '</i></span></div>';
+  var RES = './assets/img/res/', POP = './assets/img/pop/', V = '?v=' + BUILD_V, stars = '';
+  if (o.win) for (var k = 0; k < 3; k++) stars += '<img class="s' + k + '" alt="" src="' + POP + 'star.webp' + V + '">';
+  var cells = o.stats.map(function (st) {
+    return '<div class="rp-cell"><img alt="" src="' + RES + st.icon + '.webp' + V + '"><b' + (st.bad ? ' class="bad"' : '') + '>' + st.val + '</b><i>' + st.label + '</i></div>';
   }).join('');
+  var btn = function (b, cls) {
+    return '<button class="' + cls + '" data-act="' + b.act + '"' + (b.i != null ? ' data-i="' + b.i + '"' : '') + '><span>' + b.label + '</span></button>';
+  };
   var icons = (o.icons || []).map(function (ic) {
     return '<button class="rp-ib" data-act="' + ic.act + '"' + (ic.i != null ? ' data-i="' + ic.i + '"' : '') + '><img alt="" src="' + RES + ic.img + '.webp' + V + '"><small>' + ic.label + '</small></button>';
   }).join('');
   showResult('<div class="lp rp' + (o.win ? ' win' : '') + '">' +
-    '<div class="lp-ribbon"><small>' + o.sub + '</small><b>' + o.title + '</b></div>' +
-    '<div class="lp-panel">' + rows +
-      '<div class="rp-bank"><img alt="" src="' + RES + 'bank_pill.webp' + V + '"><span>' + o.bank + '</span></div>' +
-      '<button class="lp-play" data-act="' + o.primary.act + '"' + (o.primary.i != null ? ' data-i="' + o.primary.i + '"' : '') + '><img alt="" src="./assets/img/pop/play.webp' + V + '"><span>' + o.primary.label + '</span></button>' +
-      (o.secondary ? '<button class="rp-btn2" data-act="' + o.secondary.act + '"' + (o.secondary.i != null ? ' data-i="' + o.secondary.i + '"' : '') + '><img alt="" src="' + RES + 'btn2.webp' + V + '"><span>' + o.secondary.label + '</span></button>' : '') +
+    '<div class="lp-ribbon"><b>' + o.title + '</b></div>' +
+    '<div class="lp-panel">' +
+      (stars ? '<div class="rp-stars">' + stars + '</div>' : '') +
+      '<div class="rp-box"><div class="rp-cap">本关成绩</div><div class="rp-cells">' + cells + '</div></div>' +
+      '<div class="rp-btns">' + btn(o.primary, 'rp-btn main') + (o.secondary ? btn(o.secondary, 'rp-btn sub') : '') + '</div>' +
       (icons ? '<div class="rp-icons">' + icons + '</div>' : '') +
     '</div>' +
-    '<button class="lp-back" data-act="menu" aria-label="返回地图"><img alt="" src="./assets/img/ui/ui_back.webp' + V + '"></button>' +
   '</div>', 'lvpop');
+  addBack('menu');
 }
 function resultIcons(retryI) {
   return [{act:'go', i:retryI, img:'ic_retry', label:'再玩'}, {act:'menu', img:'ic_levels', label:'地图'},
@@ -1241,8 +1245,7 @@ function finish(win, why) {
   shareInfo = {endless:false, win:win, why:why, lv:i + 1, name:R.L.name.replace('教学关·', ''), net:R.net, hearts:R.hearts, sold:s.sold};
   var o = {win:win, sub:'第 ' + (i + 1) + ' 关 · ' + R.L.name.replace('教学关·', ''),
     title: win ? (i === 9 ? '校门口之王！' : '目标达成！') : why === 'hearts' ? '爱心扣光了…' : '差一点点…',
-    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本关净赚', bad:R.net < 0}, {icon:'heart', val:R.hearts, label:'爱心'}, {icon:'orders', val:s.sold + ' 单', label:'成交'}],
-    bank:'存款 +¥' + gain + '<em>共 ¥' + G.bank + '</em>'};
+    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本关净赚', bad:R.net < 0}, {icon:'heart', val:R.hearts, label:'剩余爱心'}, {icon:'orders', val:s.sold, label:'成交单数'}]};
   if (win) {
     o.primary = i < 9 ? {act:'intro', i:i + 1, label:'下一关'} : {act:'intro', i:ENDLESS, label:'挑战无尽模式'};
     o.icons = resultIcons(i);
@@ -1261,13 +1264,13 @@ function finishEndless() {
   save();
   shareInfo = {endless:true, rec:rec, net:R.net, time:R.t, sold:R.st.sold, best:G.best.money};
   resultPop({win:rec, sub:'无尽模式 · 最高 ¥' + G.best.money, title:rec ? '新纪录！' : '口碑扣光了',
-    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本局净赚', bad:R.net < 0}, {icon:'clock', val:fmtT(R.t), label:'坚持时间'}, {icon:'orders', val:R.st.sold + ' 单', label:'成交'}],
-    bank:'存款 +¥' + gain + '<em>共 ¥' + G.bank + '</em>',
+    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本局净赚', bad:R.net < 0}, {icon:'clock', val:fmtT(R.t), label:'坚持时间'}, {icon:'orders', val:R.st.sold, label:'成交单数'}],
     primary:{act:'go', i:ENDLESS, label:'再来一局'}, icons:resultIcons(ENDLESS).slice(1)});
 }
 function resultItems() {
   showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(!!(R && R.L.endless)) +
     '<div class="actions"><button class="b wide" data-act="shareback">返回结算</button></div>');
+  addBack('shareback');
 }
 function pauseShop(endless) {
   return '<div class="pshop" data-endless="' + (endless ? 1 : 0) + '"><div class="pshop-h">道具商店<small>存款 ¥' + G.bank + '</small></div><div class="prow">' + ITEMS.map(function (it, idx) {
@@ -1279,6 +1282,12 @@ function pauseShop(endless) {
 /* ============ 分享战绩：画一张战绩卡 → 发小红书笔记 / 存相册 ============ */
 var shareInfo = null, lastResult = null, shareURL = '';
 function showResult(html, cls) { lastResult = {html:html, cls:cls}; showOverlay(html, cls); }
+// 所有弹出页面的返回键统一放在屏幕左上角（和地图页同一位置）
+function addBack(act) {
+  var o = $('overlay'); if (!o) return;
+  var b = document.createElement('button'); b.className = 'pg-back'; b.setAttribute('data-act', act); b.setAttribute('aria-label', '返回');
+  b.innerHTML = '<img alt="" src="./assets/img/ui/ui_back.webp?v=' + BUILD_V + '">'; o.appendChild(b);
+}
 function hasBridge() { return !!(window.xhs && window.xhs.miniTool && typeof window.xhs.miniTool.postNote === 'function'); }
 function rr(ctx, x, y, w, h, r) {
   ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
@@ -1405,6 +1414,7 @@ function openShare() {
     '<div class="actions"><button class="b red" data-act="sharenote"' + (ok && shareURL ? '' : ' disabled') + '>发小红书笔记</button>' +
     '<button class="b" data-act="savepic"' + (ok && shareURL ? '' : ' disabled') + '>存到相册</button>' +
     '<button class="b wide" data-act="shareback">返回</button></div>');
+  addBack('shareback');
 }
 function shareMsg(t) { var m = $('shareMsg'); if (m) m.textContent = t; }
 function postShareNote() {
@@ -1461,6 +1471,7 @@ function shop() {
       '<button class="b' + (maxed ? '' : ' hot') + '" data-act="buy" data-i="' + idx + '"' + (maxed || G.bank < c ? ' disabled' : '') + '>' + (maxed ? '已拥有' : '¥' + c) + '</button></div>';
   }).join('') + '</div>' +
     '<div class="actions">' + shopBack(null) + '</div>');
+  addBack(R && R.over && !R.demo && lastResult ? 'shareback' : 'menu');
 }
 
 /* ============ 事件 ============ */
@@ -1729,6 +1740,7 @@ function titleSettings() {
   showOverlay('<div class="kicker">设置</div><h1>设置</h1>' +
     '<div class="actions"><button class="b wide" data-act="tmusic">背景音乐：' + (musicOn() ? '开' : '关') + '</button>' +
     '<button class="b red wide" data-act="tclose">好的</button></div>');
+  addBack('tclose');
 }
 
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
@@ -1773,6 +1785,7 @@ function showMap() {
 function showItemShop() {
   showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(false) +
     '<div class="actions"><button class="b wide" data-act="mapclose">返回地图</button></div>');
+  addBack('mapclose');
 }
 function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = ''; } }
 function mapNode(i) {
