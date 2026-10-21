@@ -1884,8 +1884,10 @@ function showMap() {
   var mp = document.createElement('div'); mp.id = 'lvmap'; mp.className = 'lvmap' + (G.cleared >= ENDLESS ? ' has-bar' : '');
   var h = '<i class="lm-tint top"></i><i class="lm-tint bot"></i><div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_bg.webp?v=' + BUILD_V + '">';
   MAP_PADS.forEach(function (n, i) {
-    var st = i < open ? (i === cur && G.cleared < 10 ? 'cur' : 'open') : 'lock', w = n[2] * .9;
-    h += '<button class="lm-node ' + st + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 11.25) + '%;top:' + (n[1] / 20) + '%;width:' + (w / 11.25) + '%" aria-label="第 ' + (i + 1) + ' 关">' + nodeSVG(i + 1, st) +
+    // 用美术切图：亮的（带光晕，石台只占图宽 72%）/ 锁着的；数字由程序叠在台面上
+    var st = i < open ? (i === cur && G.cleared < 10 ? 'cur' : 'open') : 'lock', lock = st === 'lock', w = n[2] * .72 / (lock ? 1 : .72);
+    h += '<button class="lm-node ' + st + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 11.25) + '%;top:' + (n[1] / 20) + '%;width:' + (w / 11.25) + '%" aria-label="第 ' + (i + 1) + ' 关">' +
+      '<img alt="" src="./assets/img/map/' + (lock ? 'node_lock' : 'node_lit') + '.webp?v=' + BUILD_V + '"><b style="top:' + (lock ? 28 : 39) + '%">' + (i + 1) + '</b>' +
       (st === 'cur' ? '<i class="lm-arrow"><b>▼</b></i>' : '') + '</button>';
   });
   var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
@@ -1906,6 +1908,7 @@ function showMap() {
   function fitMap() {
     var W = mp.clientWidth, H = mp.clientHeight, sc = Math.max(W / 1125, H / 2000), w = 1125 * sc, hh = 2000 * sc;
     stage.style.width = w + 'px'; stage.style.height = hh + 'px'; stage.style.left = (W - w) / 2 + 'px'; stage.style.top = (H - hh) / 2 + 'px';
+    [].forEach.call(mp.querySelectorAll('.lm-node'), function (b) { var t = b.querySelector('b'); if (t) t.style.fontSize = (b.offsetWidth * (b.classList.contains('lock') ? .3 : .24)).toFixed(1) + 'px'; });
     var side = mp.querySelector('.lm-side'), p10 = MAP_PADS[9];
     side.style.top = Math.max(60, (H - hh) / 2 + (p10[1] - p10[2] * .32) * sc) + 'px';
   }

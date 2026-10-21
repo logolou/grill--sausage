@@ -979,3 +979,14 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .lvmap .lm-node{transform:translate(-50%,-58%)}
 .lvmap .lm-node.open svg{-webkit-filter:drop-shadow(0 5px 3px rgba(120,60,0,.35));filter:drop-shadow(0 5px 3px rgba(120,60,0,.35))}
 .lvmap .lm-node.lock svg{-webkit-filter:drop-shadow(0 5px 3px rgba(60,40,40,.3));filter:drop-shadow(0 5px 3px rgba(60,40,40,.3))}
+/* 关卡圆台：美术切图 + 程序叠数字 */
+.lvmap .lm-node{transform:translate(-50%,-50%)}
+.lvmap .lm-node img{display:block;width:100%;height:auto;pointer-events:none}
+.lvmap .lm-node b{position:absolute;left:0;right:0;transform:translateY(-50%);text-align:center;font-family:"ShuHei","PingFang SC",sans-serif;font-weight:normal;line-height:1;color:#fff;pointer-events:none}
+.lvmap .lm-node.open b,.lvmap .lm-node.cur b{text-shadow:0 2px 0 #C9771A,0 -1px 0 #C9771A,1.5px 0 0 #C9771A,-1.5px 0 0 #C9771A}
+.lvmap .lm-node.lock b{text-shadow:0 2px 0 #6E8BA8,0 -1px 0 #6E8BA8,1.5px 0 0 #6E8BA8,-1.5px 0 0 #6E8BA8}
+.lvmap .lm-node.open svg,.lvmap .lm-node.cur svg{animation:none}
+.lvmap .lm-node.cur img{-webkit-animation:lmPulse2 1.4s ease-in-out infinite;animation:lmPulse2 1.4s ease-in-out infinite}
+@-webkit-keyframes lmPulse2{0%,100%{-webkit-transform:scale(1)}50%{-webkit-transform:scale(1.06)}}
+@keyframes lmPulse2{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.lvmap .lm-node .lm-arrow{top:14%}
