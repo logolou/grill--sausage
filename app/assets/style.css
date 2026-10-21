@@ -832,3 +832,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp .rp-stars img.s0,.rp .rp-stars img.s2{z-index:1;width:95px;height:95px;top:37px}
 .rp .rp-stars img.s0{left:50%;margin-left:-135px;transform:rotate(-15deg)}
 .rp .rp-stars img.s2{left:50%;margin-left:40px;transform:rotate(15deg)}
+/* 结算标题：阿里妈妈数黑体（只打包了用到的字） */
+@font-face{font-family:"ShuHei";src:url(fonts/shuhei.woff2) format("woff2");font-display:swap}
+.rp .lp-ribbon b{font-family:"ShuHei","PingFang SC","Hiragino Sans GB",sans-serif;font-weight:normal;font-size:30px;letter-spacing:.02em}
