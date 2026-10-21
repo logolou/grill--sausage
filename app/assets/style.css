@@ -1262,3 +1262,4 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .guide .hand{width:36px;left:-16px;top:-48px}
 .guide .ring{left:-20px;top:-20px;width:40px;height:40px}
 .guide .hand{width:22px;left:-9px;top:-30px}.guide .ring{left:-14px;top:-14px;width:28px;height:28px}
+#app.scene .coach .who{bottom:0}   /* 王姐的围裙底边和对话框内底边对齐 */
