@@ -981,3 +981,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 @-webkit-keyframes lmPulse2{0%,100%{-webkit-transform:scale(1)}50%{-webkit-transform:scale(1.06)}}
 @keyframes lmPulse2{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 .lvmap .lm-node .lm-arrow{top:14%}
+/* 当前关的指示：白色等边三角形，正对数字上方，上下轻跳 */
+.lvmap .lm-tri{position:absolute;left:50%;top:6%;width:0;height:0;margin-left:-11px;border-left:11px solid transparent;border-right:11px solid transparent;border-top:19px solid #fff;-webkit-filter:drop-shadow(0 2px 2px rgba(150,80,20,.45));filter:drop-shadow(0 2px 2px rgba(150,80,20,.45));-webkit-animation:lmBob 1s ease-in-out infinite;animation:lmBob 1s ease-in-out infinite;pointer-events:none}
+.lvmap .lm-tri{top:-6%}

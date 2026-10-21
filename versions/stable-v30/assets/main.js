@@ -1870,10 +1870,12 @@ function showMap() {
   var h = '<i class="lm-tint top"></i><i class="lm-tint bot"></i><div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_bg.webp?v=' + BUILD_V + '">';
   MAP_PADS.forEach(function (n, i) {
     // 用美术切图：亮的（带光晕，石台只占图宽 72%）/ 锁着的；数字由程序叠在台面上
-    var st = i < open ? (i === cur && G.cleared < 10 ? 'cur' : 'open') : 'lock', lock = st === 'lock', w = n[2] * .72 / (lock ? 1 : .72);
+    // 已通过：node_done（石台占图宽 63%）；当前关：node_lit（72%）；锁着：node_lock（整张）
+    var st = i < open ? (i === cur && G.cleared < 10 ? 'cur' : 'open') : 'lock', lock = st === 'lock', done = st === 'open';
+    var w = n[2] * .72 / (lock ? 1 : done ? .63 : .72), file = lock ? 'node_lock' : done ? 'node_done' : 'node_lit', ty = lock ? 28 : done ? 38 : 39;
     h += '<button class="lm-node ' + st + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 11.25) + '%;top:' + (n[1] / 20) + '%;width:' + (w / 11.25) + '%" aria-label="第 ' + (i + 1) + ' 关">' +
-      '<img alt="" src="./assets/img/map/' + (lock ? 'node_lock' : 'node_lit') + '.webp?v=' + BUILD_V + '"><b style="top:' + (lock ? 28 : 39) + '%">' + (i + 1) + '</b>' +
-      (st === 'cur' ? '<i class="lm-arrow"><b>▼</b></i>' : '') + '</button>';
+      '<img alt="" src="./assets/img/map/' + file + '.webp?v=' + BUILD_V + '"><b style="top:' + ty + '%">' + (i + 1) + '</b>' +
+      (st === 'cur' ? '<i class="lm-tri"></i>' : '') + '</button>';
   });
   var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
   h += '</div><div class="lm-hud">' +
