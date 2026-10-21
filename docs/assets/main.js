@@ -1161,10 +1161,13 @@ function menu() {
     (!inGame && menuShopOpen ? pauseShop(false) : ''));
 }
 // 暂停：顶部标签头 + 右上角关闭 + 背景音乐 / 音效音量 + 重玩本关 + 回地图 / 继续游戏（参考美术暂停图）
+var ICON_SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#B97A5A"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="#B97A5A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
+var ICON_NOTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l11-2.5v12" stroke="#B97A5A" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3" fill="#B97A5A"/><circle cx="17.5" cy="15" r="3" fill="#B97A5A"/></svg>';
 function pausePop() {
   var V = '?v=' + BUILD_V, vm = Math.round(musicVol() * 100), vs = Math.round(sfxVol() * 100);
-  var SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#B97A5A"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="#B97A5A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
-  var NOTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l11-2.5v12" stroke="#B97A5A" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3" fill="#B97A5A"/><circle cx="17.5" cy="15" r="3" fill="#B97A5A"/></svg>';
+  var SPK = ICON_SPK, NOTE = ICON_NOTE;
+  var _unused = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#B97A5A"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="#B97A5A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
+  var _unused2 = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l11-2.5v12" stroke="#B97A5A" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3" fill="#B97A5A"/><circle cx="17.5" cy="15" r="3" fill="#B97A5A"/></svg>';
   showOverlay('<div class="ps">' +
     '<div class="ps-props"><img class="pp-tongs" alt="" src="./assets/img/pause/tongs.webp' + V + '"><img class="pp-ketchup" alt="" src="./assets/img/pause/ketchup.webp' + V + '">' +
       '<img class="pp-sausage" alt="" src="./assets/img/pause/sausage.webp' + V + '"><img class="pp-mustard" alt="" src="./assets/img/pause/mustard.webp' + V + '"></div>' +
@@ -1296,11 +1299,7 @@ function finishEndless() {
     stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本局净赚', bad:R.net < 0}, {icon:'clock', val:fmtT(R.t), label:'坚持时间'}, {icon:'orders', val:R.st.sold, label:'成交单数'}],
     primary:{act:'go', i:ENDLESS, label:'再来一局'}, icons:resultIcons(ENDLESS).slice(1)});
 }
-function resultItems() {
-  showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(!!(R && R.L.endless)) +
-    '<div class="actions"><button class="b wide" data-act="shareback">返回结算</button></div>');
-  addBack('shareback');
-}
+function resultItems() { itemShop('shareback'); }
 function pauseShop(endless) {
   return '<div class="pshop" data-endless="' + (endless ? 1 : 0) + '"><div class="pshop-h">道具商店<small>存款 ¥' + G.bank + '</small></div><div class="prow">' + ITEMS.map(function (it, idx) {
     var off = it.id === 'hourglass' && endless;
@@ -1478,6 +1477,7 @@ function toggleResultShop(btn, endless) {
   var ps = card.querySelector('.pshop'); if (ps.scrollIntoView) ps.scrollIntoView({block:'nearest'});
 }
 function refreshItemStrip() {
+  if (document.querySelector('#overlay .sp-items')) return itemShop();
   if (document.querySelector('#overlay .lp-boost')) return intro(introIdx);
   var box = document.querySelector('#overlay .pshop'); if (!box) return;
   var tmp = document.createElement('div'); tmp.innerHTML = pauseShop(box.getAttribute('data-endless') === '1');
@@ -1493,14 +1493,41 @@ function shopBack(from) {
   if (R && R.over && !R.demo && lastResult) return '<button class="b red" data-act="shareback">返回结算</button><button class="b" data-act="menu">关卡列表</button>';
   return '<button class="b red" data-act="intro" data-i="' + nxt + '">去第 ' + (nxt + 1) + ' 关</button><button class="b" data-act="menu">关卡列表</button>';
 }
+// 框式弹窗（商店 / 设置共用）：顶部标签头 + 粗描边面板
+function framePop(title, body, back) {
+  showOverlay('<div class="sp"><div class="ps-tab sp-tab">' + title + '</div><div class="ps-panel sp-panel">' + body + '</div></div>', 'lvpop wide');
+  if (back) addBack(back);
+}
+function priceBtn(act, i, cost, ok) {
+  return '<button class="sp-price' + (ok ? '' : ' off') + '" data-act="' + act + '" data-i="' + i + '"' + (ok ? '' : ' disabled') + '><span>¥' + cost + '</span></button>';
+}
+function bankBar() { return '<div class="sp-bank"><img alt="" src="./assets/img/shop/bank.webp?v=' + BUILD_V + '"><b>¥' + G.bank + '</b></div>'; }
 function shop() {
-  showOverlay('<div class="kicker">存款 ¥' + G.bank + '</div><h1>升级小摊</h1><p class="sub">永久有效</p><div>' + UPGRADES.map(function (u, idx) {
-    var lv = G.up[u.id] || 0, maxed = lv >= u.max, c = u.cost[lv];
-    return '<div class="up"><div><b>' + u.name + (u.max > 1 ? ' · ' + lv + '/' + u.max : '') + '</b><small>' + u.desc + '</small></div>' +
-      '<button class="b' + (maxed ? '' : ' hot') + '" data-act="buy" data-i="' + idx + '"' + (maxed || G.bank < c ? ' disabled' : '') + '>' + (maxed ? '已拥有' : '¥' + c) + '</button></div>';
-  }).join('') + '</div>' +
-    '<div class="actions">' + shopBack(null) + '</div>');
-  addBack(R && R.over && !R.demo && lastResult ? 'shareback' : 'menu');
+  var V = '?v=' + BUILD_V, inGame = R && !R.over && !R.demo, fromRes = R && R.over && !R.demo && lastResult, nxt = Math.min(G.cleared, 9);
+  var rows = UPGRADES.map(function (u, idx) {
+    var lv = G.up[u.id] || 0, maxed = lv >= u.max, c = u.cost[lv], ic = u.id === 'boxc' ? 'boxb' : u.id;
+    return '<div class="sp-row"><span class="sp-ic"><img alt="" src="./assets/img/shop/up_' + ic + '.webp' + V + '"></span>' +
+      '<span class="sp-txt"><b>' + u.name + (u.max > 1 ? '<em>' + lv + '/' + u.max + '</em>' : '') + '</b><small>' + u.desc + '</small></span>' +
+      (maxed ? '<span class="sp-owned"><span>已拥有</span></span>' : priceBtn('buy', idx, c, G.bank >= c)) + '</div>';
+  }).join('');
+  var foot = inGame ? '<button class="sp-big go" data-act="menu"><span>回到暂停</span></button>'
+    : fromRes ? '<button class="sp-big go" data-act="shareback"><span>返回结算</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>'
+    : '<button class="sp-big go" data-act="intro" data-i="' + nxt + '"><span>去第 ' + (nxt + 1) + ' 关</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>';
+  framePop('升级小摊', bankBar() + '<div class="sp-sub">永久有效</div><div class="sp-list">' + rows + '</div><div class="sp-foot">' + foot + '</div>',
+    inGame ? 'menu' : fromRes ? 'shareback' : 'menu');
+}
+// 道具商店（地图 / 结算 两处进来，返回各回各的）
+var itemShopBack = 'mapclose';
+function itemShop(back) {
+  itemShopBack = back || itemShopBack;
+  var V = '?v=' + BUILD_V, endless = !!(R && R.over && !R.demo && R.L.endless);
+  var rows = ITEMS.map(function (it, idx) {
+    var off = it.id === 'hourglass' && endless, have = G.items[it.id] || 0;
+    return '<div class="sp-row' + (off ? ' dim' : '') + '"><span class="sp-ic"><img alt="" src="./assets/img/items/' + it.id + '.webp' + V + '">' + (have ? '<i class="lp-cnt">' + have + '</i>' : '') + '</span>' +
+      '<span class="sp-txt"><b>' + it.name + '</b><small>' + (off ? '无尽模式不可用' : it.desc) + '</small></span>' + priceBtn('buyitem', idx, it.cost, G.bank >= it.cost && !off) + '</div>';
+  }).join('');
+  framePop('道具商店', bankBar() + '<div class="sp-sub">一次性道具 · 局中点一下就用</div><div class="sp-list sp-items">' + rows + '</div>' +
+    '<div class="sp-foot"><button class="sp-big list" data-act="' + itemShopBack + '"><span>' + (itemShopBack === 'shareback' ? '返回结算' : '返回地图') + '</span></button></div>', itemShopBack);
 }
 
 /* ============ 事件 ============ */
@@ -1766,10 +1793,10 @@ function hideTitle() {
   setTimeout(function () { if (ts.parentNode) ts.parentNode.removeChild(ts); }, 350);
 }
 function titleSettings() {
-  showOverlay('<div class="kicker">设置</div><h1>设置</h1>' +
-    '<div class="actions"><button class="b wide" data-act="tmusic">背景音乐：' + (musicOn() ? '开' : '关') + '</button>' +
-    '<button class="b red wide" data-act="tclose">好的</button></div>');
-  addBack('tclose');
+  var vm = Math.round(musicVol() * 100), vs = Math.round(sfxVol() * 100);
+  framePop('设置', '<div class="ps-row"><span class="ps-ic">' + ICON_NOTE + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vm + '" data-vol="m" style="--p:' + vm + '%" aria-label="背景音乐音量"></div>' +
+    '<div class="ps-row"><span class="ps-ic">' + ICON_SPK + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vs + '" data-vol="s" style="--p:' + vs + '%" aria-label="音效音量"></div>' +
+    '<div class="sp-foot"><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
 }
 
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
@@ -1811,11 +1838,7 @@ function showMap() {
   if (img.complete) { scrollCur(); alignSide(); } else img.onload = function () { scrollCur(); alignSide(); };
   mp.addEventListener('scroll', alignSide);
 }
-function showItemShop() {
-  showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(false) +
-    '<div class="actions"><button class="b wide" data-act="mapclose">返回地图</button></div>');
-  addBack('mapclose');
-}
+function showItemShop() { itemShop('mapclose'); }
 function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = ''; } }
 function mapNode(i) {
   if (i > G.cleared) {
