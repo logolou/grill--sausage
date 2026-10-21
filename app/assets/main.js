@@ -1587,7 +1587,7 @@ document.addEventListener('pointerdown', function (e) {
   if (a === 'tsettings') return titleSettings();
   if (a === 'tmusic' || a === 'setmusic') { G.music = !musicOn(); save(); syncMusic(); return titleSettings(); }
   if (a === 'setsfx') { G.sfx = G.sfx === false; save(); if (G.sfx !== false) ding(880, .08); return titleSettings(); }
-  if (a === 'retut') { G.seen = {}; save(); return titleSettings('好的！第 1、2、7、9 关的老王教学会重新出现（第 1 关从教学关开始玩即可）'); }
+  if (a === 'retut') { G.seen = {}; save(); return titleSettings('好的！第 2、7、9 关开头的游戏教学会重新出现'); }
   if (a === 'tclose') return hideOverlay();
   if (a === 'menu') return menu();
   if (a === 'intro') return intro(i);
@@ -1822,8 +1822,7 @@ function titleSettings(msg) {
     row(ICON_NOTE, '音乐音量', slider('m', vm, '背景音乐音量')) +
     row(ICON_SPK, '音效音量', slider('s', vs, '音效音量')) +
     '<div class="ps-div st-div"></div>' +
-    '<div class="st-sec">其他</div>' +
-    row(ICON_BOOK, '老王教学', '<button class="st-btn" data-act="retut">重新看一遍</button>') +
+    row(ICON_BOOK, '游戏教学', '<button class="st-btn" data-act="retut">重新看一遍</button>') +
     (msg ? '<div class="st-msg">' + msg + '</div>' : '') +
     '<div class="sp-foot"><button class="sp-big list" data-act="tclose"><span>返回</span></button><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
 }

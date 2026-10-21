@@ -935,3 +935,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .st-btn:active{transform:translateY(2px)}
 .st-div{margin:10px 2px 14px}
 .st-msg{margin:-2px 4px 8px;padding:8px 10px;border-radius:12px;background:#FFF1D8;color:#A65A3A;font-size:12px;font-weight:700;text-align:left;line-height:1.5}
+/* 设置页的音量条细一点 */
+.st-row .ps-range{height:14px;border-radius:7px}
+.st-row .ps-range::-webkit-slider-thumb{width:26px;height:26px}
