@@ -809,11 +809,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp .lp-ribbon{padding-bottom:32px}
 .rp .lp-ribbon b{margin-right:-.04em}
 /* 过关星星：三颗挤在一起、中间那颗最大压在最前，下半截藏在飘带后；背后放射光 + 光晕 + 闪点 */
-.rp .rp-stars{position:relative;z-index:1;height:118px;margin:0 0 -26px;display:flex;justify-content:center;align-items:flex-end}
-.rp .rp-stars img{position:relative;width:104px;height:104px;margin:0 -30px 0;-webkit-filter:drop-shadow(0 4px 3px rgba(150,70,0,.3));filter:drop-shadow(0 4px 3px rgba(150,70,0,.3))}
-.rp .rp-stars img.s0{z-index:1;transform:rotate(-16deg) translateY(-6px)}
-.rp .rp-stars img.s2{z-index:1;transform:rotate(16deg) translateY(-6px)}
-.rp .rp-stars img.s1{z-index:2;width:140px;height:140px;margin-bottom:-4px}
 .rp-rays{position:absolute;left:50%;top:62%;width:440px;height:440px;margin:-220px 0 0 -220px;z-index:0;pointer-events:none;-webkit-animation:rpSpin 14s linear infinite;animation:rpSpin 14s linear infinite;opacity:.9}
 @-webkit-keyframes rpSpin{to{-webkit-transform:rotate(360deg)}}
 @keyframes rpSpin{to{transform:rotate(360deg)}}
@@ -830,3 +825,10 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 @-webkit-keyframes rpTw{0%,100%{opacity:.15}50%{opacity:1}}
 @keyframes rpTw{0%,100%{opacity:.15}50%{opacity:1}}
 .rp.win .lp-ribbon{z-index:4}
+/* 星星按参考图摆放：中间大星居中竖直；两侧小星约为 0.68 倍、向外倾斜、位置偏低并藏在大星后面；飘带盖住大星下 40% */
+.rp .rp-stars{position:relative;z-index:1;height:140px;margin:0 0 -38px}
+.rp .rp-stars img{position:absolute;-webkit-filter:drop-shadow(0 4px 3px rgba(150,70,0,.3));filter:drop-shadow(0 4px 3px rgba(150,70,0,.3))}
+.rp .rp-stars img.s1{z-index:2;width:140px;height:140px;left:50%;top:0;margin-left:-70px}
+.rp .rp-stars img.s0,.rp .rp-stars img.s2{z-index:1;width:95px;height:95px;top:37px}
+.rp .rp-stars img.s0{left:50%;margin-left:-135px;transform:rotate(-15deg)}
+.rp .rp-stars img.s2{left:50%;margin-left:40px;transform:rotate(15deg)}
