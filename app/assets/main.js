@@ -1593,7 +1593,7 @@ document.addEventListener('pointerdown', function (e) {
   if (a === 'mapclose') { hideOverlay(); var bk = document.querySelector('#lvmap .lm-bank b'); if (bk) bk.textContent = '¥' + G.bank; return; }
   if (a === 'maphome') { hideMap(); return showTitle(); }
   if (a === 'mapitems') { menuShopOpen = true; return showItemShop(); }
-  if (a === 'go') return startLevel(i);
+  if (a === 'go') return loadLevel(i);
   if (a === 'shop') return shop();
   if (a === 'resume') { R.paused = false; hideOverlay(); last = now(); var ts = tutStep(); if (ts) startGuide(ts); return; }
   if (a === 'quit') { if (R) { R.over = true; R.paused = true; } clearGuide(); return menu(); }
@@ -1820,6 +1820,29 @@ var MAP_TOP10 = 188;   // 左侧「升级小摊」顶边对齐的高度：第 10
 // 当前关（金色石头）上数字的中心，按每张地图实测（每张图石头位置略有不同）；小三角放在数字正上方
 var MAP_DIGITS = [[346,1509],[540,1383],[402,1217],[298,1020],[610,846],[470,709],[230,579],[307,439],[612,314],[503,219]];   // 第 10 关石头顶边的 y（地图坐标）
 var MAP_NODES = [[345,1545],[540,1415],[398,1250],[262,1022],[618,870],[475,722],[228,605],[309,460],[615,340],[505,240]];
+// 进关卡前的加载画面：花纹底 + 一根像进度条一样「烤熟」的烤肠 + LOADING...
+var loading = false;
+function loadLevel(i) {
+  if (loading) return;
+  loading = true; hideOverlay(); clearGuide();
+  var L = LEVELS[i], ld = document.createElement('div'); ld.id = 'loader'; ld.className = 'ld';
+  ld.innerHTML = '<div class="ld-box">' +
+    '<div class="ld-lv">' + (L.endless ? '无尽模式' : '第 ' + (i + 1) + ' 关') + '<b>' + L.name.replace('教学关·', '') + '</b></div>' +
+    '<div class="ld-saus"><i class="ld-stick"></i><div class="ld-body"><div class="ld-fill"></div><i class="ld-shine"></i></div></div>' +
+    '<div class="ld-pct">0%</div><div class="ld-txt">LOADING<span>...</span></div></div>';
+  document.body.appendChild(ld);
+  setBarColor('#E0833F');
+  var fill = ld.querySelector('.ld-fill'), pct = ld.querySelector('.ld-pct'), t0 = now(), DUR = 1300;
+  (function step() {
+    var k = Math.min(1, (now() - t0) / DUR), e = 1 - Math.pow(1 - k, 2.2);
+    fill.style.width = (e * 100).toFixed(1) + '%'; pct.textContent = Math.round(e * 100) + '%';
+    if (k < 1) return requestAnimationFrame(step);
+    // 加载完：在加载画面后面开局，再淡出
+    startLevel(i);
+    ld.className = 'ld out'; loading = false;
+    setTimeout(function () { if (ld.parentNode) ld.parentNode.removeChild(ld); setBarColor(null); }, 380);
+  })();
+}
 function showMap() {
   hideOverlay(); hideMap();
   var open = Math.min(G.cleared + 1, 10), cur = Math.min(G.cleared, 9);   // 已解锁的站点数 / 当前该玩的那一关
