@@ -125,7 +125,7 @@ function ding(freq, dur, vol, type, delay) {
     var o = audio.createOscillator(), g = audio.createGain();
     o.frequency.value = freq; o.type = type || 'triangle';
     g.gain.setValueAtTime(0, audio.currentTime);
-    g.gain.setValueAtTime(vol || SFX_VOL, t0);
+    g.gain.setValueAtTime((vol || SFX_VOL) * sfxVol(), t0);
     g.gain.exponentialRampToValueAtTime(.001, t0 + dur);
     o.connect(g); g.connect(sfxOut); o.start(t0); o.stop(t0 + dur + .02);
   } catch (e) {}
@@ -143,7 +143,13 @@ function log(text, kind) {
 }
 
 /* ============ 背景音乐（WebAudio 解码 bgm-data.js 里的 mp3，首次触摸后才能播放） ============ */
-var bgmBuf = null, bgmSrc = null, bgmLoading = false;
+var bgmBuf = null, bgmSrc = null, bgmLoading = false, bgmGain = null;
+function musicVol() { var v = G.vol && G.vol.m != null ? G.vol.m : 100; return v / 100; }
+function sfxVol() { var v = G.vol && G.vol.s != null ? G.vol.s : 100; return v / 100; }
+function setVol(k, v) {
+  G.vol = G.vol || {m:100, s:100}; G.vol[k] = v; save();
+  if (k === 'm' && bgmGain) bgmGain.gain.value = .2 * musicVol();
+}
 var BUILD_V = (function () { var m = document.querySelector('script[src*="main.js"]'); m = m && /v=([^&]+)/.exec(m.getAttribute('src')); return m ? m[1] : '1'; })();
 function musicOn() { return G.music !== false; }
 function audioCtx() {
@@ -187,7 +193,7 @@ function syncMusic() {
       if (ctx.state === 'suspended') ctx.resume();
       if (!bgmBuf) { loadBgm(ctx); return; }
       if (bgmSrc) return;
-      var g = ctx.createGain(); g.gain.value = .2; g.connect(ctx.destination);
+      var g = ctx.createGain(); g.gain.value = .2 * musicVol(); g.connect(ctx.destination); bgmGain = g;
       bgmSrc = ctx.createBufferSource(); bgmSrc.buffer = bgmBuf; bgmSrc.loop = true;
       bgmSrc.connect(g); bgmSrc.start(0);
     } catch (e) {}
@@ -1148,6 +1154,7 @@ function menu() {
   var cur = Math.min(G.cleared, 9);
   var inGame = R && !R.over && !R.demo;
   if (!inGame) return showMap();
+  return pausePop();
   showOverlay('<div class="kicker">' + (inGame ? '已暂停 · 第 ' + (R.i + 1) + ' 关 · ' + R.L.name : '放学时间 · 17:00 · 实验二小东门') + '</div>' +
     '<h1>校门口<em>烤肠摊</em></h1>' +
     (inGame ? pauseShop(R.L.endless) : '') +
@@ -1168,6 +1175,28 @@ function menu() {
     (inGame ? '<button class="b wide" data-act="quit">退出到关卡列表</button>' : '') + '</div>' +
     (!inGame && menuShopOpen ? pauseShop(false) : ''));
 }
+// 暂停：顶部标签头 + 右上角关闭 + 背景音乐 / 音效音量 + 重玩本关 + 回地图 / 继续游戏（参考美术暂停图）
+function pausePop() {
+  var V = '?v=' + BUILD_V, vm = Math.round(musicVol() * 100), vs = Math.round(sfxVol() * 100);
+  var SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#B97A5A"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="#B97A5A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
+  var NOTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l11-2.5v12" stroke="#B97A5A" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3" fill="#B97A5A"/><circle cx="17.5" cy="15" r="3" fill="#B97A5A"/></svg>';
+  showOverlay('<div class="ps">' +
+    '<div class="ps-tab">暂停</div>' +
+    '<button class="ps-x" data-act="resume" aria-label="关闭"></button>' +
+    '<div class="ps-panel">' +
+      '<div class="ps-row"><span class="ps-ic">' + NOTE + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vm + '" data-vol="m" style="--p:' + vm + '%" aria-label="背景音乐音量"></div>' +
+      '<div class="ps-row"><span class="ps-ic">' + SPK + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vs + '" data-vol="s" style="--p:' + vs + '%" aria-label="音效音量"></div>' +
+      '<div class="ps-div"></div>' +
+      '<button class="rp-btn sub ps-wide" data-act="go" data-i="' + R.i + '">重玩本关</button>' +
+      '<div class="ps-bottom"><button class="ps-home" data-act="quit" aria-label="回到地图"><img alt="" src="./assets/img/res/ic_home.webp' + V + '"></button>' +
+      '<button class="rp-btn main ps-go" data-act="resume">继续游戏</button></div>' +
+    '</div></div>', 'lvpop');
+}
+document.addEventListener('input', function (e) {
+  var t = e.target; if (!t || !t.getAttribute || !t.getAttribute('data-vol')) return;
+  var v = +t.value; t.style.setProperty('--p', v + '%'); setVol(t.getAttribute('data-vol'), v);
+  if (t.getAttribute('data-vol') === 's') ding(880, .06);
+});
 // 关卡开场：过关目标 + 时间 + 锅位 三张卡片
 function goalCards(L) {
   if (L.endless) {

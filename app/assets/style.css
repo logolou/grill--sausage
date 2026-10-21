@@ -837,3 +837,24 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp .lp-ribbon b{font-family:"ShuHei","PingFang SC","Hiragino Sans GB",sans-serif;font-weight:normal;font-size:30px;letter-spacing:.02em}
 /* 按钮文字也用阿里妈妈数黑体 */
 .lp-play span,.rp-btn,.lm-pill{font-family:"ShuHei","PingFang SC","Hiragino Sans GB",sans-serif;font-weight:normal;letter-spacing:.06em}
+
+/* ===== 暂停 ===== */
+.ps{position:relative;padding-top:26px}
+.ps-tab{position:absolute;left:50%;top:0;z-index:3;transform:translateX(-50%);min-width:46%;padding:10px 28px 12px;border-radius:22px;background:linear-gradient(180deg,#FFFBF2,#F7E7D4);box-shadow:0 4px 0 #E2C3A6,0 8px 14px rgba(90,40,10,.25),inset 0 2px 0 #fff;text-align:center;font-family:"ShuHei","PingFang SC",sans-serif;font-size:28px;color:#C2471C;letter-spacing:.2em;text-indent:.2em}
+.ps-x{position:absolute;right:-8px;top:30px;z-index:4;width:40px;height:40px;border-radius:50%;border:3px solid #FFF6EC;background:radial-gradient(circle at 50% 35%,#FF8A72,#E5473A);box-shadow:0 3px 0 #B8301F,0 5px 8px rgba(90,20,10,.35);padding:0}
+.ps-x::before,.ps-x::after{content:"";position:absolute;left:50%;top:50%;width:18px;height:4px;margin:-2px 0 0 -9px;border-radius:2px;background:#fff}
+.ps-x::before{transform:rotate(45deg)}.ps-x::after{transform:rotate(-45deg)}
+.ps-x:active{transform:scale(.92)}
+.ps-panel{background:url(img/pop/panel.webp) center/100% 100% no-repeat;padding:58px 26px 28px}
+.ps-row{display:flex;align-items:center;margin:6px 0 14px}
+.ps-ic{width:36px;height:36px;flex:none;margin-right:12px}
+.ps-ic svg{width:100%;height:100%}
+.ps-range{flex:1;-webkit-appearance:none;appearance:none;height:26px;border-radius:13px;background:linear-gradient(90deg,#FFD84D 0,#F7B928 var(--p),#E9DCCB var(--p),#E9DCCB 100%);box-shadow:inset 0 2px 4px rgba(120,80,40,.25);outline:none;margin:0}
+.ps-range::-webkit-slider-thumb{-webkit-appearance:none;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#FFB27A,#F27A3E);border:3px solid #FFF6EC;box-shadow:0 3px 0 #C25A22,0 4px 6px rgba(90,30,0,.3)}
+.ps-div{height:2px;margin:6px 2px 4px;background:#E6D2C0;border-radius:1px}
+.ps-wide{width:100% !important;margin-top:14px !important}
+.ps-bottom{display:flex;align-items:center;margin-top:10px}
+.ps-home{flex:none;width:56px;height:56px;margin-right:10px;padding:0;border:0;background:none;-webkit-filter:drop-shadow(0 3px 2px rgba(120,60,20,.3));filter:drop-shadow(0 3px 2px rgba(120,60,20,.3))}
+.ps-home img{width:100%;height:100%;object-fit:contain}
+.ps-home:active{transform:scale(.92)}
+.ps-go{flex:1;width:auto !important;margin:0 !important}
