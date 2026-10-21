@@ -1221,3 +1221,23 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #app.scene .meter i{border-radius:8px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35)}
 #app.scene .meter .tk{width:3px;background:#8A5A40;opacity:.55}
 #app.scene .slot .tag{top:-90px;font-size:17px;padding:3px 10px;box-shadow:0 2px 0 rgba(120,60,20,.3)}
+
+/* ===== 教学讲解框：王姐 + 奶油描边对话框 ===== */
+#app.scene .coach{position:absolute;left:18px;right:18px;top:16px;bottom:auto;z-index:20;display:block;min-height:190px;padding:20px 22px 16px 168px;border:6px solid #EE8A55;border-radius:30px;background:linear-gradient(180deg,#FFF9EE,#FBF0E1);background-image:none;box-shadow:0 6px 0 #C9622F,0 12px 24px rgba(80,30,0,.35);color:#6B3A22}
+#app.scene .coach.bottom{top:auto;bottom:16px}
+#app.scene .coach .who{position:absolute;left:4px;bottom:-6px;width:auto;height:230px;font-size:0;-webkit-filter:drop-shadow(0 4px 4px rgba(80,30,0,.3));filter:drop-shadow(0 4px 4px rgba(80,30,0,.3))}
+#app.scene .coach .step{position:absolute;left:168px;top:-22px;padding:4px 16px;border-radius:14px;background:#EE8A55;color:#fff;font-size:17px;font-weight:900;letter-spacing:.06em;box-shadow:0 3px 0 #C9622F}
+#app.scene .coach p{margin:6px 0 0;font-size:24px;font-weight:800;line-height:1.5;color:#6B3A22}
+#app.scene .coach .row{display:flex;justify-content:flex-end;align-items:center;margin-top:12px}
+#app.scene .coach .row button{margin-left:12px;height:52px;padding:0 26px;border:0;border-radius:26px;font-family:"ShuHei","PingFang SC",sans-serif;font-size:22px}
+#app.scene .coach .next{background:linear-gradient(180deg,#FF9A6E,#EE5B3B);color:#fff;box-shadow:0 4px 0 #B83A1C}
+#app.scene .coach .alt{background:linear-gradient(180deg,#FFFBF2,#F3E2CC);color:#A65A3A;box-shadow:0 4px 0 #D9BFA4}
+#app.scene .coach .skip{background:none;color:#B48A72;font-family:inherit;font-size:18px;padding:0 6px}
+#app.scene .coach .lesson{margin-top:8px}
+#app.scene .coach .lesson .lrow{font-size:18px}
+/* 指引小手 / 光圈 */
+.guide .hand{position:absolute;left:-14px;top:-4px;width:52px;height:auto;font-size:0}
+.guide .ring{left:-26px;top:-26px;width:52px;height:52px;border:0;background:url(img/scene/g_ring.webp) center/contain no-repeat}
+.guide.tap .ring.r2{border:0}
+#app.scene .coach{background:#FFF9EE !important;background-image:linear-gradient(180deg,#FFFBF3,#FBEEDC) !important}
+.guide .hand{left:-24px;top:-70px}

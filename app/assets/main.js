@@ -8,7 +8,7 @@ var SAUCE_COL = {'番茄':'#D8342A','蜂蜜芥末':'#E7C43A','甜辣':'#F06A2B'}
 var SPICE_COL = {'孜然':'#8A6A3A','葱花':'#4FA83D','辣椒':'#C0180C'};
 var LEVELS = [
   {name:'教学关·开张大吉', time:90, goal:{money:10}, slots:3, pat:75, spawn:[8,11], bands:['嫩'], sauces:['番茄'], spices:[], two:.15, runner:0, feat:[], tutorial:true,
-   news:['摊主老王手把手教你怎么摆烤肠摊','教学结束后，自己动手试试吧，今天赚 ¥10 就能收摊！']},
+   news:['摊主王姐手把手教你怎么摆烤肠摊','教学结束后，自己动手试试吧，今天赚 ¥10 就能收摊！']},
   {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩'], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
    news:['锅里的油会越烤越少。油量低于红线时会粘锅，烤肠成熟更快，更容易焦，点烤肠翻面要多点一下才撬得动。','点「加油」补油；油很满时再加会溢出，损失 ¥1。','新小料：孜然。使用方法：把调料罐拖到烤肠上抖一抖。']},
   {name:'口味多起来', time:90, goal:{money:18}, slots:3, pat:65, spawn:[6,9], bands:['嫩','脆'], bandW:[.7,.3], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
@@ -205,23 +205,23 @@ function syncMusic() {
 
 /* ============ 教学关脚本 ============ */
 var TUT = [
-  {text:'还有1分钟放学！我是摊主老王，跟我学卖烤肠。', btn:'好嘞', hand:'[data-act=tutnext]'},
+  {text:'还有 1 分钟放学！我是摊主王姐，跟我学卖烤肠吧～', btn:'好嘞', hand:'[data-act=tutnext]'},
   {text:'先点亮着的空锅位，放一根肠下锅（进价 ¥1）。', spot:'place0', wait:'place', hand:'[data-act=place][data-i="0"]'},
-  {text:'朝下那面正在烤。盯住下面的进度条，过了第一条刻度烤肠就熟了……', spot:'slot0',
+  {text:'朝下那面正在烤。看锅上方的进度条，变成绿色（过第一条刻度）这面就熟了……', spot:'slot0',
    until:function () { var s = R.slots[0].s; return s && s[s.down] >= 42; }},
   {text:'这面熟了！点一下锅里的烤肠，它就会翻面，烤另一面。', spot:'flip0', wait:'flip', hand:'[data-act=flip][data-i="0"]'},
-  {text:'等另一面也过第一条刻度。别烤太久，进度条走到头就焦了。', spot:'slot0',
+  {text:'等另一面也变绿。别烤太久，进度条走到头变黑就焦了。', spot:'slot0',
    until:function () { var s = R.slots[0].s; return s && judge(s) === '嫩'; }},
   {text:'两面都烤得嫩嫩的了！先停一下，看看烤肠不同火候的标准：', btn:'懂了', hand:'[data-act=tutnext]', freeze:true, extra:lessonHTML},
-  {text:'两面都熟了，标签变成「嫩」。点「夹起」，烤肠会放进下面的「盒 A」。', spot:'pick0', wait:'pick', hand:'[data-act=pick][data-i="0"]'},
+  {text:'两面都熟了，标签变成「嫩」。点锅前面的「夹起」，烤肠会放进下面的打包盒。', spot:'pick0', wait:'pick', hand:'[data-act=pick][data-i="0"]'},
   {text:'第一位小客人来了！看他的要求：要「一根烤得嫩嫩的加番茄酱的烤肠」。', spot:'t1', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted(); }},
-  {text:'按住「番茄酱」，拖到盒 A 里的烤肠上，松手挤上酱。', spot:'tool-番茄 item00', wait:'topping', drag:['[data-tool="sauce"]', '[data-item="0-0"]']},
-  {text:'酱挤好了。点盒 A 的「装盒」，把盒盖合上。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
+  {text:'按住右边的番茄酱瓶，拖到打包盒里的烤肠上，松手挤上酱。', spot:'tool-番茄 item00', wait:'topping', drag:['[data-tool="sauce"]', '[data-item="0-0"]']},
+  {text:'酱挤好了。点打包盒下面的「装盒」，把盒盖合上。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
   {text:'盒子盖好了！按住打包盒，拖到豆豆身上，松手递给他！', spot:'bag0 t1', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t1"]']},
-  {text:'听！收款音箱播报「到账」，才说明客人真付了钱。有人可能会逃单，要留意有没有到账播报。', spot:'speaker', btn:'懂了', hand:'[data-act=tutnext]',
+  {text:'看左边的收款码！冒出「到账」才说明客人真付了钱。有人可能会逃单，要留意有没有到账提示。', spot:'speaker', btn:'懂了', hand:'[data-act=tutnext]',
    until:function () { return R.pay.length > 0; }, untilShowsBtn:true},
   {text:'又来一位！王阿姨要「两根」：一根要烤得「嫩」不刷酱，一根「脆」的，刷番茄酱。两根装进同一个盒子。', spot:'t2', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted2(); }},
-  {text:'放两根肠下锅。一根到「嫩」就夹出来；另一根多烤一会儿，两面都过第二条刻度，变「脆」再夹。记得勤点烤肠翻面，别烤成阴阳面！', free:{place:1, flip:1, pick:1}, handFn:cookHand, twoBands:true,
+  {text:'放两根肠下锅。一根到「嫩」就夹出来；另一根多烤一会儿，两面都变黄（过第二条刻度），变「脆」再夹。记得勤点烤肠翻面，别烤成阴阳面！', free:{place:1, flip:1, pick:1}, handFn:cookHand, twoBands:true,
    until:function () { return boxHas('嫩') && boxHas('脆'); }},
   {text:'只给「脆」的那根挤番茄酱，「嫩」的那根不要酱。', spot:'tool-番茄 crisp', wait:'topping', crispSauce:true,
    dragFn:function () { return ['[data-tool="sauce"]', '[data-item="0-' + bandIndex('脆') + '"]']; },
@@ -230,8 +230,8 @@ var TUT = [
   {text:'按住打包盒，拖给王阿姨！', spot:'bag0 t2', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t2"]']},
   {text:'做得好！拿爱心的条件：根数、火候、酱、小料全做对，并且客人耐心条还剩三分之一以上。', btn:'记住了', hand:'[data-act=tutnext]'},
   {text:'做错了，客人会少给钱、打差评；生的、烤焦的直接不给钱。差评会让店里的爱心减少，爱心减为零时会强制收摊。', btn:'知道了', hand:'[data-act=tutnext]'},
-  {text:'锅里忙不过来时可以停火，烤肠就不会继续受热。试试点「停火」。', spot:'fire', wait:'fire', hand:'[data-act=fire]'},
-  {text:'火灭了，再点一次，炉子会重新点火，需要预热一会儿才能烤下一批。现在摊子就交给你了！', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'锅里忙不过来时可以关火，烤肠就不会继续受热。点一下锅右下角的旋钮，把火关掉。', spot:'fire', wait:'fire', hand:'[data-act=fire]'},
+  {text:'火灭了！再点一次旋钮就会重新点火，要预热一会儿才能烤下一批。现在摊子就交给你了！', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 // 火候小课堂：四根示意烤肠，各带「上 / 下」两条进度条
 function lessonHTML() {
@@ -243,7 +243,7 @@ function lessonHTML() {
   ];
   return '<div class="lesson">' + rows.map(function (r) {
     function m(v) {
-      return '<div class="meter"><i style="width:' + Math.min(100, v) + '%;background:' + col(v) + '"></i>' +
+      return '<div class="meter"><i style="width:' + Math.min(100, v) + '%;background:' + zoneCol(v) + '"></i>' +
         [40, 70, 88].map(function (x) { return '<span class="tk" style="left:' + x + '%"></span>'; }).join('') + '</div>';
     }
     return '<div class="lrow' + (r.bad ? ' bad' : '') + '">' +
@@ -273,17 +273,17 @@ function cookHand() {
 var SHOP_TUT = [
   {text:'存款能买道具了，关键时刻救急！', btn:'说说看', hand:'[data-act=tutnext]'},
   {text:'🍭 棒棒糖：排队客人耐心回满<br>⏳ 沙漏：本关多加 30 秒<br>🙋 课代表：瞬间做完所有订单', btn:'然后呢', hand:'[data-act=tutnext]'},
-  {text:'道具在黑板下方，点一下就用。', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'道具在屏幕最下方，点一下就用。', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 var SKEWER_TUT = [
-  {text:'老王又来啦！今天预串好的肠用完了，从这关起得自己串签。', btn:'怎么串', hand:'[data-act=tutnext]'},
-  {text:'看锅下面的「串一根」，点一下就串好一根，最多能备 4 根。先串两根试试。', hand:'[data-act=skewer]', free:{skewer:1}, until:function () { return R.stock >= 2; }},
+  {text:'王姐又来啦！今天预串好的肠用完了，从这关起得自己串签。', btn:'怎么串', hand:'[data-act=tutnext]'},
+  {text:'点左边的竹签筒「串一根」，点一下就串好一根，最多能备 4 根。先串两根试试。', hand:'[data-act=skewer]', free:{skewer:1}, until:function () { return R.stock >= 2; }},
   {text:'串好了！现在点空锅位，把串好的肠放上去。', hand:'[data-act=place][data-i="0"]', wait:'place', free:{skewer:1}},
   {text:'记住：没有串好的肠，锅位是放不上去的。<br>客人少的时候多串几根备着，放学高峰才不手忙脚乱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true, free:{skewer:1}}
 ];
 var SKEWER_MAX = 4;   // 串好的肠最多备几根
 var SCRAPE_TUT = [
-  {text:'第九关！老王来提个醒：锅用久了会结锅巴。每个锅位烤完 3 根肠，或者烤焦一根，就会结一层锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
+  {text:'第九关！王姐来提个醒：锅用久了会结锅巴。每个锅位烤完 3 根肠，或者烤焦一根，就会结一层锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
   {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>连点 3 下</b>把锅巴铲干净！', spot:'scrape0', hand:'[data-rub="0"]', wait:'scrape',
    enter:function () { R.slots[0].s = null; R.slots[0].dirt = true; R.slots[0].scrub = 0; }},
   {text:'铲干净了！忙起来也要留意锅巴，别让锅位闲着。<br>另外这关多了新酱料「甜辣」，看清客人要哪种酱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true}
@@ -335,7 +335,7 @@ function startGuide(st) {
   if (!st.hand && !st.handFn && !st.drag && !st.dragFn) return;
   guideEl = document.createElement('div');
   guideEl.className = 'guide ' + (st.drag || st.dragFn ? 'drag' : 'tap');
-  guideEl.innerHTML = '<i class="ring"></i><i class="ring r2"></i><span class="hand">👆</span>';
+  guideEl.innerHTML = '<i class="ring"></i><i class="ring r2"></i><img class="hand" alt="" src="./assets/img/scene/g_hand_tap.webp?v=' + BUILD_V + '">';
   document.body.appendChild(guideEl);
   if (st.hand || st.handFn) {
     // 点击引导：手指在目标上反复按下，光圈扩散；目标没出现时先隐藏
@@ -378,12 +378,12 @@ function startLevel(i, demo) {
        boxes:[mkBox(), mkBox(), mkBox()], sel:0, fire:true, heat:1, cust:[], spawnT:1.2, over:false, paused:false, slots:slots, pay:[],
        st:{sold:0, angry:0, fled:0, caught:0, wrong:0, wasted:0, bad:0},
        tut: L.tutorial ? {i:0, steps:TUT, label:'教学'} : null};
-  // 第二关第一次开张：老王介绍道具商店
+  // 第二关第一次开张：王姐介绍道具商店
   G.seen = G.seen || {};
-  if (i === 1 && !demo && !G.seen.itemShop) { R.tut = {i:0, steps:SHOP_TUT, label:'老王小课堂'}; G.seen.itemShop = 1; save(); }
-  // 第七关第一次开张：老王教串签
-  if (i === 8 && !demo && !G.seen.scrape) { R.tut = {i:0, steps:SCRAPE_TUT, label:'老王小课堂'}; G.seen.scrape = 1; save(); }
-  if (i === 6 && !demo && !G.seen.skewer) { R.tut = {i:0, steps:SKEWER_TUT, label:'老王小课堂'}; G.seen.skewer = 1; save(); }
+  if (i === 1 && !demo && !G.seen.itemShop) { R.tut = {i:0, steps:SHOP_TUT, label:'王姐小课堂'}; G.seen.itemShop = 1; save(); }
+  // 第七关第一次开张：王姐教串签
+  if (i === 8 && !demo && !G.seen.scrape) { R.tut = {i:0, steps:SCRAPE_TUT, label:'王姐小课堂'}; G.seen.scrape = 1; save(); }
+  if (i === 6 && !demo && !G.seen.skewer) { R.tut = {i:0, steps:SKEWER_TUT, label:'王姐小课堂'}; G.seen.skewer = 1; save(); }
   R.hearts = L.endless ? ENDLESS_HEARTS : START_HEARTS;
   $('log').innerHTML = '';
   $('speaker').innerHTML = '<div class="h">收款音箱</div><div class="e idle">等待收款…</div>';
@@ -527,7 +527,7 @@ function act(a, i) {
     var burntPick = a === 'pick' && R.slots[i] && R.slots[i].s && judge(R.slots[i].s) === 'burnt';
     var freeAct = st.free && st.free[a];
     if (!burntPick && !freeAct && (!ACT_TO_TUT[a] || !tutAllows(ACT_TO_TUT[a]) || (SLOT_ACTS[a] && i !== 0))) {
-      log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return;
+      log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return;
     }
   }
   var sl = R.slots[i];
@@ -970,7 +970,7 @@ function boxHTML(fresh, n) {
 }
 
 /* ============ 渲染 ============ */
-function walkStyle(p) { p = Math.max(0, Math.min(1, p)); return ' style="transform:translateX(' + (p * 70).toFixed(1) + '%);opacity:' + (1 - p * .75).toFixed(2) + '"'; }
+function walkStyle(p) { p = Math.max(0, Math.min(1, p)); return ' style="opacity:' + (1 - p).toFixed(2) + '"'; }   // 离场：原地淡出
 function patColor(r) { return r > .5 ? 'var(--good)' : r > .25 ? 'var(--gold)' : 'var(--red)'; }
 /* ============ 渲染（主界面：720×1280 的场景舞台，整体等比缩放） ============ */
 var SC = './assets/img/scene/';
@@ -1020,7 +1020,8 @@ function render() {
   $('coach').hidden = !st;
   if (st) {
     var showBtn = st.btn && (!st.until || st.until());
-    setHTML('coach', '<div class="who">👩‍🍳</div><div class="step">' + R.tut.label + ' ' + (R.tut.i + 1) + ' / ' + R.tut.steps.length + '</div>' +
+    var pose = /做得好|全对|嫩嫩的了|交给你了/.test(st.text) ? 'happy' : (st.spot || st.drag || st.dragFn || st.handFn) ? 'point' : 'normal';
+    setHTML('coach', '<img class="who" alt="王姐" src="' + SC + 'g_mascot_' + pose + '.webp' + V + '"><div class="step">' + R.tut.label + ' ' + (R.tut.i + 1) + ' / ' + R.tut.steps.length + '</div>' +
       '<p>' + st.text + '</p>' + (st.extra ? st.extra() : '') + '<div class="row"><button class="skip" data-act="tutskip">' + (R.tut.steps === TUT ? '跳过教学' : '跳过') + '</button>' + (st.btn2 ? '<button class="alt" data-act="' + st.btn2[1] + '" data-i="' + R.i + '">' + st.btn2[0] + '</button>' : '') +
       (showBtn ? '<button class="next" data-act="tutnext">' + st.btn + '</button>' : '') + '</div>');
   }
@@ -1139,6 +1140,15 @@ function render() {
       '<button class="bx-pack' + spot('pack' + k) + '" data-act="pack" data-i="' + k + '"' + (n ? '' : ' disabled') + '>装盒</button></div>';
   });
   setHTML('trayBox', (smartOn() ? '<em class="smart">' + smartLabel() + '</em>' : '') + panels.join(''));
+  if (st) placeCoach(st);
+}
+// 讲解框放在不挡目标的那一头：目标在画面上半部分 → 讲解框放到底部，反之放顶部
+function placeCoach(st) {
+  var sel = st.hand && st.hand !== '[data-act=tutnext]' ? st.hand : st.handFn ? st.handFn() : st.drag ? st.drag[1] : st.dragFn ? st.dragFn()[1] : null;
+  if (!sel && st.spot) sel = '.spot';
+  var el = sel && document.querySelector('#stage ' + sel), stg = $('stage').getBoundingClientRect(), bottom = false;
+  if (el) { var r = el.getBoundingClientRect(); bottom = (r.top + r.height / 2 - stg.top) < stg.height * .5; }
+  $('coach').className = 'coach' + (bottom ? ' bottom' : '');
 }
 
 /* ============ 竖屏适配：内容高于屏幕时整体等比缩小 ============ */
@@ -1566,7 +1576,7 @@ document.addEventListener('pointerdown', function (e) {
     e.preventDefault();
     var bk2 = +bagEl.getAttribute('data-bag');
     if (!R || R.over || R.paused || !R.boxes[bk2] || R.boxes[bk2].stage !== 'box') return;
-    if (!tutAllows('serve')) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return; }
+    if (!tutAllows('serve')) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
     startBagDrag(e, bk2); watchTarget(e.target); return;
   }
   var itemEl = e.target.closest('[data-item]');
@@ -1579,7 +1589,7 @@ document.addEventListener('pointerdown', function (e) {
     e.preventDefault();
     if (!R || R.over || R.paused) return;
     var rst = tutStep();
-    if (rst && !tutAllows('scrape') && !(rst.free && rst.free.scrape)) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return; }
+    if (rst && !tutAllows('scrape') && !(rst.free && rst.free.scrape)) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
     scrapeTap(+rubEl.getAttribute('data-rub'));
     return;
   }
@@ -1587,11 +1597,11 @@ document.addEventListener('pointerdown', function (e) {
   if (tool) {
     e.preventDefault();
     if (tool.disabled || !R || R.over || R.paused) return;
-    if (!tutAllows('topping')) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); return; }
+    if (!tutAllows('topping')) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
     startDrag(tool, e); watchTarget(e.target); return;
   }
   var el = e.target.closest('[data-act]'); if (!el) return;
-  if (el.disabled) { if (tutStep()) { log('先跟着老王做亮起来的那一步', 'bad'); nudge(); } return; }
+  if (el.disabled) { if (tutStep()) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); } return; }
   var a = el.getAttribute('data-act'), i = +el.getAttribute('data-i');
   e.preventDefault();
   if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else if (el.closest('#lvmap')) el.querySelector('img').src = './assets/img/ui/' + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp?v=' + BUILD_V; else render(); return; }
