@@ -993,3 +993,13 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* 当前关的指示：白色等边三角形，正对数字上方，上下轻跳 */
 .lvmap .lm-tri{position:absolute;left:50%;top:6%;width:0;height:0;margin-left:-11px;border-left:11px solid transparent;border-right:11px solid transparent;border-top:19px solid #fff;-webkit-filter:drop-shadow(0 2px 2px rgba(150,80,20,.45));filter:drop-shadow(0 2px 2px rgba(150,80,20,.45));-webkit-animation:lmBob 1s ease-in-out infinite;animation:lmBob 1s ease-in-out infinite;pointer-events:none}
 .lvmap .lm-tri{top:-6%}
+/* 存款 / 体力条和返回键一样高、上下居中对齐 */
+.lm-stat{top:calc(var(--sat) + 10px);height:35px}
+.lm-stat img{height:35px}
+.lm-stat.star{left:58px}
+.lm-stat.heart{left:154px}
+.lm-stat b{font-size:12px !important}
+.lm-stat{top:calc(var(--sat) + 14px);height:31px}
+.lm-stat img{height:31px}
+.lm-stat.heart{left:146px}
+.lm-stat b{font-size:11.5px !important}
