@@ -1510,8 +1510,12 @@ function shopBack(from) {
   return '<button class="b red" data-act="intro" data-i="' + nxt + '">去第 ' + (nxt + 1) + ' 关</button><button class="b" data-act="menu">关卡列表</button>';
 }
 // 框式弹窗（商店 / 设置共用）：顶部标签头 + 粗描边面板
-function framePop(title, body, back) {
-  showOverlay('<div class="sp"><div class="ps-tab sp-tab">' + title + '</div><div class="ps-panel sp-panel">' + body + '</div></div>', 'lvpop wide');
+function framePop(title, body, back, shopDeco) {
+  var V = '?v=' + BUILD_V;
+  var head = shopDeco
+    ? '<img class="sp-awning" alt="" src="./assets/img/shop/awning.webp' + V + '"><div class="sp-ribbon"><img alt="" src="./assets/img/shop/ribbon.webp' + V + '"><b>' + title + '</b></div>'
+    : '<div class="ps-tab sp-tab">' + title + '</div>';
+  showOverlay('<div class="sp' + (shopDeco ? ' deco' : '') + '">' + head + '<div class="ps-panel sp-panel">' + body + '</div></div>', 'lvpop wide');
   if (back) addBack(back);
 }
 function priceBtn(act, i, cost, ok) {
@@ -1530,7 +1534,7 @@ function shop() {
     : fromRes ? '<button class="sp-big go" data-act="shareback"><span>返回结算</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>'
     : '<button class="sp-big go" data-act="intro" data-i="' + nxt + '"><span>去第 ' + (nxt + 1) + ' 关</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>';
   framePop('升级小摊', bankBar() + '<div class="sp-list">' + rows + '</div><div class="sp-foot">' + foot + '</div>',
-    inGame ? 'menu' : fromRes ? 'shareback' : 'menu');
+    inGame ? 'menu' : fromRes ? 'shareback' : 'menu', true);
 }
 // 道具商店（地图 / 结算 两处进来，返回各回各的）
 var itemShopBack = 'mapclose';
@@ -1543,7 +1547,7 @@ function itemShop(back) {
       '<span class="sp-txt"><b>' + it.name + '</b><small>' + (off ? '无尽模式不可用' : it.desc) + '</small></span>' + priceBtn('buyitem', idx, it.cost, G.bank >= it.cost && !off) + '</div>';
   }).join('');
   framePop('道具商店', bankBar() + '<div class="sp-sub">一次性道具 · 局中点一下就用</div><div class="sp-list sp-items">' + rows + '</div>' +
-    '<div class="sp-foot"><button class="sp-big list" data-act="' + itemShopBack + '"><span>' + (itemShopBack === 'shareback' ? '返回结算' : '返回地图') + '</span></button></div>', itemShopBack);
+    '<div class="sp-foot"><button class="sp-big list" data-act="' + itemShopBack + '"><span>' + (itemShopBack === 'shareback' ? '返回结算' : '返回地图') + '</span></button></div>', itemShopBack, true);
 }
 
 /* ============ 事件 ============ */

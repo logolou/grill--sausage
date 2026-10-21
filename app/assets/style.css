@@ -950,3 +950,10 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .lm-stat{top:calc(var(--sat) + 10px);height:35px}
 .lm-stat.star{left:60px}
 .lm-stat.heart{left:162px}
+/* 商店：面板顶上一条红白遮阳棚 + 写着店名的飘带 */
+.sp.deco{padding-top:62px}
+.sp.deco .sp-panel{padding-top:58px}
+.sp-awning{position:absolute;left:-5%;width:110%;top:44px;z-index:2;pointer-events:none;-webkit-filter:drop-shadow(0 4px 4px rgba(120,40,10,.3));filter:drop-shadow(0 4px 4px rgba(120,40,10,.3))}
+.sp-ribbon{position:absolute;left:50%;top:0;z-index:3;width:76%;margin-left:-38%;pointer-events:none}
+.sp-ribbon img{display:block;width:100%;height:auto}
+.sp-ribbon b{position:absolute;left:0;right:0;top:12%;bottom:38%;display:flex;align-items:center;justify-content:center;font-family:"ShuHei","PingFang SC",sans-serif;font-weight:normal;font-size:24px;color:#fff;letter-spacing:.12em;text-indent:.12em;text-shadow:0 2px 0 #B83A1C,0 -1px 0 #B83A1C,1.5px 0 0 #B83A1C,-1.5px 0 0 #B83A1C}
