@@ -1166,6 +1166,8 @@ function pausePop() {
   var SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#B97A5A"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="#B97A5A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
   var NOTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l11-2.5v12" stroke="#B97A5A" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3" fill="#B97A5A"/><circle cx="17.5" cy="15" r="3" fill="#B97A5A"/></svg>';
   showOverlay('<div class="ps">' +
+    '<div class="ps-props"><img class="pp-tongs" alt="" src="./assets/img/pause/tongs.webp' + V + '"><img class="pp-ketchup" alt="" src="./assets/img/pause/ketchup.webp' + V + '">' +
+      '<img class="pp-sausage" alt="" src="./assets/img/pause/sausage.webp' + V + '"><img class="pp-mustard" alt="" src="./assets/img/pause/mustard.webp' + V + '"></div>' +
     '<div class="ps-tab">暂停</div>' +
     '<button class="ps-x" data-act="resume" aria-label="关闭"></button>' +
     '<div class="ps-panel">' +

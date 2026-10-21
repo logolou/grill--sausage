@@ -858,3 +858,14 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .ps-home img{width:100%;height:100%;object-fit:contain}
 .ps-home:active{transform:scale(.92)}
 .ps-go{flex:1;width:auto !important;margin:0 !important}
+/* 暂停 v2：像参考图一样整块加粗描边；标签头后面探出 3D 摊位道具 */
+.ps{padding-top:92px}
+.ps-props{position:absolute;left:50%;top:0;width:260px;height:120px;margin-left:-130px;z-index:1;pointer-events:none}
+.ps-props img{position:absolute;-webkit-filter:drop-shadow(0 4px 4px rgba(80,30,0,.35));filter:drop-shadow(0 4px 4px rgba(80,30,0,.35))}
+.pp-tongs{left:6px;top:34px;width:78px;transform:rotate(-18deg)}
+.pp-ketchup{left:62px;top:0;height:112px;transform:rotate(-14deg)}
+.pp-sausage{left:146px;top:6px;height:104px;transform:rotate(22deg)}
+.pp-mustard{left:196px;top:22px;height:96px;transform:rotate(16deg)}
+.ps-tab{top:66px;border:5px solid #EE8A55;background:linear-gradient(180deg,#FFFBF2,#F8EAD9);box-shadow:0 4px 0 #C9622F,0 8px 14px rgba(90,40,10,.25),inset 0 2px 0 #fff}
+.ps-x{top:98px;right:-12px}
+.ps-panel{background:linear-gradient(180deg,#FFF9EE 0,#FBF0E1 100%);border:6px solid #EE8A55;border-radius:30px;box-shadow:0 6px 0 #C9622F,0 12px 24px rgba(80,30,0,.35),inset 0 3px 0 rgba(255,255,255,.9),inset 0 -6px 12px rgba(220,170,120,.25);padding:54px 22px 24px}
