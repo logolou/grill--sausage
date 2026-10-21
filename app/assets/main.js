@@ -1825,17 +1825,15 @@ var loading = false;
 function loadLevel(i) {
   if (loading) return;
   loading = true; hideOverlay(); clearGuide();
-  var L = LEVELS[i], ld = document.createElement('div'); ld.id = 'loader'; ld.className = 'ld';
-  ld.innerHTML = '<div class="ld-box">' +
-    '<div class="ld-lv">' + (L.endless ? '无尽模式' : '第 ' + (i + 1) + ' 关') + '<b>' + L.name.replace('教学关·', '') + '</b></div>' +
-    '<div class="ld-saus"><i class="ld-stick"></i><div class="ld-body"><div class="ld-fill"></div><i class="ld-shine"></i></div></div>' +
-    '<div class="ld-pct">0%</div><div class="ld-txt">LOADING<span>...</span></div></div>';
+  var ld = document.createElement('div'); ld.id = 'loader'; ld.className = 'ld';
+  ld.innerHTML = '<div class="ld-box"><div class="ld-saus"><div class="ld-body"><div class="ld-fill"></div></div><i class="ld-stick"></i></div>' +
+    '<div class="ld-txt">LOADING<span>...</span></div></div>';
   document.body.appendChild(ld);
   setBarColor('#E0833F');
-  var fill = ld.querySelector('.ld-fill'), pct = ld.querySelector('.ld-pct'), t0 = now(), DUR = 1300;
+  var fill = ld.querySelector('.ld-fill'), t0 = now(), DUR = 1300;
   (function step() {
     var k = Math.min(1, (now() - t0) / DUR), e = 1 - Math.pow(1 - k, 2.2);
-    fill.style.width = (e * 100).toFixed(1) + '%'; pct.textContent = Math.round(e * 100) + '%';
+    fill.style.height = (e * 100).toFixed(1) + '%';
     if (k < 1) return requestAnimationFrame(step);
     // 加载完：在加载画面后面开局，再淡出
     startLevel(i);
