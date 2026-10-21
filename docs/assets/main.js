@@ -137,7 +137,7 @@ function log(text, kind) {
 /* ============ 背景音乐（WebAudio 解码 bgm-data.js 里的 mp3，首次触摸后才能播放） ============ */
 var bgmBuf = null, bgmSrc = null, bgmLoading = false, bgmGain = null;
 function musicVol() { var v = G.vol && G.vol.m != null ? G.vol.m : 100; return v / 100; }
-function sfxVol() { var v = G.vol && G.vol.s != null ? G.vol.s : 100; return v / 100; }
+function sfxVol() { if (G.sfx === false) return 0; var v = G.vol && G.vol.s != null ? G.vol.s : 100; return v / 100; }
 function setVol(k, v) {
   G.vol = G.vol || {m:100, s:100}; G.vol[k] = v; save();
   if (k === 'm' && bgmGain) bgmGain.gain.value = .2 * musicVol();
@@ -1161,6 +1161,7 @@ function menu() {
     (!inGame && menuShopOpen ? pauseShop(false) : ''));
 }
 // 暂停：顶部标签头 + 右上角关闭 + 背景音乐 / 音效音量 + 重玩本关 + 回地图 / 继续游戏（参考美术暂停图）
+var ICON_BOOK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5C6.5 4 9.5 4 12 6c2.5-2 5.5-2 8-.5V19c-2.5-1.5-5.5-1.5-8 .5-2.5-2-5.5-2-8-.5z" fill="#B97A5A"/><path d="M12 6v13.5" stroke="#FBF0E1" stroke-width="1.6"/></svg>';
 var ICON_SPK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#B97A5A"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="#B97A5A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>';
 var ICON_NOTE = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 17.5V5.5l11-2.5v12" stroke="#B97A5A" stroke-width="2.4" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="3" fill="#B97A5A"/><circle cx="17.5" cy="15" r="3" fill="#B97A5A"/></svg>';
 function pausePop() {
@@ -1569,7 +1570,9 @@ document.addEventListener('pointerdown', function (e) {
   if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else if (el.closest('#lvmap')) el.querySelector('img').src = './assets/img/ui/' + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp?v=' + BUILD_V; else render(); return; }
   if (a === 'tstart') { hideTitle(); return menu(); }
   if (a === 'tsettings') return titleSettings();
-  if (a === 'tmusic') { G.music = !musicOn(); save(); syncMusic(); return titleSettings(); }
+  if (a === 'tmusic' || a === 'setmusic') { G.music = !musicOn(); save(); syncMusic(); return titleSettings(); }
+  if (a === 'setsfx') { G.sfx = G.sfx === false; save(); if (G.sfx !== false) ding(880, .08); return titleSettings(); }
+  if (a === 'retut') { G.seen = {}; save(); return titleSettings('好的！第 1、2、7、9 关的老王教学会重新出现（第 1 关从教学关开始玩即可）'); }
   if (a === 'tclose') return hideOverlay();
   if (a === 'menu') return menu();
   if (a === 'intro') return intro(i);
@@ -1792,11 +1795,22 @@ function hideTitle() {
   ts.className += ' out';
   setTimeout(function () { if (ts.parentNode) ts.parentNode.removeChild(ts); }, 350);
 }
-function titleSettings() {
-  var vm = Math.round(musicVol() * 100), vs = Math.round(sfxVol() * 100);
-  framePop('设置', '<div class="ps-row"><span class="ps-ic">' + ICON_NOTE + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vm + '" data-vol="m" style="--p:' + vm + '%" aria-label="背景音乐音量"></div>' +
-    '<div class="ps-row"><span class="ps-ic">' + ICON_SPK + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vs + '" data-vol="s" style="--p:' + vs + '%" aria-label="音效音量"></div>' +
-    '<div class="sp-foot"><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
+function titleSettings(msg) {
+  var vm = Math.round((G.vol && G.vol.m != null ? G.vol.m : 100)), vs = Math.round((G.vol && G.vol.s != null ? G.vol.s : 100));
+  var tg = function (act, on) { return '<button class="st-tog' + (on ? ' on' : '') + '" data-act="' + act + '"><span class="st-lab">' + (on ? '开' : '关') + '</span><i></i></button>'; };
+  var row = function (ic, name, ctl) { return '<div class="st-row"><span class="ps-ic">' + ic + '</span><span class="st-name">' + name + '</span>' + ctl + '</div>'; };
+  var slider = function (k, v, lab) { return '<input class="ps-range" type="range" min="0" max="100" step="5" value="' + v + '" data-vol="' + k + '" style="--p:' + v + '%" aria-label="' + lab + '">'; };
+  framePop('设置',
+    '<div class="st-sec">声音</div>' +
+    row(ICON_NOTE, '背景音乐', tg('setmusic', musicOn())) +
+    row(ICON_SPK, '音效', tg('setsfx', G.sfx !== false)) +
+    row(ICON_NOTE, '音乐音量', slider('m', vm, '背景音乐音量')) +
+    row(ICON_SPK, '音效音量', slider('s', vs, '音效音量')) +
+    '<div class="ps-div st-div"></div>' +
+    '<div class="st-sec">其他</div>' +
+    row(ICON_BOOK, '老王教学', '<button class="st-btn" data-act="retut">重新看一遍</button>') +
+    (msg ? '<div class="st-msg">' + msg + '</div>' : '') +
+    '<div class="sp-foot"><button class="sp-big list" data-act="tclose"><span>返回</span></button><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
 }
 
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */

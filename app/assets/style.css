@@ -917,3 +917,21 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* 加载画面中间留一圈纯色，把背景花纹淡掉，烤肠和字才看得清 */
 .ld::before{content:"";position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:radial-gradient(circle,#E3864A 0,#E3864A 38%,rgba(227,134,74,0) 70%);pointer-events:none}
 .ld-box{position:relative}
+
+/* ===== 设置（加长版）===== */
+.st-sec{text-align:left;font-size:12px;font-weight:800;color:#C7A08A;letter-spacing:.2em;margin:4px 4px 6px}
+.st-row{display:flex;align-items:center;min-height:52px;margin:4px 0 10px}
+.st-row .ps-ic{width:30px;height:30px;margin-right:10px}
+.st-name{flex:none;width:70px;text-align:left;font-size:15px;font-weight:800;color:#8A4A2C}
+.st-row .ps-range{flex:1;margin-left:4px}
+.st-row .st-tog,.st-row .st-btn{margin-left:auto}
+.st-tog{position:relative;width:92px;height:38px;padding:0;border:0;border-radius:19px;background:#D9CBBE;box-shadow:inset 0 2px 4px rgba(100,60,30,.25)}
+.st-tog i{position:absolute;left:4px;top:4px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#FFFFFF,#EDE2D6);box-shadow:0 2px 0 #B8A594;transition:left .18s}
+.st-tog .st-lab{position:absolute;right:16px;top:0;bottom:0;display:flex;align-items:center;font-family:"ShuHei","PingFang SC",sans-serif;font-size:16px;color:#fff}
+.st-tog.on{background:linear-gradient(180deg,#FFD66B,#F5A623);box-shadow:inset 0 2px 3px rgba(150,90,0,.3)}
+.st-tog.on i{left:58px}
+.st-tog.on .st-lab{right:auto;left:16px;text-shadow:0 1.5px 0 #B86A0C}
+.st-btn{height:38px;padding:0 16px;border:0;border-radius:19px;background:linear-gradient(180deg,#FFFBF2,#F3E2CC);color:#A65A3A;font-size:14px;font-weight:900;box-shadow:0 3px 0 #D9BFA4,inset 0 2px 0 #fff}
+.st-btn:active{transform:translateY(2px)}
+.st-div{margin:10px 2px 14px}
+.st-msg{margin:-2px 4px 8px;padding:8px 10px;border-radius:12px;background:#FFF1D8;color:#A65A3A;font-size:12px;font-weight:700;text-align:left;line-height:1.5}
