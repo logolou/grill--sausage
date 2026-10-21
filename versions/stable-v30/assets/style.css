@@ -929,3 +929,4 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* 设置页的音量条细一点 */
 .st-row .ps-range{height:14px;border-radius:7px}
 .st-row .ps-range::-webkit-slider-thumb{width:26px;height:26px}
+.sp-bank{margin-bottom:12px}

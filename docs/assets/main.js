@@ -1514,7 +1514,7 @@ function shop() {
   var foot = inGame ? '<button class="sp-big go" data-act="menu"><span>回到暂停</span></button>'
     : fromRes ? '<button class="sp-big go" data-act="shareback"><span>返回结算</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>'
     : '<button class="sp-big go" data-act="intro" data-i="' + nxt + '"><span>去第 ' + (nxt + 1) + ' 关</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>';
-  framePop('升级小摊', bankBar() + '<div class="sp-sub">永久有效</div><div class="sp-list">' + rows + '</div><div class="sp-foot">' + foot + '</div>',
+  framePop('升级小摊', bankBar() + '<div class="sp-list">' + rows + '</div><div class="sp-foot">' + foot + '</div>',
     inGame ? 'menu' : fromRes ? 'shareback' : 'menu');
 }
 // 道具商店（地图 / 结算 两处进来，返回各回各的）
