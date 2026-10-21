@@ -797,6 +797,8 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .rp-btn:active{transform:scale(.96)}
 .rp-icons{margin-top:12px}
 /* 结算：星星压在飘带上方；标题在飘带正中（飘带布面中心约在图高 36% 处） */
-.rp .rp-stars{position:relative;z-index:3;margin:0 0 -30px}
+.rp .rp-stars{position:relative;z-index:1;margin:0 0 -34px}   /* 星星下半截藏在飘带后面 */
+.rp .rp-stars img{width:66px;height:66px;margin:0 -3px}
+.rp .rp-stars img.s1{width:92px;height:92px;margin-bottom:8px}
 .rp .lp-ribbon{padding-bottom:32px}
 .rp .lp-ribbon b{margin-right:-.04em}
