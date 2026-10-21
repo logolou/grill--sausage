@@ -970,6 +970,11 @@ function patColor(r) { return r > .5 ? 'var(--good)' : r > .25 ? 'var(--gold)' :
 /* ============ 渲染（主界面：720×1280 的场景舞台，整体等比缩放） ============ */
 var SC = './assets/img/scene/';
 var CUST_ART = [['豆豆','kid01'],['小胖','kid02'],['朵朵','kid03'],['学霸','kid04'],['皮皮','kid05'],['班长','kid06'],['王阿姨','parent01'],['李叔叔','parent02'],['体育老师','teacher'],['奶奶','grandma']];
+function custMood(c) {
+  var r = c.pat / c.patMax;
+  if (c.review === 'bad' || (c.state === 'leave' && !c.served)) return 'angry';
+  return c.state === 'wait' && r <= .35 ? 'anxious' : '';
+}
 function custArt(c) {
   var id = 'kid01';
   for (var n = 0; n < CUST_ART.length; n++) if (c.name.indexOf(CUST_ART[n][0]) >= 0) { id = CUST_ART[n][1]; break; }
@@ -977,7 +982,7 @@ function custArt(c) {
   // 只用三种表情：等待 / 耐心快没了着急 / 做错了或等太久生气
   if (c.state === 'wait') st = r > .35 ? 'wait' : 'anxious';
   else if (c.review === 'bad' || (c.state === 'leave' && !c.served)) st = 'angry';
-  return './assets/img/cust/' + id + '_' + st + '.webp?v=' + BUILD_V;
+  return './assets/img/cust/' + id + '.webp?v=' + BUILD_V;
 }
 var BAND_ICON = {'嫩':'tender', '脆':'crispy', '微焦':'charred'};
 var SAUCE_ICON = {'番茄':'tomato', '蜂蜜芥末':'honeymustard', '甜辣':'sweetchili'};
@@ -1033,11 +1038,12 @@ function render() {
     if (c.state === 'flee') { if (G.up.cam) cls += ' cam'; style = walkStyle(1 - c.timer / 3.2); }
     if (c.state === 'leave') style = walkStyle(1 - c.timer / 1);
     if (c.tag) cls += spot(c.tag);
+    var mood = custMood(c); if (mood) cls += ' ' + mood;
     var clickable = c.state !== 'leave' || (c.served && !c.accused);
     q += '<div class="' + cls + '"' + style + (clickable ? ' data-act="cust" data-i="' + c.id + '"' : '') + (c.state === 'wait' ? ' data-cid="' + c.id + '"' : '') + (c.tag ? ' data-tag="' + c.tag + '"' : '') + '>' +
       '<div class="bubble">' + (c.say ? '<div class="say">' + c.say + '</div>' : orderHTML(c)) +
       (c.state === 'wait' ? '<div class="pat"><i style="width:' + (r * 100) + '%;background:' + patColor(r) + '"></i></div>' : '') + '</div>' +
-      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
+      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' + (mood ? '<i class="mood">' + (mood === 'angry' ? '💢' : '💦') + '</i>' : '') + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
   }
   $('queue').innerHTML = q;
 
@@ -1051,9 +1057,9 @@ function render() {
   $('gfire').style.opacity = (R.heat * .95).toFixed(2);
   var lv = R.heatLv == null ? 1 : R.heatLv;
   setHTML('fireCtl', (G.up.fire ? '<span class="heat">' + HEAT_LV.map(function (h, k) {
-      return '<button class="hl' + (k === lv ? ' on' : '') + '" data-act="heatlv" data-i="' + k + '">' + h.name + '</button>';
+      return '<button class="hl' + (k === lv ? ' on' : '') + '" data-act="heatlv" data-i="' + k + '" aria-label="' + h.name + '火"><img alt="" src="' + SC + 'heat_' + 'sml'.charAt(k) + '.webp' + V + '"></button>';
     }).join('') + '</span>' : '') +
-    '<button class="knob' + (R.fire ? ' on' : '') + spot('fire') + '" data-act="fire" aria-label="' + (R.fire ? '停火' : '点火') + '"><span>' + (R.fire ? '停火' : '点火') + '</span></button>');
+    '<button class="knob' + (R.fire ? ' on' : '') + spot('fire') + '" data-act="fire" aria-label="' + (R.fire ? '停火' : '点火') + '"></button>');
   var slotsEl = $('slots'), html = '';
   for (var i = 0; i < 4; i++) {
     var sl = R.slots[i];
@@ -1077,7 +1083,7 @@ function render() {
     html += '<div class="slot' + (sticky ? ' sticky' : '') + (ost === 2 ? ' dry' : '') + (jolt ? ' jolt' : '') + (i === 0 ? spot('slot0') : '') + '">' +
       '<span class="tag ' + j + '">' + ({raw:'还生', burnt:'焦了！'}[j] || JUDGE_TEXT[j]) + '</span>' +
       (v2 && sticky ? '<span class="stuck">' + (ost === 2 ? '干锅' : '粘锅') + (sl.pry ? ' ' + sl.pry + '/' + (ost === 2 ? 3 : 2) : '') + '</span>' : '') +
-      '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><img class="saus-img' + (j === 'burnt' ? ' smoke' : '') + (s.down === 'b' ? ' flip' : '') + '" alt="" src="' + SC + 's_' + (SAUS_ART[j] || 'raw') + '.webp' + V + '"></div>' +
+      '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><img class="saus-img' + (j === 'burnt' ? ' smoke' : '') + '" alt="" src="' + SC + 's_' + (SAUS_ART[j] || 'raw') + '.webp' + V + '"></div>' +
       '<div class="meters">' + m('上', s[up], false) + m('下', s[s.down], true) + '</div>' +
       '<button class="pick ' + (j === 'burnt' ? 'red' : '') + (i === 0 ? spot('pick0') : '') + '" data-act="pick" data-i="' + i + '">夹起</button></div>';
   }

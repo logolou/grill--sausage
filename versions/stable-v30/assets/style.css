@@ -1171,3 +1171,23 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .oilcan{left:650px}
 .sc-qr img{transform:scaleX(-1)}
 #app.scene .slot-btn{border:0;background:none}
+
+/* 客人立绘（半身像）+ 表情角标 */
+#app.scene .cust .who{height:300px;bottom:-4px}
+#app.scene .cust .mood{position:absolute;right:30px;top:180px;font-style:normal;font-size:44px;z-index:2;pointer-events:none;-webkit-animation:moodPop .6s ease-in-out infinite alternate;animation:moodPop .6s ease-in-out infinite alternate}
+@-webkit-keyframes moodPop{from{-webkit-transform:scale(.9)}to{-webkit-transform:scale(1.1)}}
+@keyframes moodPop{from{transform:scale(.9)}to{transform:scale(1.1)}}
+#app.scene .cust.anxious .who{-webkit-animation:shakeX .5s infinite;animation:shakeX .5s infinite}
+#app.scene .cust.angry .who{-webkit-filter:sepia(.3) saturate(1.4) hue-rotate(-15deg);filter:sepia(.3) saturate(1.4) hue-rotate(-15deg)}
+/* 锅位：不要任何描边框；翻面不翻转图片 */
+#app.scene .slot,#app.scene .slot.sticky,#app.scene .slot.dry{box-shadow:none !important;outline:0}
+#app.scene .saus-area,#app.scene .saus-area:active{background:none !important;box-shadow:none !important;border:0 !important}
+#app.scene .saus-area.spot,#app.scene .slot.spot{box-shadow:none !important}
+#app.scene .meter.down{box-shadow:none}
+/* 火力：旋钮不写字；小中大用火焰图标 */
+.knob span{display:none}
+#fireCtl .hl{width:44px;height:44px;padding:0;background:rgba(255,248,236,.85);border-radius:50%;display:flex;align-items:center;justify-content:center}
+#fireCtl .hl img{width:80%;height:80%;object-fit:contain}
+#fireCtl .hl.on{background:#FFD65A;box-shadow:0 0 0 3px #F5A623}
+/* 加载字样：手写体 */
+.ld-txt{font-family:"Chalkboard SE","Chalkboard","Marker Felt","Noteworthy","Comic Sans MS",cursive !important;font-weight:700;letter-spacing:.12em}
