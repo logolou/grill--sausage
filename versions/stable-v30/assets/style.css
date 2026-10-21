@@ -954,3 +954,19 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .sp-bank b{left:24%;right:2%;top:5.5%;bottom:8.5%}   /* 正好落在奶油色槽的中间 */
 .lm-stat.heart b{font-size:13px;letter-spacing:.06em}
 .lm-stat.star b{font-size:13px}
+
+/* ===== 地图 v2：一张高清底图铺满 + 程序画的关卡圆台 ===== */
+.lvmap{overflow:hidden;background-image:none !important}
+.lvmap::after,.lvmap.has-bar::after{display:none}
+.lvmap .lm-stage{position:absolute;max-width:none;margin:0}
+.lvmap .lm-bg{position:absolute;left:0;top:0;width:100%;height:100%}
+.lvmap .lm-node{position:absolute;height:auto;margin:0;transform:translate(-50%,-62%);padding:0;border:0;background:none;border-radius:0}
+.lvmap .lm-node svg{display:block;width:100%;height:auto;overflow:visible;-webkit-filter:drop-shadow(0 4px 3px rgba(90,40,10,.35));filter:drop-shadow(0 4px 3px rgba(90,40,10,.35))}
+.lvmap .lm-node.open svg,.lvmap .lm-node.cur svg{-webkit-filter:drop-shadow(0 0 8px rgba(255,214,90,.9)) drop-shadow(0 4px 3px rgba(120,60,0,.3));filter:drop-shadow(0 0 8px rgba(255,214,90,.9)) drop-shadow(0 4px 3px rgba(120,60,0,.3))}
+.lvmap .lm-node.cur svg{-webkit-animation:lmGlow 1.4s ease-in-out infinite;animation:lmGlow 1.4s ease-in-out infinite}
+@-webkit-keyframes lmGlow{0%,100%{-webkit-filter:drop-shadow(0 0 6px rgba(255,214,90,.7)) drop-shadow(0 4px 3px rgba(120,60,0,.3))}50%{-webkit-filter:drop-shadow(0 0 16px rgba(255,236,140,1)) drop-shadow(0 4px 3px rgba(120,60,0,.3))}}
+@keyframes lmGlow{0%,100%{filter:drop-shadow(0 0 6px rgba(255,214,90,.7)) drop-shadow(0 4px 3px rgba(120,60,0,.3))}50%{filter:drop-shadow(0 0 16px rgba(255,236,140,1)) drop-shadow(0 4px 3px rgba(120,60,0,.3))}}
+.lvmap .lm-node .lm-arrow{position:absolute;left:50%;top:-18%;width:0;height:0}
+.lvmap .lm-node{transform:translate(-50%,-58%)}
+.lvmap .lm-node.open svg{-webkit-filter:drop-shadow(0 5px 3px rgba(120,60,0,.35));filter:drop-shadow(0 5px 3px rgba(120,60,0,.35))}
+.lvmap .lm-node.lock svg{-webkit-filter:drop-shadow(0 5px 3px rgba(60,40,40,.3));filter:drop-shadow(0 5px 3px rgba(60,40,40,.3))}

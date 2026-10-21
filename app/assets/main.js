@@ -1833,6 +1833,22 @@ function titleSettings(msg) {
 
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
 // 站点中心（地图图 750×1624 的坐标），1 在最下面，10 在校门口
+// 新地图（1125×2000）上 10 块石板的中心和宽度，1 在最下面
+var MAP_PADS = [[650,1850,270],[650,1560,250],[370,1350,240],[680,1200,230],[690,950,215],[490,810,205],[420,624,195],[660,510,185],[870,390,175],[720,300,165]];
+// 关卡站点：画成一块圆台，锁着的灰蓝色带小锁，解锁的金黄色，当前关会发光
+function nodeSVG(n, st) {
+  var lock = st === 'lock', id = 'g' + n + st;
+  var top = lock ? '#DCE4EC' : '#FFD95E', top2 = lock ? '#A9B9C9' : '#F6A21F', side = lock ? '#7D8FA3' : '#C96A18', side2 = lock ? '#62738A' : '#A9530F', ink = lock ? '#6E8197' : '#A9530F';
+  return '<svg viewBox="0 0 120 100" aria-hidden="true"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + top + '"/><stop offset="1" stop-color="' + top2 + '"/></linearGradient>' +
+    '<linearGradient id="' + id + 's" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + side + '"/><stop offset="1" stop-color="' + side2 + '"/></linearGradient></defs>' +
+    '<ellipse cx="60" cy="66" rx="56" ry="26" fill="url(#' + id + 's)"/><rect x="4" y="40" width="112" height="26" fill="url(#' + id + 's)"/>' +
+    '<ellipse cx="60" cy="40" rx="56" ry="26" fill="url(#' + id + ')"/>' +
+    '<ellipse cx="60" cy="40" rx="52" ry="23" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2.5"/>' +
+    '<ellipse cx="48" cy="30" rx="26" ry="8" fill="#fff" opacity=".35"/>' +
+    '<text x="60" y="' + (lock ? 47 : 54) + '" text-anchor="middle" font-family="ShuHei,PingFang SC,sans-serif" font-size="' + (lock ? 34 : 44) + '" fill="#fff" stroke="' + ink + '" stroke-width="6" paint-order="stroke" stroke-linejoin="round">' + n + '</text>' +
+    (lock ? '<g transform="translate(60 72)"><path d="M-7 -6v-5a7 7 0 0 1 14 0v5" fill="none" stroke="#fff" stroke-width="5"/><rect x="-12" y="-7" width="24" height="18" rx="5" fill="#fff"/><circle cy="1" r="3" fill="' + ink + '"/><rect x="-1.2" y="1" width="2.4" height="5" rx="1" fill="' + ink + '"/></g>' : '') +
+    '</svg>';
+}
 var MAP_TOP10 = 188;   // 左侧「升级小摊」顶边对齐的高度：第 10 关石头顶边的 y（地图坐标）
 // 当前关（金色石头）上数字的中心，按每张地图实测（每张图石头位置略有不同）；小三角放在数字正上方
 var MAP_DIGITS = [[346,1509],[540,1383],[402,1217],[298,1020],[610,846],[470,709],[230,579],[307,439],[612,314],[503,219]];   // 第 10 关石头顶边的 y（地图坐标）
@@ -1866,12 +1882,13 @@ function showMap() {
   hideOverlay(); hideMap();
   var open = Math.min(G.cleared + 1, 10), cur = Math.min(G.cleared, 9);   // 已解锁的站点数 / 当前该玩的那一关
   var mp = document.createElement('div'); mp.id = 'lvmap'; mp.className = 'lvmap' + (G.cleared >= ENDLESS ? ' has-bar' : '');
-  var h = '<i class="lm-tint top"></i><i class="lm-tint bot"></i><div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_' + (open < 10 ? '0' : '') + open + '.webp?v=' + BUILD_V + '">';
-  MAP_NODES.forEach(function (n, i) {
-    h += '<button class="lm-node' + (i < open ? ' open' : ' lock') + (i === cur && G.cleared < 10 ? ' cur' : '') + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 7.5) + '%;top:' + (n[1] / 16.24) + '%" aria-label="第 ' + (i + 1) + ' 关"></button>';
+  var h = '<i class="lm-tint top"></i><i class="lm-tint bot"></i><div class="lm-stage"><img class="lm-bg" alt="关卡地图" src="./assets/img/map/map_bg.webp?v=' + BUILD_V + '">';
+  MAP_PADS.forEach(function (n, i) {
+    var st = i < open ? (i === cur && G.cleared < 10 ? 'cur' : 'open') : 'lock', w = n[2] * .9;
+    h += '<button class="lm-node ' + st + '" data-act="mapnode" data-i="' + i + '" style="left:' + (n[0] / 11.25) + '%;top:' + (n[1] / 20) + '%;width:' + (w / 11.25) + '%" aria-label="第 ' + (i + 1) + ' 关">' + nodeSVG(i + 1, st) +
+      (st === 'cur' ? '<i class="lm-arrow"><b>▼</b></i>' : '') + '</button>';
   });
   var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
-  if (G.cleared < 10) { var dg = MAP_DIGITS[cur]; h += '<i class="lm-arrow" style="left:' + (dg[0] / 7.5) + '%;top:' + ((dg[1] - 30) / 16.24) + '%"><b>▼</b></i>'; }
   h += '</div><div class="lm-hud">' +
     '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
     '<div class="lm-stat star"><img alt="" src="' + UI + 'ui_star.webp' + V + '"><b>¥' + G.bank + '</b></div>' +
@@ -1881,20 +1898,18 @@ function showMap() {
     '<button class="lm-ico" data-act="mapitems" aria-label="道具商店"><img alt="" src="' + UI + 'ui_shop.webp' + V + '"><small>道具商店</small></button></div></div>' +
     (G.cleared >= ENDLESS ? '<div class="lm-bar"><button class="lm-pill hot" data-act="intro" data-i="' + ENDLESS + '">无尽模式</button></div>' : '');
   mp.innerHTML = h;
-  var mapUrl = './assets/img/map/map_' + (open < 10 ? '0' : '') + open + '.webp?v=' + BUILD_V;
-  mp.style.backgroundImage = 'url("' + mapUrl + '"), url("' + mapUrl + '")';
   document.body.appendChild(mp);
   // Safari 状态栏 / 工具栏跟着地图的颜色走（不再是开始画面的紫色）
   setBarColor('#D68550'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#D68550';
-  // 先滚到当前站点附近
-  var img = mp.querySelector('.lm-bg');
-  function scrollCur() { var n = MAP_NODES[cur]; mp.scrollTop = Math.max(0, mp.scrollHeight * n[1] / 1624 - mp.clientHeight * .6); }
-  function alignSide() {
-    var st = mp.querySelector('.lm-stage').getBoundingClientRect(), side = mp.querySelector('.lm-side');
-    if (st.height) side.style.top = Math.max(60, st.top + st.height * MAP_TOP10 / 1624) + 'px';
+  // 地图整张铺满屏幕（像开始画面一样等比放大，多出来的两边 / 上下裁掉），不用滚动
+  var stage = mp.querySelector('.lm-stage');
+  function fitMap() {
+    var W = mp.clientWidth, H = mp.clientHeight, sc = Math.max(W / 1125, H / 2000), w = 1125 * sc, hh = 2000 * sc;
+    stage.style.width = w + 'px'; stage.style.height = hh + 'px'; stage.style.left = (W - w) / 2 + 'px'; stage.style.top = (H - hh) / 2 + 'px';
+    var side = mp.querySelector('.lm-side'), p10 = MAP_PADS[9];
+    side.style.top = Math.max(60, (H - hh) / 2 + (p10[1] - p10[2] * .32) * sc) + 'px';
   }
-  if (img.complete) { scrollCur(); alignSide(); } else img.onload = function () { scrollCur(); alignSide(); };
-  mp.addEventListener('scroll', alignSide);
+  fitMap(); window.addEventListener('resize', function () { if (mp.parentNode) fitMap(); });
 }
 function showItemShop() { itemShop('mapclose'); }
 function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = ''; } }
