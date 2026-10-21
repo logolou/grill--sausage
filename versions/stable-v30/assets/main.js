@@ -638,8 +638,8 @@ function itemBar() {
     var n = G.items[it.id] || 0, off = it.id === 'hourglass' && R.L.endless;
     if (!n && G.bank < it.cost) off = true;
     var urge = it.id === 'hourglass' && urgeHourglass();
-    return '<button class="itm' + (n ? '' : ' buy') + (urge ? ' urge' + (blinkOn() ? ' on' : '') : '') + '" data-act="useitem" data-i="' + idx + '"' + (off ? ' disabled' : '') + '>' +
-      '<i>' + it.icon + '</i>' + (it.bar || it.name) + '<b>' + (n ? '×' + n : '¥' + it.cost) + '</b></button>';
+    return '<button class="itm' + (n ? '' : ' buy') + (urge ? ' urge' + (blinkOn() ? ' on' : '') : '') + '" data-act="useitem" data-i="' + idx + '"' + (off ? ' disabled' : '') + ' aria-label="' + it.name + '">' +
+      '<img alt="" src="./assets/img/items/' + it.id + '.webp?v=' + BUILD_V + '"><b>' + (n ? '×' + n : '¥' + it.cost) + '</b></button>';
   }).join('') + '</div>';
 }
 function useItem(i) {
@@ -952,54 +952,68 @@ function boxHTML(fresh, n) {
 /* ============ 渲染 ============ */
 function walkStyle(p) { p = Math.max(0, Math.min(1, p)); return ' style="transform:translateX(' + (p * 70).toFixed(1) + '%);opacity:' + (1 - p * .75).toFixed(2) + '"'; }
 function patColor(r) { return r > .5 ? 'var(--good)' : r > .25 ? 'var(--gold)' : 'var(--red)'; }
-function chip(field, sp) {
-  if (field === 'band') return '<span class="chip b-' + sp.band + '">' + sp.band + '</span>';
-  if (field === 'sauce') return '<span class="chip">' + (sp.sauce ? SHORT[sp.sauce] : '不要酱') + '</span>';
-  return '<span class="chip">' + (sp.spice ? '撒' + sp.spice : '不要料') + '</span>';
+/* ============ 渲染（主界面：720×1280 的场景舞台，整体等比缩放） ============ */
+var SC = './assets/img/scene/';
+var CUST_ART = [['豆豆','kid01'],['小胖','kid02'],['朵朵','kid03'],['学霸','kid04'],['皮皮','kid05'],['班长','kid06'],['王阿姨','parent01'],['李叔叔','parent02'],['体育老师','teacher'],['奶奶','grandma']];
+function custArt(c) {
+  var id = 'kid01';
+  for (var n = 0; n < CUST_ART.length; n++) if (c.name.indexOf(CUST_ART[n][0]) >= 0) { id = CUST_ART[n][1]; break; }
+  var r = c.pat / c.patMax, st = 'wait';
+  if (c.state === 'wait') st = r > .35 ? 'wait' : 'anxious';
+  else if (c.state === 'flee') st = 'sneak';
+  else if (c.state === 'paying') st = c.review === 'bad' ? 'angry' : 'happy';
+  else if (c.state === 'leave') st = c.served && c.review !== 'bad' ? 'walk' : 'angry';
+  return './assets/img/cust/' + id + '_' + st + '.webp?v=' + BUILD_V;
 }
-function orderHTML(c) {
-  var sp = c.specs, fields = ['band', 'sauce'].concat(R.L.spices.length ? ['spice'] : []);
-  var diff = sp.length === 2 ? fields.filter(function (f) { return sp[0][f] !== sp[1][f]; }) : [];
-  var h = '<span class="q">' + (sp.length === 2 ? '两根' : '一根') + '</span>';
-  fields.forEach(function (f) { if (diff.indexOf(f) < 0) h += chip(f, sp[0]); });
-  if (diff.length) [0, 1].forEach(function (k) {
-    h += '<span class="ln"><i>' + (k ? '②' : '①') + '</i>' + diff.map(function (f) { return chip(f, sp[k]); }).join('') + '</span>';
-  });
+var BAND_ICON = {'嫩':'tender', '脆':'crispy', '微焦':'charred'};
+var SAUCE_ICON = {'番茄':'tomato', '蜂蜜芥末':'honeymustard', '甜辣':'sweetchili'};
+var SPICE_ICON = {'孜然':'cumin', '辣椒':'chili'};
+function oIcon(name, label) { return '<span class="oi"><img alt="" src="' + SC + 'i_' + name + '.webp?v=' + BUILD_V + '"><small>' + label + '</small></span>'; }
+// 订单气泡：一行图标（数量 / 火候 / 酱 / 小料）；两根不一样时分两行写
+function orderIcons(sp) {
+  var h = oIcon(BAND_ICON[sp.band] || 'tender', sp.band);
+  h += sp.sauce ? oIcon(SAUCE_ICON[sp.sauce], SHORT[sp.sauce].replace('酱', '')) : oIcon('none', '无酱');
+  if (R.L.spices.length) h += sp.spice ? oIcon(SPICE_ICON[sp.spice] || 'cumin', sp.spice) : oIcon('none', '无料');
   return h;
 }
+function orderHTML(c) {
+  var sp = c.specs, same = sp.length === 1 || (sp[0].band === sp[1].band && sp[0].sauce === sp[1].sauce && sp[0].spice === sp[1].spice);
+  var h = '<div class="o-q">' + oIcon(sp.length === 2 ? 'qty_2' : 'qty_1', sp.length === 2 ? '两根' : '一根') + '</div>';
+  if (same) return h + '<div class="o-row">' + orderIcons(sp[0]) + '</div>';
+  return h + '<div class="o-row"><i class="o-n">①</i>' + orderIcons(sp[0]) + '</div><div class="o-row"><i class="o-n">②</i>' + orderIcons(sp[1]) + '</div>';
+}
+var SAUS_ART = {raw:'raw', '嫩':'tender', '脆':'crispy', '微焦':'charred', burnt:'burnt', uneven:'half'};
+var TOOL_SPOT = {'番茄':[478, 598, 52], '蜂蜜芥末':[533, 598, 52], '甜辣':[588, 598, 52]};
+var SPICE_SPOT = {'孜然':[508, 748, 106], '辣椒':[612, 748, 106]};
 function render() {
   if (!R) return;
-  var L = R.L, g = L.goal, st = tutStep(), k;
+  var L = R.L, g = L.goal, st = tutStep(), k, V = '?v=' + BUILD_V;
   var left = Math.max(0, L.time + (R.bonusT || 0) - R.t);
 
   // 教学讲解条 / HUD
-  $('coach').hidden = !st; $('hud').hidden = !!st;
+  $('coach').hidden = !st;
   if (st) {
     var showBtn = st.btn && (!st.until || st.until());
-    setHTML('coach', '<div class="who">👨‍🍳</div><div class="step">' + R.tut.label + ' ' + (R.tut.i + 1) + ' / ' + R.tut.steps.length + '</div>' +
+    setHTML('coach', '<div class="who">👩‍🍳</div><div class="step">' + R.tut.label + ' ' + (R.tut.i + 1) + ' / ' + R.tut.steps.length + '</div>' +
       '<p>' + st.text + '</p>' + (st.extra ? st.extra() : '') + '<div class="row"><button class="skip" data-act="tutskip">' + (R.tut.steps === TUT ? '跳过教学' : '跳过') + '</button>' + (st.btn2 ? '<button class="alt" data-act="' + st.btn2[1] + '" data-i="' + R.i + '">' + st.btn2[0] + '</button>' : '') +
       (showBtn ? '<button class="next" data-act="tutnext">' + st.btn + '</button>' : '') + '</div>');
-  } else {
-    setHTML('hud', '<div class="lv">' + (L.endless ? '无尽模式' : '第 ' + (R.i + 1) + ' 关 · ' + L.name) + '</div>' +
-      '<button class="pause mus' + (musicOn() ? '' : ' off') + '" data-act="music" aria-label="背景音乐">♪</button>' +
-      '<button class="pause" data-act="menu">暂停</button>' +
-      '<div class="stats">' +
-        '<div class="stat' + (g.money != null && R.net >= g.money ? ' done' : '') + '"><b>¥' + R.net + (g.money != null ? ' / ' + g.money : '') + '</b><span>' + (L.endless ? '本局净赚' : '本关净赚') + '</span></div>' +
-        '<div class="stat' + (g.hearts != null && R.hearts >= g.hearts ? ' done' : '') + (L.endless && R.hearts <= 2 ? ' low' : '') + '"><b>❤ ' + R.hearts + (g.hearts != null ? ' / ' + g.hearts : '') + '</b><span>' + (L.endless ? '口碑' : '爱心') + '</span></div>' +
-        '<div class="stat' + (urgeHourglass() && blinkOn() ? ' hurry' : '') + '"><b>' + fmtT(L.endless ? R.t : left) + '</b><span>' + (L.endless ? '已营业' : '剩余时间') + '</span></div>' +
-      '</div>' + (L.endless ? '' : '<div class="timebar"><i style="width:' + Math.min(100, left / (L.time + (R.bonusT || 0)) * 100) + '%"></i></div>') +
-      itemBar());
   }
+  var RES = './assets/img/res/';
+  setHTML('hud',
+    '<div class="h-stat' + (g.money != null && R.net >= g.money ? ' done' : '') + '"><img alt="" src="' + RES + 'coin.webp' + V + '"><b>' + (R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net) + (g.money != null ? '<small>/' + g.money + '</small>' : '') + '</b></div>' +
+    '<div class="h-stat' + (g.hearts != null && R.hearts >= g.hearts ? ' done' : '') + (L.endless && R.hearts <= 2 ? ' low' : '') + '"><img alt="" src="' + RES + 'heart.webp' + V + '"><b>' + R.hearts + (g.hearts != null ? '<small>/' + g.hearts + '</small>' : '') + '</b></div>' +
+    '<div class="h-stat' + (urgeHourglass() && blinkOn() ? ' hurry' : '') + '"><img alt="" src="' + RES + 'clock.webp' + V + '"><b>' + fmtT(L.endless ? R.t : left) + '</b></div>' +
+    '<button class="h-pause" data-act="menu" aria-label="暂停"><i></i><i></i></button>' +
+    (L.endless ? '' : '<div class="timebar"><i style="width:' + Math.min(100, left / (L.time + (R.bonusT || 0)) * 100) + '%"></i></div>'));
+  setHTML('itembar', itemBar());
   $('speaker').className = 'speaker' + spot('speaker');
 
-  // 顾客
+  // 顾客：三个位置，气泡在头顶
   var q = '';
   for (k = 0; k < MAXQ; k++) {
     var c = R.cust[k];
-    if (!c) { q += '<div class="cust empty">等下一位…</div>'; continue; }
-    var r = Math.max(0, c.pat / c.patMax);
-    var cls = 'cust';
-    var style = '';
+    if (!c) { q += '<div class="cust empty"></div>'; continue; }
+    var r = Math.max(0, c.pat / c.patMax), cls = 'cust', style = '';
     if (c.state === 'wait' && anyBox(function (b) { return b.stage === 'box'; })) cls += ' ready';
     if (c.state === 'wait' && drag && drag.type === 'bag' && drag.over === c.id) cls += ' drop';
     if (c.state === 'flee') { if (G.up.cam) cls += ' cam'; style = walkStyle(1 - c.timer / 3.2); }
@@ -1007,124 +1021,107 @@ function render() {
     if (c.tag) cls += spot(c.tag);
     var clickable = c.state !== 'leave' || (c.served && !c.accused);
     q += '<div class="' + cls + '"' + style + (clickable ? ' data-act="cust" data-i="' + c.id + '"' : '') + (c.state === 'wait' ? ' data-cid="' + c.id + '"' : '') + (c.tag ? ' data-tag="' + c.tag + '"' : '') + '>' +
-      '<div class="who"><span class="face">' + c.face + '</span>' + (c.got ? '<i class="minibag"></i>' : '') + '<span class="name">' + c.name + '</span></div>' +
-      '<div class="bubble">' + orderHTML(c) + '</div>' +
-      (c.state === 'wait' ? '<div class="pat"><i style="width:' + (r * 100) + '%;background:' + patColor(r) + '"></i></div>' : '') +
-      (c.say ? '<div class="say">' + c.say + '</div>' : '') + '</div>';
+      '<div class="bubble">' + (c.say ? '<div class="say">' + c.say + '</div>' : orderHTML(c)) +
+      (c.state === 'wait' ? '<div class="pat"><i style="width:' + (r * 100) + '%;background:' + patColor(r) + '"></i></div>' : '') + '</div>' +
+      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
   }
   $('queue').innerHTML = q;
 
-  // 锅
-  var sticky = has('oil') && R.oil < 25;
+  // 锅：四道凹槽，每道一个锅位
+  var ost = typeof oilState === 'function' && typeof STICKY_V2 !== 'undefined' && STICKY_V2 ? oilState() : (has('oil') && R.oil < 25 ? 1 : 0);
+  var sticky = ost > 0, tNow = now(), v2 = typeof STICKY_V2 !== 'undefined' && STICKY_V2;
   var info = $('grillInfo');
-  info.textContent = !R.fire ? (R.heat > .05 ? '正在熄火…' : '已停火') : R.heat < .95 ? '正在升温…' : sticky ? '油不够，粘锅了！快加油' : '朝下的一面在烤 · 点烤肠翻面';
+  info.textContent = !R.fire ? (R.heat > .05 ? '正在熄火…' : '已停火') : R.heat < .95 ? '正在升温…' : ost === 2 ? '锅干了！快加油' : sticky ? '粘锅了！快加油' : '点烤肠翻面';
   info.className = sticky && R.fire ? 'warn' : '';
   $('grill').className = 'grill' + (R.heat < .5 ? ' off' : '');
+  $('gfire').style.opacity = (R.heat * .95).toFixed(2);
   var lv = R.heatLv == null ? 1 : R.heatLv;
   setHTML('fireCtl', (G.up.fire ? '<span class="heat">' + HEAT_LV.map(function (h, k) {
       return '<button class="hl' + (k === lv ? ' on' : '') + '" data-act="heatlv" data-i="' + k + '">' + h.name + '</button>';
     }).join('') + '</span>' : '') +
-    '<button class="b fire' + (R.fire ? ' on' : '') + spot('fire') + '" data-act="fire"><i class="flame"></i>' + (R.fire ? '停火' : '点火') + '</button>');
-  var slotsEl = $('slots');
-  slotsEl.className = 'slots' + (R.slots.length === 4 ? ' c4' : '');
-  slotsEl.innerHTML = R.slots.map(function (sl, i) {
+    '<button class="knob' + (R.fire ? ' on' : '') + spot('fire') + '" data-act="fire" aria-label="' + (R.fire ? '停火' : '点火') + '"><span>' + (R.fire ? '停火' : '点火') + '</span></button>');
+  var slotsEl = $('slots'), html = '';
+  for (var i = 0; i < 4; i++) {
+    var sl = R.slots[i];
+    if (!sl) { html += '<div class="slot off"></div>'; continue; }
     var lockTut = !!st && i !== 0;
     if (sl.dirt) {
       var hit = sl.scrub || 0;
-      return '<div class="slot"><div class="slot-btn dirt p' + hit + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '">铲锅巴<small>连点 ' + SCRAPE_TAPS + ' 下</small><span class="rubdots">' +
+      html += '<div class="slot"><div class="slot-btn dirt p' + hit + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '"><img alt="" src="' + SC + 'dirty.webp' + V + '"><b>铲锅巴</b><span class="rubdots">' +
         new Array(SCRAPE_TAPS + 1).join('·').split('').map(function (x, k) { return k < hit ? '●' : '○'; }).join('') + '</span></div></div>';
+      continue;
     }
     if (!sl.s) {
-      var can = R.stock > 0;
-      return '<div class="slot"><button class="slot-btn' + (lockTut ? ' locked' : '') + (i === 0 ? spot('place0') : '') + '" data-act="place" data-i="' + i + '">' +
-        (can ? '放一根' : '先串肠') + '<small>进价 ¥' + COST + '</small></button></div>';
+      html += '<div class="slot"><button class="slot-btn' + (lockTut ? ' locked' : '') + (i === 0 ? spot('place0') : '') + '" data-act="place" data-i="' + i + '"><i class="plus"></i><b>' + (R.stock > 0 ? '放一根' : '先串肠') + '</b><small>¥' + COST + '</small></button></div>';
+      continue;
     }
-    var s = sl.s, j = judge(s), up = s.down === 'a' ? 'b' : 'a';
-    function m(lab, v, isDown) {
-      return '<span>' + lab + '</span><div class="meter' + (isDown ? ' down' : '') + '"><i style="width:' + Math.min(100, v) + '%;background:' + col(v) + '"></i>' +
+    var s = sl.s, j = judge(s), up = s.down === 'a' ? 'b' : 'a', jolt = sl.jolt && tNow - sl.jolt < 260;
+    var m = function (lab, v, isDown) {
+      return '<div class="meter' + (isDown ? ' down' : '') + '"><i style="width:' + Math.min(100, v) + '%;background:' + col(v) + '"></i>' +
         [40, 70, 88].map(function (x) { return '<span class="tk" style="left:' + x + '%"></span>'; }).join('') + '</div>';
-    }
-    var jolt = sl.jolt && now() - sl.jolt < 260;
-    return '<div class="slot' + (sticky ? ' sticky' : '') + (jolt ? ' jolt' : '') + (i === 0 ? spot('slot0') : '') + '">' +
+    };
+    html += '<div class="slot' + (sticky ? ' sticky' : '') + (ost === 2 ? ' dry' : '') + (jolt ? ' jolt' : '') + (i === 0 ? spot('slot0') : '') + '">' +
       '<span class="tag ' + j + '">' + ({raw:'还生', burnt:'焦了！'}[j] || JUDGE_TEXT[j]) + '</span>' +
-      '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><span class="stick"></span><div class="saus' + (j === 'burnt' ? ' smoke' : '') + (sticky ? ' scorch' : '') + '" style="background:linear-gradient(180deg,' + col(s[up]) + ' 0,' + col(s[up]) + ' 50%,' + col(s[s.down]) + ' 50%,' + col(s[s.down]) + ' 100%)"></div></div>' +
+      (v2 && sticky ? '<span class="stuck">' + (ost === 2 ? '干锅' : '粘锅') + (sl.pry ? ' ' + sl.pry + '/' + (ost === 2 ? 3 : 2) : '') + '</span>' : '') +
+      '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><img class="saus-img' + (j === 'burnt' ? ' smoke' : '') + (s.down === 'b' ? ' flip' : '') + '" alt="" src="' + SC + 's_' + (SAUS_ART[j] || 'raw') + '.webp' + V + '"></div>' +
       '<div class="meters">' + m('上', s[up], false) + m('下', s[s.down], true) + '</div>' +
-      '<div class="sbtns">' +
-      '<button class="b ' + (j === 'burnt' ? 'red' : 'hot') + (i === 0 ? spot('pick0') : '') + '" data-act="pick" data-i="' + i + '">夹起</button></div></div>';
-  }).join('');
+      '<button class="pick ' + (j === 'burnt' ? 'red' : '') + (i === 0 ? spot('pick0') : '') + '" data-act="pick" data-i="' + i + '">夹起</button></div>';
+  }
+  setHTML('slots', html);
 
-  var tools = [];
-  if (has('oil')) tools.push('<div class="tl"><span class="lab">油 ' + Math.round(R.oil) + '%</span><div class="oilbar"><i style="width:' + R.oil + '%"></i><span class="lo"></span><span class="hi"></span></div><button class="b" data-act="oil">加油</button></div>');
-  if (has('skewer')) tools.push('<div class="tl"><span class="lab">串好的肠</span><span class="stock">' + R.stock + ' / ' + SKEWER_MAX + '</span><button class="b hot" data-act="skewer"' + (R.stock >= SKEWER_MAX ? ' disabled' : '') + '>串一根</button></div>');
-  var gt = $('gtools'); gt.className = 'gtools' + (tools.length === 2 ? ' two' : '');
-  setHTML('gtools', tools.join(''));
+  // 油壶 + 竹签筒
+  var tools = '';
+  if (has('oil')) tools += '<button class="oilcan' + (v2 && sticky ? ' low' : '') + '" data-act="oil" aria-label="加油"><img alt="" src="' + SC + 'oil.webp' + V + '"><span class="lvl"><i style="height:' + Math.round(R.oil) + '%"></i></span><b>加油</b></button>';
+  if (has('skewer')) tools += '<button class="sticks" data-act="skewer"' + (R.stock >= SKEWER_MAX ? ' disabled' : '') + ' aria-label="串一根"><img alt="" src="' + SC + 'sticks.webp' + V + '"><b>串一根 ' + R.stock + '/' + SKEWER_MAX + '</b></button>';
+  setHTML('gtools', tools);
 
-  // 打包台：两个独立的盒子，各自 装烤肠 → 装盒 → 拖给客人
+  // 酱瓶 / 调料盒（按住拖到盒里的烤肠上）
+  var canTop = anyBox(function (b) { return b.stage === 'open' && b.items.length; }), off = canTop ? '' : ' disabled', tl = '';
+  L.sauces.forEach(function (v) {
+    var p = TOOL_SPOT[v] || [492, 598, 52], f = {'番茄':'ketchup', '蜂蜜芥末':'mustard', '甜辣':'sweetchili'}[v];
+    tl += '<button class="tool bottle' + spot('tool-' + v) + '" data-tool="sauce" data-v="' + v + '" style="left:' + p[0] + 'px;top:' + p[1] + 'px;width:' + p[2] + 'px"' + off + '><img alt="" src="' + SC + f + '.webp' + V + '"><span>' + SHORT[v] + '</span></button>';
+  });
+  L.spices.forEach(function (v) {
+    var p = SPICE_SPOT[v] || [508, 748, 106], f = {'孜然':'cumin', '辣椒':'chili'}[v] || 'cumin';
+    tl += '<button class="tool spicebox" data-tool="spice" data-v="' + v + '" style="left:' + p[0] + 'px;top:' + p[1] + 'px;width:' + p[2] + 'px"' + off + '><img alt="" src="' + SC + f + '.webp' + V + '"><span>' + v + '</span></button>';
+  });
+  setHTML('tools', tl);
+
+  // 打包盒：三格，开着放烤肠 → 装盒 → 合上拖给客人
   var t0 = now();
-  var nbox = Math.max(2, boxTotal());
-  var panels = [0, 1, 2].slice(0, nbox).map(function (k) {
+  var panels = [0, 1, 2].map(function (k) {
     if (!boxOpen(k)) {
-      return '<div class="bx locked" data-act="selbox" data-i="' + k + '"><div class="bx-h"><b>盒 ' + 'ABC'.charAt(k) + '</b><span></span></div>' +
-        '<div class="lockbody"><i class="lock"></i><b>未解锁</b><span>在「升级小摊」花 ¥' + UPGRADES.filter(function (u) { return u.id === 'boxb'; })[0].cost[Math.min(1, G.up.boxb || 0)] + ' 解锁</span></div></div>';
+      return '<div class="bx locked" data-act="selbox" data-i="' + k + '"><img class="bx-img" alt="" src="' + SC + 'box_open.webp' + V + '"><div class="lockbody"><i class="lock"></i><span>升级小摊解锁</span></div></div>';
     }
     var b = R.boxes[k], n = b.items.length, pf = b.fx && t0 - b.fx.t < 900 ? b.fx.kind : '';
-    var sum = n ? (n === 2 ? '两根' : '一根') + ' · ' + (JUDGE_TEXT[b.items[0].band] || b.items[0].band) + ' · ' + (b.items[0].sauce ? SHORT[b.items[0].sauce] : '无酱') + (L.spices.length ? ' · ' + (b.items[0].spice || '无料') : '') : '';
-    var body, btn;
     if (b.stage === 'box') {
       var lifted = drag && drag.type === 'bag' && drag.box === k;
-      body = '<div class="bx-stage"><div class="bagwrap' + spot('bag' + k) + (lifted ? ' lifted' : '') + '" data-bag="' + k + '">' + boxHTML(pf === 'box', n) + '</div><div class="sum">' + sum + '</div></div>';
-      btn = '<button class="b pk" disabled>拖给客人 ↑</button>';
-    } else {
-      body = '<div class="bx-items">' + [0, 1].map(function (j) {
-        var t = b.items[j];
-        if (!t) return '<div class="bitem empty">' + (j === 0 ? '空盒' : '可再放一根') + '</div>';
-        var fresh = t.fx && t0 - t.fx.t < 900 ? t.fx.kind : '';
-        return '<div class="bitem' + spot('item' + k + j) + (k === 0 && t.band === '脆' ? spot('crisp') : '') + '" data-item="' + k + '-' + j + '">' + traySvg(t, fresh) +
-          '<span><b class="bd-' + t.band + '">' + (JUDGE_TEXT[t.band] || t.band) + '</b>' + (t.sauce ? SHORT[t.sauce] : '无酱') + (L.spices.length ? '·' + (t.spice || '无料') : '') + '</span></div>';
-      }).join('') + '</div>';
-      btn = '<button class="b pk hot' + spot('pack' + k) + '" data-act="pack" data-i="' + k + '"' + (n ? '' : ' disabled') + '>装盒</button>';
+      return '<div class="bx closed' + (k === R.sel ? ' sel' : '') + spot('box' + k) + '" data-box="' + k + '" data-act="selbox" data-i="' + k + '">' +
+        '<div class="bagwrap' + spot('bag' + k) + (lifted ? ' lifted' : '') + (pf === 'box' ? ' fresh' : '') + '" data-bag="' + k + '"><img class="bx-img" alt="" src="' + SC + 'box_closed.webp' + V + '"><span class="bx-n">' + (n === 2 ? '两根' : '一根') + '</span></div>' +
+        '<div class="bx-tip">拖给客人 ↑</div></div>';
     }
+    var items = [0, 1].map(function (j) {
+      var t = b.items[j];
+      if (!t) return '<div class="bitem empty"></div>';
+      var fresh = t.fx && t0 - t.fx.t < 900 ? t.fx.kind : '';
+      return '<div class="bitem' + spot('item' + k + j) + (k === 0 && t.band === '脆' ? spot('crisp') : '') + '" data-item="' + k + '-' + j + '">' + traySvg(t, fresh) +
+        '<span><b class="bd-' + t.band + '">' + (JUDGE_TEXT[t.band] || t.band) + '</b>' + (t.sauce ? SHORT[t.sauce].replace('酱', '') : '无酱') + (L.spices.length ? '·' + (t.spice || '无料') : '') + '</span></div>';
+    }).join('');
     return '<div class="bx' + (k === R.sel ? ' sel' : '') + spot('box' + k) + '" data-box="' + k + '" data-act="selbox" data-i="' + k + '">' +
-      '<div class="bx-h"><b>盒 ' + 'ABC'.charAt(k) + '</b><span>' + (k === R.sel && boxOpen(1) ? '夹起放这里' : '') + '</span>' +
-      '<button class="x" data-act="dump" data-i="' + k + '"' + (n ? '' : ' disabled') + '>倒掉</button></div>' + body + btn + '</div>';
+      '<img class="bx-img" alt="" src="' + SC + 'box_open.webp' + V + '"><div class="bx-items">' + items + '</div>' +
+      '<button class="bx-dump" data-act="dump" data-i="' + k + '"' + (n ? '' : ' disabled') + ' aria-label="倒掉">倒掉</button>' +
+      '<button class="bx-pack' + spot('pack' + k) + '" data-act="pack" data-i="' + k + '"' + (n ? '' : ' disabled') + '>装盒</button></div>';
   });
-  var canTop = anyBox(function (b) { return b.stage === 'open' && b.items.length; });
-  var off = canTop ? '' : ' disabled';
-  var h = '<div class="box-h"><span>打包台 · 一根¥' + PRICE1 + ' / 两根¥' + PRICE2 + '</span>' + (smartOn() ? '<em class="smart">' + smartLabel() + '</em>' : '') + '</div>' +
-          '<div class="bxrow' + (nbox === 3 ? ' n3' : '') + '">' + panels.join('') + '</div>';
-  var tl = L.sauces.map(function (v) {
-    return '<button class="b tool' + spot('tool-' + v) + '" data-tool="sauce" data-v="' + v + '" style="--c:' + SAUCE_COL[v] + '"' + off + '><i class="bottle"></i><span>' + SHORT[v] + '</span></button>';
-  }).concat(L.spices.map(function (v) {
-    return '<button class="b tool" data-tool="spice" data-v="' + v + '" style="--c:' + SPICE_COL[v] + '"' + off + '><i class="shaker"></i><span>' + v + '</span></button>';
-  }));
-  if (tl.length) h += '<div class="tools n' + Math.max(3, tl.length) + '">' + tl.join('') + '</div>';
-  setHTML('trayBox', h);
+  setHTML('trayBox', (smartOn() ? '<em class="smart">' + smartLabel() + '</em>' : '') + panels.join(''));
 }
 
 /* ============ 竖屏适配：内容高于屏幕时整体等比缩小 ============ */
 function fit() {
-  // 画面放不下时整体等比缩小，但先把布局宽度放大 1/缩放倍数，缩完后看上去仍是满宽（不会变窄）
-  var app = $('app'), vw = window.innerWidth || document.documentElement.clientWidth;
-  var W = Math.min(464, vw - 16), left = Math.max(8, (vw - W) / 2);
-  app.style.transform = ''; app.style.marginBottom = ''; app.style.width = ''; app.style.maxWidth = ''; app.style.marginLeft = '';
-  var cs = window.getComputedStyle ? getComputedStyle(app) : null;
-  var gap = cs ? (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0) : 0;
-  var vh = (window.innerHeight || document.documentElement.clientHeight) - gap;
-  var sc = Math.min(1, vh / app.offsetHeight);
-  for (var n = 0; n < 3 && sc < .995; n++) {
-    app.style.width = (W / sc).toFixed(1) + 'px'; app.style.maxWidth = 'none';
-    sc = Math.max(.5, Math.min(1, vh / app.offsetHeight));
-  }
-  if (sc < .995) {
-    app.style.width = (W / sc).toFixed(1) + 'px'; app.style.maxWidth = 'none';
-    app.style.marginLeft = left.toFixed(1) + 'px';
-    app.style.transformOrigin = '0 0';
-    app.style.transform = 'scale(' + sc.toFixed(3) + ')';
-    app.style.marginBottom = (-app.offsetHeight * (1 - sc)).toFixed(0) + 'px';
-  } else {
-    app.style.width = '';
-  }
-  document.documentElement.style.setProperty('--appw', W.toFixed(1) + 'px');
+  // 主界面是 720×1280 的舞台：整张等比缩小到放得下，左右 / 上下空出来的地方由背景图铺满
+  var st = $('stage'); if (!st) return;
+  var W = window.innerWidth || document.documentElement.clientWidth, H = window.innerHeight || document.documentElement.clientHeight;
+  var sc = Math.min(W / 720, H / 1280);
+  st.style.transform = 'scale(' + sc.toFixed(4) + ')';
 }
 window.addEventListener('resize', fit);
 window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });
@@ -1856,7 +1853,7 @@ function loadLevel(i) {
   (function step() {
     var k = Math.min(1, (now() - t0) / DUR), e = 1 - Math.pow(1 - k, 2.2);
     clip.setAttribute('y', (128 - 128 * e).toFixed(1)); clip.setAttribute('height', (128 * e).toFixed(1));
-    if (k < 1) return requestAnimationFrame(step);
+    if (k < 1) return setTimeout(step, 16);   // 不用 rAF：页面在后台时 rAF 会停，加载画面就卡住了
     // 加载完：在加载画面后面开局，再淡出
     startLevel(i);
     ld.className = 'ld out'; loading = false;

@@ -1003,3 +1003,178 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .lm-stat img{height:31px}
 .lm-stat.heart{left:146px}
 .lm-stat b{font-size:11.5px !important}
+
+/* ======================= 主界面 v2：720×1280 场景舞台 ======================= */
+#app.scene{position:fixed;top:0;right:0;bottom:calc(0px - env(safe-area-inset-top, 0px));left:0;width:auto;max-width:none;min-height:0;margin:0;padding:0;overflow:hidden;background:#3A2A4A url(img/scene/bg.webp) center top/cover no-repeat;transform:none}
+#app.scene > *{margin:0}
+.sc-stage{position:absolute;left:50%;top:50%;width:720px;height:1280px;margin:-640px 0 0 -360px;transform-origin:50% 50%;font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;color:#5A3A22}
+.sc-bg{position:absolute;left:0;top:0;width:720px;height:1280px;pointer-events:none}
+.sc-stage img{-webkit-user-drag:none;user-select:none}
+
+/* 顶部：金币 / 爱心 / 时间 + 暂停 */
+#app.scene .hud{position:absolute;left:24px;right:24px;top:20px;height:70px;display:block;background:none;border:0;box-shadow:none;padding:0;color:#fff}
+.h-stat{position:absolute;top:6px;height:52px;width:150px;display:flex;align-items:center;padding-left:56px;border-radius:26px;background:rgba(60,30,20,.45);box-shadow:inset 0 2px 4px rgba(0,0,0,.25)}
+.h-stat:nth-child(1){left:60px}.h-stat:nth-child(2){left:236px}.h-stat:nth-child(3){left:412px}
+.h-stat img{position:absolute;left:-6px;top:50%;width:62px;height:62px;margin-top:-31px;object-fit:contain;-webkit-filter:drop-shadow(0 3px 3px rgba(80,30,0,.4));filter:drop-shadow(0 3px 3px rgba(80,30,0,.4))}
+.h-stat b{font-family:"ShuHei","PingFang SC",sans-serif;font-weight:normal;font-size:26px;color:#fff;text-shadow:0 2px 0 rgba(90,40,10,.6)}
+.h-stat b small{font-size:18px;opacity:.75;margin-left:2px}
+.h-stat.done{background:rgba(60,140,70,.6)}
+.h-stat.low{background:rgba(200,50,40,.6)}
+.h-stat.hurry{background:rgba(220,60,40,.85)}
+.h-pause{position:absolute;left:-4px;top:4px;width:56px;height:56px;border-radius:50%;border:4px solid #FFF6EC;background:radial-gradient(circle at 50% 35%,#FFB27A,#EE7A3E);box-shadow:0 4px 0 #B8501F,0 6px 10px rgba(80,30,0,.35);padding:0}
+.h-pause i{position:absolute;top:15px;width:8px;height:18px;border-radius:3px;background:#fff}
+.h-pause i:first-child{left:15px}.h-pause i:last-child{right:15px}
+#app.scene .timebar{position:absolute;left:60px;right:0;top:66px;height:8px;border-radius:4px;background:rgba(60,30,20,.35)}
+#app.scene .timebar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,#FFD65A,#FF9F3D)}
+
+/* 教学讲解条盖在顶部 */
+#app.scene .coach{position:absolute;left:20px;right:20px;top:20px;z-index:20;font-size:22px}
+#app.scene .coach p{font-size:22px}
+#app.scene .coach .who{font-size:52px}
+#app.scene .coach .step{font-size:16px}
+#app.scene .coach .row button{font-size:20px;padding:10px 20px}
+
+/* 顾客 */
+#app.scene .queue{position:absolute;left:0;top:110px;width:720px;height:480px;display:block;min-height:0}
+#app.scene .cust{position:absolute;top:0;width:230px;height:480px;background:none;border:0;box-shadow:none;padding:0;transition:transform .15s,opacity .15s}
+#app.scene .cust:nth-child(1){left:10px}#app.scene .cust:nth-child(2){left:245px}#app.scene .cust:nth-child(3){left:480px}
+#app.scene .cust.empty{border:0;background:none}
+#app.scene .cust .who{position:absolute;left:50%;bottom:0;height:290px;width:auto;margin:0;transform:translateX(-50%);display:block;pointer-events:none}
+#app.scene .cust .bubble{position:absolute;left:8px;right:8px;top:40px;min-height:120px;padding:12px 10px 16px;border-radius:26px;background:#fff;border:0;box-shadow:0 6px 0 rgba(160,110,80,.18),0 8px 16px rgba(80,30,0,.18);display:flex;flex-direction:column;align-items:center;justify-content:center}
+#app.scene .cust .bubble::after{content:"";position:absolute;left:50%;bottom:-18px;margin-left:-14px;border-left:14px solid transparent;border-right:14px solid transparent;border-top:20px solid #fff}
+#app.scene .cust.ready .bubble{box-shadow:0 0 0 5px #FFD65A,0 8px 16px rgba(80,30,0,.18)}
+#app.scene .cust.drop .bubble{box-shadow:0 0 0 6px #5CC26E,0 8px 16px rgba(80,30,0,.18)}
+#app.scene .cust.cam .bubble{box-shadow:0 0 0 5px #E5473A}
+.o-q{display:flex;justify-content:center;margin-bottom:2px}
+.o-row{display:flex;align-items:center;justify-content:center}
+.o-n{font-style:normal;font-size:18px;font-weight:900;color:#C9771A;margin-right:2px}
+.oi{display:flex;flex-direction:column;align-items:center;width:58px}
+.oi img{height:40px;width:auto;max-width:52px;object-fit:contain}
+.oi small{font-size:15px;font-weight:800;color:#8A5A40;white-space:nowrap;line-height:1.2}
+.o-q .oi{width:auto;flex-direction:row}
+.o-q .oi img{height:30px}.o-q .oi small{font-size:17px;margin-left:4px}
+#app.scene .cust .pat{position:absolute;left:24px;right:24px;bottom:8px;height:8px;border-radius:4px;background:#EEE3D8}
+#app.scene .cust .pat i{display:block;height:100%;border-radius:4px}
+#app.scene .cust .say{font-size:22px;font-weight:900;color:#C2471C;text-align:center}
+#app.scene .minibag{position:absolute;right:30px;bottom:60px;width:44px;height:32px}
+
+/* 收款码 + 到账提示 */
+.sc-qr{position:absolute;left:14px;top:592px;width:122px;pointer-events:none}
+.sc-qr img{display:block;width:100%}
+#app.scene .speaker{position:absolute;left:0;top:-48px;width:220px;background:none;border:0;box-shadow:none;padding:0;font-size:18px}
+#app.scene .speaker .h{display:none}
+#app.scene .speaker .e{display:none}
+#app.scene .speaker .e:first-of-type{display:inline-block;padding:6px 14px;border-radius:16px;background:#4FBF7A;color:#fff;font-weight:900;white-space:nowrap;box-shadow:0 3px 0 #2E8B57}
+#app.scene .speaker .e.idle{background:rgba(60,30,20,.45);box-shadow:none;font-weight:700}
+
+/* 锅 */
+#app.scene .grill{position:absolute;left:115px;top:650px;width:390px;height:288px;padding:0;border:0;background:none;box-shadow:none;border-radius:0}
+#app.scene .grill.off .slot{-webkit-filter:none;filter:none}
+.g-body{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
+.g-fire{position:absolute;left:6%;right:6%;top:52%;height:16%;width:88%;mix-blend-mode:screen;pointer-events:none;transition:opacity .3s}
+#app.scene .slots{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+#app.scene .slot{position:absolute;top:4%;height:60%;width:18%;padding:0;margin:0;min-height:0;background:none;border-radius:40px;display:block}
+#app.scene .slot:nth-child(1){left:9.5%}#app.scene .slot:nth-child(2){left:30%}#app.scene .slot:nth-child(3){left:50.5%}#app.scene .slot:nth-child(4){left:70.5%}
+#app.scene .slot.off{background:rgba(40,30,30,.35)}
+#app.scene .slot.sticky{box-shadow:inset 0 0 0 3px #F28C28}
+#app.scene .slot.dry{box-shadow:inset 0 0 0 3px #E5473A}
+#app.scene .slot-btn{position:absolute;left:0;top:0;width:100%;height:100%;border:3px dashed rgba(255,240,220,.55);border-radius:36px;background:rgba(255,255,255,.08);color:#FFF1DE;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:16px}
+#app.scene .slot-btn b{font-size:17px}
+#app.scene .slot-btn small{font-size:13px;opacity:.8}
+.slot-btn .plus{width:30px;height:30px;border-radius:50%;background:rgba(255,240,220,.85);position:relative;margin-bottom:4px}
+.slot-btn .plus::before,.slot-btn .plus::after{content:"";position:absolute;left:50%;top:50%;background:#B86A3A;border-radius:2px}
+.slot-btn .plus::before{width:16px;height:4px;margin:-2px 0 0 -8px}.slot-btn .plus::after{width:4px;height:16px;margin:-8px 0 0 -2px}
+#app.scene .slot-btn.dirt{border:0;background:none;padding:0}
+#app.scene .slot-btn.dirt img{position:absolute;left:-10%;width:120%;top:20%;transform:rotate(90deg)}
+#app.scene .slot-btn.dirt b{position:relative;margin-top:60%;font-size:16px;color:#FFF1DE;text-shadow:0 2px 0 #5A3A22}
+#app.scene .slot-btn.dirt .rubdots{position:relative;color:#FFE27A;font-size:14px}
+#app.scene .slot .tag{position:absolute;left:50%;top:-18px;transform:translateX(-50%);z-index:3;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.92);font-size:15px;font-weight:900;white-space:nowrap;color:#8A4A2C}
+#app.scene .slot .tag.raw{color:#C05A70}#app.scene .slot .tag.burnt{background:#222;color:#fff}#app.scene .slot .tag.uneven{color:#E07B12}
+#app.scene .slot .stuck{position:absolute;left:50%;top:10px;transform:translateX(-50%);z-index:3;font-size:12px;padding:1px 6px;border-radius:8px;background:#F28C28;color:#fff;white-space:nowrap}
+#app.scene .saus-area{position:absolute;left:0;right:0;top:6%;height:72%;margin:0;border-radius:30px;display:flex;align-items:center;justify-content:center}
+.saus-img{height:100%;width:auto;-webkit-filter:drop-shadow(0 4px 4px rgba(60,20,0,.45));filter:drop-shadow(0 4px 4px rgba(60,20,0,.45));transition:transform .18s}
+.saus-img.flip{transform:scaleX(-1)}
+.saus-img.smoke{-webkit-animation:smoke 1s infinite;animation:smoke 1s infinite}
+#app.scene .slot.jolt .saus-img{-webkit-animation:jolt .26s;animation:jolt .26s}
+#app.scene .meters{position:absolute;left:6%;right:6%;bottom:2%;display:block}
+#app.scene .meter{height:7px;margin-top:3px;border-radius:4px;background:rgba(20,10,5,.55)}
+#app.scene .meter.down{box-shadow:0 0 0 1.5px #FFB347}
+#app.scene .pick{position:absolute;left:50%;bottom:-62px;width:84px;height:38px;margin-left:-42px;border:0;border-radius:19px;background:linear-gradient(180deg,#FF9A6E,#EE5B3B);color:#fff;font-family:"ShuHei","PingFang SC",sans-serif;font-size:18px;box-shadow:0 3px 0 #B83A1C;z-index:4}
+#app.scene .pick.red{background:linear-gradient(180deg,#555,#222);box-shadow:0 3px 0 #000}
+#app.scene .pick:active{transform:translateY(2px)}
+#grillInfo{position:absolute;left:50%;top:-40px;transform:translateX(-50%);padding:4px 14px;border-radius:14px;background:rgba(60,30,20,.55);color:#FFF1DE;font-size:16px;font-weight:700;white-space:nowrap}
+#grillInfo.warn{background:#E5473A}
+#fireCtl{position:absolute;left:79%;top:80%;width:20%;height:20%}
+.knob{position:absolute;left:0;top:0;width:100%;height:100%;border:0;border-radius:12px;background:none;padding:0}
+.knob span{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);padding:2px 10px;border-radius:10px;background:#5A3A22;color:#fff;font-size:15px;font-weight:900;white-space:nowrap}
+.knob.on span{background:#E5473A}
+#fireCtl .heat{position:absolute;right:100%;top:10%;display:flex;margin-right:6px}
+#fireCtl .hl{width:40px;height:34px;margin-left:4px;border:0;border-radius:10px;background:#EAD9C6;color:#8A5A40;font-weight:900;font-size:16px}
+#fireCtl .hl.on{background:#F5A623;color:#fff}
+
+/* 油壶 / 竹签 */
+#app.scene .gtools{position:absolute;left:0;top:0;width:0;height:0;margin:0;display:block}
+.oilcan{position:absolute;left:654px;top:572px;width:62px;padding:0;border:0;background:none}
+.oilcan img{display:block;width:100%}
+.oilcan .lvl{position:absolute;left:-14px;top:30px;width:10px;height:100px;border-radius:5px;background:rgba(60,30,20,.45);overflow:hidden}
+.oilcan .lvl i{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#F2A600,#FFE27A)}
+.oilcan b,.sticks b{position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);padding:1px 8px;border-radius:10px;background:#5A3A22;color:#fff;font-size:14px;white-space:nowrap}
+.oilcan.low{-webkit-animation:pulse 1s infinite;animation:pulse 1s infinite}
+.sticks{position:absolute;left:4px;top:760px;width:108px;padding:0;border:0;background:none}
+.sticks img{display:block;width:100%}
+.sticks:disabled{opacity:.6}
+
+/* 酱 / 调料 */
+#app.scene .tools{position:absolute;left:0;top:0;width:0;height:0;display:block;margin:0}
+#app.scene .tool{position:absolute;padding:0;border:0;background:none;display:block;box-shadow:none;touch-action:none}
+#app.scene .tool img{display:block;width:100%;pointer-events:none;-webkit-filter:drop-shadow(0 4px 3px rgba(80,30,0,.3));filter:drop-shadow(0 4px 3px rgba(80,30,0,.3))}
+#app.scene .tool span{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);font-size:13px;font-weight:900;color:#5A3A22;white-space:nowrap;background:rgba(255,248,236,.85);padding:0 6px;border-radius:8px}
+#app.scene .tool:disabled{opacity:1}
+#app.scene .tool:disabled img{-webkit-filter:saturate(.6) brightness(.95);filter:saturate(.6) brightness(.95)}
+
+/* 打包盒 */
+#app.scene .box{position:absolute;left:0;top:960px;width:720px;height:180px;padding:0;background:none !important;border:0 !important;box-shadow:none !important}
+#app.scene .bx{position:absolute;top:0;width:214px;height:180px;padding:0;margin:0;background:none;border:0;box-shadow:none;border-radius:0}
+#app.scene .bx:nth-of-type(1){left:26px}#app.scene .bx:nth-of-type(2){left:254px}#app.scene .bx:nth-of-type(3){left:482px}
+#app.scene .bx .bx-img{position:absolute;left:0;top:0;width:100%;pointer-events:none}
+#app.scene .bx.sel .bx-img{-webkit-filter:drop-shadow(0 0 6px #FFD65A) drop-shadow(0 0 2px #FFB347);filter:drop-shadow(0 0 6px #FFD65A) drop-shadow(0 0 2px #FFB347)}
+#app.scene .bx.drop .bx-img{-webkit-filter:drop-shadow(0 0 8px #5CC26E);filter:drop-shadow(0 0 8px #5CC26E)}
+#app.scene .bx-items{position:absolute;left:12%;right:12%;top:40%;height:44%;display:block;min-height:0}
+#app.scene .bitem{height:50%;padding:0 4px;background:none;font-size:13px;display:flex;align-items:center;border-radius:10px;touch-action:none}
+#app.scene .bitem .tsvg{height:28px;width:96px;flex:none}
+#app.scene .bitem span{display:block;font-size:12px;font-weight:800;color:#8A4A2C;white-space:nowrap;margin-left:2px;overflow:hidden}
+#app.scene .bitem.empty{border:0;background:none}
+#app.scene .bitem.drop{background:rgba(255,214,90,.45);box-shadow:none}
+.bx-pack{position:absolute;left:50%;bottom:2px;width:96px;height:34px;margin-left:-48px;border:0;border-radius:17px;background:linear-gradient(180deg,#FF9A6E,#EE5B3B);color:#fff;font-family:"ShuHei","PingFang SC",sans-serif;font-size:17px;box-shadow:0 3px 0 #B83A1C}
+.bx-pack:disabled{background:#D9CBBE;box-shadow:0 3px 0 #B8A594;color:#F5EDE4}
+.bx-dump{position:absolute;right:-2px;top:-4px;padding:2px 8px;border:0;border-radius:10px;background:rgba(90,58,34,.75);color:#fff;font-size:12px}
+.bx-dump:disabled{display:none}
+#app.scene .bx.closed .bagwrap{position:absolute;left:0;top:20px;width:100%;cursor:grab;-webkit-animation:wiggle 1.6s 1s ease-in-out infinite;animation:wiggle 1.6s 1s ease-in-out infinite}
+#app.scene .bx.closed .bx-img{position:relative}
+.bx-n{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);padding:2px 10px;border-radius:10px;background:rgba(255,255,255,.9);color:#C2471C;font-weight:900;font-size:15px}
+.bx-tip{position:absolute;left:50%;bottom:0;transform:translateX(-50%);font-size:15px;font-weight:900;color:#fff;text-shadow:0 2px 0 #8A4A2C;white-space:nowrap}
+#app.scene .bx.locked{opacity:.55}
+#app.scene .bx.locked .lockbody{position:absolute;left:0;right:0;top:46%;display:flex;flex-direction:column;align-items:center;color:#8A5A40;font-size:14px;font-weight:800}
+#app.scene .smart{position:absolute;left:50%;top:-26px;transform:translateX(-50%);font-style:normal;font-size:14px;color:#8A3B1C;background:#FFE9B8;border-radius:8px;padding:1px 8px;white-space:nowrap}
+
+/* 道具栏 */
+#app.scene #itembar{position:absolute;left:150px;width:420px;top:1150px;height:112px}
+#app.scene .itembar{display:flex;justify-content:space-around;align-items:center;height:100%;border-radius:28px;background:rgba(70,40,30,.6);box-shadow:inset 0 3px 6px rgba(0,0,0,.25);margin:0;padding:0 10px}
+#app.scene .itm{position:relative;width:96px;height:96px;padding:0;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:0}
+#app.scene .itm img{width:72px;height:72px;object-fit:contain;-webkit-filter:drop-shadow(0 3px 3px rgba(0,0,0,.35));filter:drop-shadow(0 3px 3px rgba(0,0,0,.35))}
+#app.scene .itm b{position:absolute;right:2px;top:2px;min-width:30px;height:26px;padding:0 6px;border-radius:13px;background:#F05A3A;font-size:15px;line-height:26px;font-weight:900;box-shadow:0 0 0 2px #FFF6EC}
+#app.scene .itm.buy b{background:#F5A623}
+#app.scene .itm:disabled{opacity:.45}
+#app.scene .itm.urge.on{transform:scale(1.12)}
+
+/* 提示 */
+#app.scene .log{position:absolute;left:0;right:0;top:1106px;bottom:auto;text-align:center;z-index:6}
+#app.scene .log .m{font-size:20px;padding:8px 20px;border-radius:20px}
+#app.scene .sc-stage{margin:-640px 0 0 -360px}
+
+.h-stat:nth-child(1){left:96px}.h-stat:nth-child(2){left:280px}.h-stat:nth-child(3){left:464px}
+.h-stat{width:160px}
+.h-pause{left:0}
+#app.scene .timebar{left:96px;right:12px}
+.knob span{bottom:auto;top:-30px}
+.oilcan{left:650px}
