@@ -948,3 +948,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .sp-ribbon{position:absolute;left:50%;top:0;z-index:3;width:76%;margin-left:-38%;pointer-events:none}
 .sp-ribbon img{display:block;width:100%;height:auto}
 .sp-ribbon b{position:absolute;left:0;right:0;top:12%;bottom:38%;display:flex;align-items:center;justify-content:center;font-family:"ShuHei","PingFang SC",sans-serif;font-weight:normal;font-size:24px;color:#fff;letter-spacing:.12em;text-indent:.12em;text-shadow:0 2px 0 #B83A1C,0 -1px 0 #B83A1C,1.5px 0 0 #B83A1C,-1.5px 0 0 #B83A1C}
+.sp-ribbon{width:92%;margin-left:-46%}
+.sp-ribbon b{font-size:26px}
+.sp.deco .sp-bank{width:48%;margin-top:14px;margin-bottom:14px}

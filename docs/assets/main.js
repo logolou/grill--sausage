@@ -1531,7 +1531,7 @@ function itemShop(back) {
     return '<div class="sp-row' + (off ? ' dim' : '') + '"><span class="sp-ic"><img alt="" src="./assets/img/items/' + it.id + '.webp' + V + '">' + (have ? '<i class="lp-cnt">' + have + '</i>' : '') + '</span>' +
       '<span class="sp-txt"><b>' + it.name + '</b><small>' + (off ? '无尽模式不可用' : it.desc) + '</small></span>' + priceBtn('buyitem', idx, it.cost, G.bank >= it.cost && !off) + '</div>';
   }).join('');
-  framePop('道具商店', bankBar() + '<div class="sp-sub">一次性道具 · 局中点一下就用</div><div class="sp-list sp-items">' + rows + '</div>' +
+  framePop('道具商店', bankBar() + '<div class="sp-list sp-items">' + rows + '</div>' +
     '<div class="sp-foot"><button class="sp-big list" data-act="' + itemShopBack + '"><span>' + (itemShopBack === 'shareback' ? '返回结算' : '返回地图') + '</span></button></div>', itemShopBack, true);
 }
 
