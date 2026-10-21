@@ -1214,3 +1214,19 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .kl.k1{right:-12px;top:50%;transform:translateY(-50%)}
 .kl.k2{left:50%;bottom:-12px;transform:translateX(-50%)}
 .kl.k3{left:-12px;top:50%;transform:translateY(-50%)}
+/* 熟度条统一放在锅上方：每个锅位正上方两条粗条（上面 / 朝下那面），再上面是火候标签 */
+#app.scene .meters{top:-34px;bottom:auto;left:-2%;right:-2%}
+#app.scene .meter{height:11px;margin-top:4px;border-radius:6px;background:rgba(40,20,10,.75);box-shadow:0 0 0 2px rgba(255,248,236,.9)}
+#app.scene .meter.down{box-shadow:0 0 0 2px #FFD65A}
+#app.scene .meter .tk{top:0;bottom:0;width:2px;background:rgba(255,255,255,.75)}
+#app.scene .slot .tag{top:-64px}
+#app.scene .slot .stuck{top:-86px}
+#grillInfo{top:auto;bottom:6%;left:34%;font-size:14px;padding:3px 10px}
+/* 熟度条：白底小卡片 + 两条粗彩条，放大加亮 */
+#app.scene .meters{top:-58px;left:-8%;right:-8%;padding:6px 6px 5px;border-radius:12px;background:#FFF8EC;box-shadow:0 3px 0 rgba(120,60,20,.35),0 0 0 2px #E7B16A}
+#app.scene .meter{height:15px;margin:0 0 4px;border-radius:8px;background:#E9DCCB;box-shadow:inset 0 2px 3px rgba(100,60,30,.35)}
+#app.scene .meter:last-child{margin-bottom:0}
+#app.scene .meter.down{box-shadow:inset 0 2px 3px rgba(100,60,30,.35),0 0 0 2px #FF9F3D}
+#app.scene .meter i{border-radius:8px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35)}
+#app.scene .meter .tk{width:3px;background:#8A5A40;opacity:.55}
+#app.scene .slot .tag{top:-90px;font-size:17px;padding:3px 10px;box-shadow:0 2px 0 rgba(120,60,20,.3)}

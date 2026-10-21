@@ -1006,6 +1006,8 @@ function orderHTML(c) {
   if (same) return h + '<div class="o-row">' + orderIcons(sp[0]) + '</div>';
   return h + '<div class="o-row"><i class="o-n">①</i>' + orderIcons(sp[0]) + '</div><div class="o-row"><i class="o-n">②</i>' + orderIcons(sp[1]) + '</div>';
 }
+// 熟度条用醒目的分段色：生 蓝 → 嫩 绿 → 脆 黄 → 微焦 橙 → 焦 黑
+function zoneCol(v) { return v < 40 ? '#5BB8F5' : v < 70 ? '#4CD06A' : v < 88 ? '#FFC21A' : v <= 100 ? '#FF6A3D' : '#2B2B2B'; }
 var SAUS_ART = {raw:'raw', '嫩':'tender', '脆':'crispy', '微焦':'charred', burnt:'burnt', uneven:'half'};
 var TOOL_SPOT = {'番茄':[478, 598, 52], '蜂蜜芥末':[533, 598, 52], '甜辣':[588, 598, 52]};
 var SPICE_SPOT = {'孜然':[508, 748, 106], '辣椒':[612, 748, 106]};
@@ -1081,7 +1083,7 @@ function render() {
     }
     var s = sl.s, j = judge(s), up = s.down === 'a' ? 'b' : 'a', jolt = sl.jolt && tNow - sl.jolt < 260;
     var m = function (lab, v, isDown) {
-      return '<div class="meter' + (isDown ? ' down' : '') + '"><i style="width:' + Math.min(100, v) + '%;background:' + col(v) + '"></i>' +
+      return '<div class="meter' + (isDown ? ' down' : '') + '"><i style="width:' + Math.min(100, v) + '%;background:' + zoneCol(v) + '"></i>' +
         [40, 70, 88].map(function (x) { return '<span class="tk" style="left:' + x + '%"></span>'; }).join('') + '</div>';
     };
     html += '<div class="slot' + (sticky ? ' sticky' : '') + (ost === 2 ? ' dry' : '') + (jolt ? ' jolt' : '') + (i === 0 ? spot('slot0') : '') + '">' +
