@@ -1208,6 +1208,30 @@ function intro(i) {
     '<button class="lp-back" data-act="menu" aria-label="返回"><img alt="" src="./assets/img/ui/ui_back.webp' + V + '"></button>' +
   '</div>', 'lvpop');
 }
+// 结算弹窗：飘带标题 + 三行成绩（金币 / 爱心或时间 / 成交）+ 存款条 + 主按钮 + 一排圆形小按钮（参考美术结算预览图）
+function resultPop(o) {
+  var RES = './assets/img/res/', V = '?v=' + BUILD_V;
+  var rows = o.stats.map(function (st) {
+    return '<div class="rp-row"><span class="rp-ic"><img alt="" src="' + RES + st.icon + '.webp' + V + '"></span><span class="rp-val"><b' + (st.bad ? ' class="bad"' : '') + '>' + st.val + '</b><i>' + st.label + '</i></span></div>';
+  }).join('');
+  var icons = (o.icons || []).map(function (ic) {
+    return '<button class="rp-ib" data-act="' + ic.act + '"' + (ic.i != null ? ' data-i="' + ic.i + '"' : '') + '><img alt="" src="' + RES + ic.img + '.webp' + V + '"><small>' + ic.label + '</small></button>';
+  }).join('');
+  showResult('<div class="lp rp' + (o.win ? ' win' : '') + '">' +
+    '<div class="lp-ribbon"><small>' + o.sub + '</small><b>' + o.title + '</b></div>' +
+    '<div class="lp-panel">' + rows +
+      '<div class="rp-bank"><img alt="" src="' + RES + 'bank_pill.webp' + V + '"><span>' + o.bank + '</span></div>' +
+      '<button class="lp-play" data-act="' + o.primary.act + '"' + (o.primary.i != null ? ' data-i="' + o.primary.i + '"' : '') + '><img alt="" src="./assets/img/pop/play.webp' + V + '"><span>' + o.primary.label + '</span></button>' +
+      (o.secondary ? '<button class="rp-btn2" data-act="' + o.secondary.act + '"' + (o.secondary.i != null ? ' data-i="' + o.secondary.i + '"' : '') + '><img alt="" src="' + RES + 'btn2.webp' + V + '"><span>' + o.secondary.label + '</span></button>' : '') +
+      (icons ? '<div class="rp-icons">' + icons + '</div>' : '') +
+    '</div>' +
+    '<button class="lp-back" data-act="menu" aria-label="返回地图"><img alt="" src="./assets/img/ui/ui_back.webp' + V + '"></button>' +
+  '</div>', 'lvpop');
+}
+function resultIcons(retryI) {
+  return [{act:'go', i:retryI, img:'ic_retry', label:'再玩'}, {act:'menu', img:'ic_levels', label:'地图'},
+          {act:'shop', img:'ic_upgrade', label:'升级'}, {act:'resitems', img:'ic_shop', label:'道具'}, {act:'share', img:'ic_share', label:'分享'}];
+}
 function finish(win, why) {
   R.over = true; clearDemo(); render();
   var gain = Math.max(0, R.net); G.bank += gain;
@@ -1215,14 +1239,19 @@ function finish(win, why) {
   save();
   var s = R.st, i = R.i;
   shareInfo = {endless:false, win:win, why:why, lv:i + 1, name:R.L.name.replace('教学关·', ''), net:R.net, hearts:R.hearts, sold:s.sold};
-  showResult('<div class="kicker">' + (win ? '奖　状' : why === 'hearts' ? '收摊了' : '时间到') + '</div><h1>' + (win ? (i === 9 ? '你就是<em>校门口之王</em>！' : '目标达成！') : why === 'hearts' ? '爱心扣光了…' : '差一点点…') + '</h1>' +
-    '<div class="res"><div><b>¥' + R.net + '</b><span>本关净赚</span></div><div><b>❤ ' + R.hearts + '</b><span>爱心</span></div>' +
-    '<div><b>' + s.sold + '</b><span>成交单数</span></div></div>' +
-    '<p>存款 +¥' + gain + '，现在共 <span class="bankv">¥' + G.bank + '</span>。</p>' +
-    '<div class="actions">' + (win && i < 9 ? '<button class="b red wide" data-act="intro" data-i="' + (i + 1) + '">下一关</button>' : '') +
-    (win && i === 9 ? '<button class="b red wide" data-act="intro" data-i="' + ENDLESS + '">解锁了！挑战无尽模式</button>' : '') +
-    '<button class="b' + (win ? '' : ' hot') + '" data-act="go" data-i="' + i + '">再来一次</button><button class="b" data-act="menu">关卡列表</button>' +
-    '<button class="b" data-act="shop">升级小摊</button>' + shopToggle(false) + '<button class="b red wide share" data-act="share">分享战绩</button></div>', win ? 'award' : '');
+  var o = {win:win, sub:'第 ' + (i + 1) + ' 关 · ' + R.L.name.replace('教学关·', ''),
+    title: win ? (i === 9 ? '校门口之王！' : '目标达成！') : why === 'hearts' ? '爱心扣光了…' : '差一点点…',
+    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本关净赚', bad:R.net < 0}, {icon:'heart', val:R.hearts, label:'爱心'}, {icon:'orders', val:s.sold + ' 单', label:'成交'}],
+    bank:'存款 +¥' + gain + '<em>共 ¥' + G.bank + '</em>'};
+  if (win) {
+    o.primary = i < 9 ? {act:'intro', i:i + 1, label:'下一关'} : {act:'intro', i:ENDLESS, label:'挑战无尽模式'};
+    o.icons = resultIcons(i);
+  } else {
+    o.primary = {act:'go', i:i, label:'再来一次'};
+    o.secondary = {act:'menu', label:'回到地图'};
+    o.icons = resultIcons(i).slice(2);   // 失败时：升级 / 道具 / 分享
+  }
+  resultPop(o);
 }
 function finishEndless() {
   R.over = true; clearDemo(); render();
@@ -1231,12 +1260,14 @@ function finishEndless() {
   G.best = {money:Math.max(best.money, R.net), time:Math.max(best.time, Math.floor(R.t))};
   save();
   shareInfo = {endless:true, rec:rec, net:R.net, time:R.t, sold:R.st.sold, best:G.best.money};
-  showResult('<div class="kicker">' + (rec ? '奖　状' : '收摊了') + '</div><h1>' + (rec ? '新纪录！' : '口碑扣光了') + '</h1>' +
-    '<div class="res"><div><b>¥' + R.net + '</b><span>本局净赚</span></div><div><b>' + fmtT(R.t) + '</b><span>坚持时间</span></div>' +
-    '<div><b>' + R.st.sold + '</b><span>成交单数</span></div></div>' +
-    '<p>最高纪录 ¥' + G.best.money + ' · 最久 ' + fmtT(G.best.time) + '。存款 +¥' + gain + '，现在共 <span class="bankv">¥' + G.bank + '</span>。</p>' +
-    '<div class="actions"><button class="b red" data-act="go" data-i="' + ENDLESS + '">再来一局</button><button class="b" data-act="menu">关卡列表</button>' +
-    '<button class="b" data-act="shop">升级小摊</button>' + shopToggle(true) + '<button class="b red wide share" data-act="share">分享战绩</button></div>', rec ? 'award' : '');
+  resultPop({win:rec, sub:'无尽模式 · 最高 ¥' + G.best.money, title:rec ? '新纪录！' : '口碑扣光了',
+    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本局净赚', bad:R.net < 0}, {icon:'clock', val:fmtT(R.t), label:'坚持时间'}, {icon:'orders', val:R.st.sold + ' 单', label:'成交'}],
+    bank:'存款 +¥' + gain + '<em>共 ¥' + G.bank + '</em>',
+    primary:{act:'go', i:ENDLESS, label:'再来一局'}, icons:resultIcons(ENDLESS).slice(1)});
+}
+function resultItems() {
+  showOverlay('<div class="kicker">一次性道具</div><h1>道具商店</h1>' + pauseShop(!!(R && R.L.endless)) +
+    '<div class="actions"><button class="b wide" data-act="shareback">返回结算</button></div>');
 }
 function pauseShop(endless) {
   return '<div class="pshop" data-endless="' + (endless ? 1 : 0) + '"><div class="pshop-h">道具商店<small>存款 ¥' + G.bank + '</small></div><div class="prow">' + ITEMS.map(function (it, idx) {
@@ -1420,6 +1451,7 @@ function shopBack(from) {
   var nxt = Math.min(G.cleared, 9);
   if (from != null && !isNaN(from)) return '<button class="b red" data-act="go" data-i="' + from + '">开始出摊</button><button class="b" data-act="intro" data-i="' + from + '">返回</button>';
   if (R && !R.over && !R.demo) return '<button class="b wide" data-act="menu">回到暂停</button>';
+  if (R && R.over && !R.demo && lastResult) return '<button class="b red" data-act="shareback">返回结算</button><button class="b" data-act="menu">关卡列表</button>';
   return '<button class="b red" data-act="intro" data-i="' + nxt + '">去第 ' + (nxt + 1) + ' 关</button><button class="b" data-act="menu">关卡列表</button>';
 }
 function shop() {
@@ -1475,6 +1507,7 @@ document.addEventListener('pointerdown', function (e) {
   if (a === 'menu') return menu();
   if (a === 'intro') return intro(i);
   if (a === 'mapnode') return mapNode(i);
+  if (a === 'resitems') return resultItems();
   if (a === 'mapclose') { hideOverlay(); var bk = document.querySelector('#lvmap .lm-bank b'); if (bk) bk.textContent = '¥' + G.bank; return; }
   if (a === 'maphome') { hideMap(); return showTitle(); }
   if (a === 'mapitems') { menuShopOpen = true; return showItemShop(); }

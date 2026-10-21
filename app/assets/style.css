@@ -755,3 +755,26 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 @-webkit-keyframes lpIn{0%{opacity:0;-webkit-transform:scale(.85)}100%{opacity:1;-webkit-transform:scale(1)}}
 @keyframes lpIn{0%{opacity:0;transform:scale(.85)}100%{opacity:1;transform:scale(1)}}
 .overlay{overflow-x:hidden}
+
+/* ===== 结算弹窗 ===== */
+.rp .lp-panel{padding-top:34px}
+.rp-row{position:relative;height:54px;margin:0 -6px 8px;background:url(img/res/stat_row.webp) center/100% 100% no-repeat;display:flex;align-items:center}
+.rp-ic{width:20%;height:100%;display:flex;align-items:center;justify-content:center;margin-left:2%}
+.rp-ic img{width:30px;height:30px;object-fit:contain}
+.rp-val{flex:1;display:flex;align-items:baseline;justify-content:center;padding-right:8%}
+.rp-val b{font-size:22px;font-weight:900;color:#A65A3A}
+.rp-val b.bad{color:#C2471C}
+.rp-val i{font-style:normal;font-size:12px;font-weight:700;color:#C7A08A;margin-left:8px}
+.rp-bank{position:relative;margin:4px -6px 0;height:48px}
+.rp-bank img{display:block;width:100%;height:100%}
+.rp-bank span{position:absolute;left:24%;right:6%;top:0;bottom:6%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#A65A3A}
+.rp-bank em{font-style:normal;font-size:13px;font-weight:700;color:#C7A08A;margin-left:10px}
+.rp-btn2{position:relative;display:block;width:70%;margin:10px auto 0;padding:0;border:0;background:none}
+.rp-btn2 img{display:block;width:100%;height:auto}
+.rp-btn2 span{position:absolute;left:0;right:0;top:0;bottom:8%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#A65A3A;letter-spacing:.1em}
+.rp-btn2:active{transform:scale(.96)}
+.rp-icons{display:flex;justify-content:space-around;margin:14px -10px 0}
+.rp-ib{width:20%;padding:0;border:0;background:none;display:flex;flex-direction:column;align-items:center}
+.rp-ib img{width:44px;height:44px;object-fit:contain;-webkit-filter:drop-shadow(0 2px 2px rgba(120,70,30,.25));filter:drop-shadow(0 2px 2px rgba(120,70,30,.25))}
+.rp-ib small{margin-top:2px;font-size:11px;font-weight:800;color:#B48A72}
+.rp-ib:active img{transform:scale(.92)}
