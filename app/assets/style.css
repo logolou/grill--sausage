@@ -1353,3 +1353,7 @@ input[type=range]{touch-action:pan-x}
 #app.scene .tool:disabled img,#app.scene .tool.spicebox:disabled img{-webkit-filter:drop-shadow(0 4px 3px rgba(80,30,0,.3)) !important;filter:drop-shadow(0 4px 3px rgba(80,30,0,.3)) !important}
 #app.scene .tool.bottle img{height:130px}
 #app.scene .tool.spicebox img{width:96px;height:160px;object-fit:fill}
+/* 调料标签直接贴在瓶身 / 盒身上 */
+#app.scene .tool.bottle span{top:62%;bottom:auto;transform:translate(-50%,-50%);font-size:11px;padding:1px 3px;border-radius:5px;background:rgba(255,250,240,.92);box-shadow:0 1px 2px rgba(80,30,0,.3)}
+#app.scene .tool.spicebox span{top:auto;bottom:10%;transform:translateX(-50%);font-size:13px;padding:1px 6px;border-radius:7px;background:rgba(255,250,240,.92);box-shadow:0 1px 2px rgba(80,30,0,.3)}
+#app.scene .oilcan b{top:60%;bottom:auto;transform:translate(-50%,-50%);font-size:13px;padding:1px 6px;border-radius:7px;background:rgba(255,250,240,.92);color:#5A3A22;box-shadow:0 1px 2px rgba(80,30,0,.3)}
