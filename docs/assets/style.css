@@ -1438,3 +1438,4 @@ html.sa .overlay,html.sa .ts,html.sa .lvmap,html.sa #flash,html.sa #app.scene,ht
 .sc-bg{top:-724px !important;height:2160px !important}
 #app.scene{background:#3A2A4A url(img/scene/bg_long.webp) center center/cover no-repeat}
 .lvmap .lm-bg{top:-67.1% !important;height:auto !important;width:100% !important}
+.st-ver{margin-top:8px;text-align:center;font-size:10px;color:#C7A08A;letter-spacing:.02em}

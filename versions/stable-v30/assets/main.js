@@ -1957,6 +1957,7 @@ function titleSettings(msg) {
     '<div class="ps-div st-div"></div>' +
     row(ICON_BOOK, '游戏教学', '<button class="st-btn" data-act="retut">重新看一遍</button>') +
     (msg ? '<div class="st-msg">' + msg + '</div>' : '') +
+    '<div class="st-ver">版本 ' + BUILD_V + ' · ' + (isStandalone() ? '主屏幕' : '浏览器') + ' ' + (window.innerWidth || 0) + '×' + (window.innerHeight || 0) + ' / 屏幕 ' + (screen ? screen.width + '×' + screen.height : '?') + '</div>' +
     '<div class="sp-foot"><button class="sp-big list" data-act="tclose"><span>返回</span></button><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
 }
 
