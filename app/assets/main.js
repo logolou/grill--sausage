@@ -673,13 +673,23 @@ function itemBar() {
       '<img alt="" src="./assets/img/items/' + it.id + '.webp?v=' + BUILD_V + '"><b>' + (n ? '×' + n : '¥' + it.cost) + '</b></button>';
   }).join('') + '</div>';
 }
+// 道具反馈：在道具按钮上方飘一行字（不用提示框）
+function itemFx(i, text, ok) {
+  var b = document.querySelector('.itm[data-i="' + i + '"]'); if (!b) return;
+  var r = b.getBoundingClientRect(), f = document.createElement('div');
+  f.className = 'itemfx' + (ok ? ' ok' : ' bad'); f.textContent = text;
+  f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = r.top + 'px';
+  document.body.appendChild(f);
+  if (!ok) { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); }
+  setTimeout(function () { if (f.parentNode) f.parentNode.removeChild(f); }, 1300);
+}
 function useItem(i) {
   var it = ITEMS[i]; if (!it) return;
   var have = (G.items[it.id] || 0) > 0;
-  if (!have && G.bank < it.cost) { log('存款不够买' + it.name, 'bad'); return; }
+  if (!have && G.bank < it.cost) { log('存款不够买' + it.name, 'bad'); itemFx(i, '存款不够', false); return; }
   if (it.id === 'hourglass') {
-    if (R.L.endless) { log('无尽模式不能用沙漏', 'bad'); return; }
-    R.bonusT = (R.bonusT || 0) + 30; R.urged = false; log('沙漏：时间 +30 秒', 'good');
+    if (R.L.endless) { log('无尽模式不能用沙漏', 'bad'); itemFx(i, '无尽模式不能用', false); return; }
+    R.bonusT = (R.bonusT || 0) + 30; R.urged = false; log('沙漏：时间 +30 秒', 'good'); itemFx(i, '+30 秒', true);
   } else if (it.id === 'flower') {
     // 烤肠课代表：排队的客人瞬间全部做完（按做对的订单处理）
     var done = 0;
@@ -691,15 +701,15 @@ function useItem(i) {
       if (c.runner) { c.state = 'flee'; c.timer = 3.2; } else { c.state = 'paying'; c.timer = rnd(.4, 1); }
       done++;
     });
-    if (!done) { log('现在没有排队的客人', 'bad'); return; }
-    log('烤肠课代表：' + done + ' 单瞬间做完！', 'good');
+    if (!done) { log('现在没有排队的客人', 'bad'); itemFx(i, '还没有客人', false); return; }
+    log('烤肠课代表：' + done + ' 单瞬间做完！', 'good'); itemFx(i, done + ' 单做完！', true);
   } else if (it.id === 'candy') {
     var n = 0; R.cust.forEach(function (c) { if (c.state === 'wait') { c.pat = c.patMax; n++; } });
-    if (!n) { log('现在没有排队的客人', 'bad'); return; }
-    log('棒棒糖：' + n + ' 位客人耐心回满', 'good');
+    if (!n) { log('现在没有排队的客人', 'bad'); itemFx(i, '还没有客人', false); return; }
+    log('棒棒糖：' + n + ' 位客人耐心回满', 'good'); itemFx(i, '耐心回满', true);
   }
   if (have) G.items[it.id]--;
-  else { G.bank -= it.cost; log('花 ¥' + it.cost + ' 买了' + it.name + '，当场用掉', ''); }
+  else { G.bank -= it.cost; log('花 ¥' + it.cost + ' 买了' + it.name + '，当场用掉', ''); setTimeout(function () { itemFx(i, '-¥' + it.cost, true); }, 450); }
   save(); ding(990, .1); setTimeout(function () { ding(1320, .12); }, 90);
 }
 // 智能机器：番茄涂抹机管番茄；撒料机管孜然、辣椒。返回本关它们能管的 {料名: 'sauce'|'spice'}
@@ -1686,7 +1696,7 @@ document.addEventListener('pointerdown', function (e) {
     startDrag(tool, e); watchTarget(e.target); return;
   }
   var el = e.target.closest('[data-act]'); if (!el) return;
-  if (el.disabled) { if (tutStep()) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); } return; }
+  if (el.disabled) { if (el.classList.contains('itm')) { var di = +el.getAttribute('data-i'); itemFx(di, ITEMS[di] && ITEMS[di].id === 'hourglass' && R && R.L.endless ? '无尽模式不能用' : '存款不够', false); return; } if (tutStep()) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); } return; }
   var a = el.getAttribute('data-act'), i = +el.getAttribute('data-i');
   e.preventDefault();
   if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else if (el.closest('#lvmap')) el.querySelector('img').src = './assets/img/ui/' + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp?v=' + BUILD_V; else render(); return; }

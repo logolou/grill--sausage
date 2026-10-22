@@ -1402,3 +1402,9 @@ input[type=range]{touch-action:pan-x}
 #app.scene .cust.cam::after{left:50%;margin-left:-18px;top:170px}
 #app.scene .cust.cam .bubble::after{display:none}
 #app.scene .cust.cam::after{border-top-color:#FFD23F;-webkit-filter:drop-shadow(0 0 3px #FFF6C8) drop-shadow(0 0 8px rgba(255,214,70,.95)) drop-shadow(0 0 14px rgba(255,190,40,.75));filter:drop-shadow(0 0 3px #FFF6C8) drop-shadow(0 0 8px rgba(255,214,70,.95)) drop-shadow(0 0 14px rgba(255,190,40,.75))}
+/* 道具反馈飘字 */
+.itemfx{position:fixed;z-index:40;transform:translate(-50%,-100%);pointer-events:none;white-space:nowrap;font-family:-apple-system,"PingFang SC",sans-serif;font-weight:800;font-size:16px;color:#fff;text-shadow:0 2px 0 rgba(90,40,10,.7),0 0 6px rgba(0,0,0,.35);-webkit-animation:itemFx 1.3s ease-out forwards;animation:itemFx 1.3s ease-out forwards}
+.itemfx.ok{color:#FFF3B0}.itemfx.bad{color:#FFD0C8}
+@-webkit-keyframes itemFx{0%{opacity:0;-webkit-transform:translate(-50%,-80%)}15%{opacity:1;-webkit-transform:translate(-50%,-110%)}75%{opacity:1}100%{opacity:0;-webkit-transform:translate(-50%,-200%)}}
+@keyframes itemFx{0%{opacity:0;transform:translate(-50%,-80%)}15%{opacity:1;transform:translate(-50%,-110%)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-200%)}}
+.itm.shake{-webkit-animation:shakeX .35s;animation:shakeX .35s}
