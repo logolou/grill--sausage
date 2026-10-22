@@ -9,10 +9,10 @@ var SPICE_COL = {'孜然':'#8A6A3A','葱花':'#4FA83D','辣椒':'#C0180C'};
 var LEVELS = [
   {name:'教学关·开张大吉', time:90, goal:{money:10}, slots:3, pat:75, spawn:[8,11], bands:['嫩'], sauces:['番茄'], spices:[], two:.15, runner:0, feat:[], tutorial:true,
    news:['摊主王姐手把手教你怎么摆烤肠摊','教学结束后，自己动手试试吧，今天赚 ¥10 就能收摊！']},
-  {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩'], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
-   news:['锅里的油会越烤越少。油量低于红线时会粘锅，烤肠成熟更快，更容易焦，点烤肠翻面要多点一下才撬得动。','点「加油」补油；油很满时再加会溢出，损失 ¥1。','新小料：孜然。使用方法：把调料罐拖到烤肠上抖一抖。']},
+  {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩','脆'], bandW:[.8,.2], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
+   news:['新口感：「脆」——烤肠两面都需要烤过第二条刻度。偶尔会有客人要。','锅里的油会越烤越少。油量低于红线时会粘锅，烤肠成熟更快，更容易焦，点烤肠翻面要多点一下才撬得动。','点「加油」补油；油很满时再加会溢出，损失 ¥1。','新小料：孜然。使用方法：把调料罐拖到烤肠上抖一抖。']},
   {name:'口味多起来', time:90, goal:{money:18}, slots:3, pat:65, spawn:[6,9], bands:['嫩','脆'], bandW:[.7,.3], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
-   news:['新口感：「脆」——烤肠两面都需要烤过第二条刻度。','新酱料：蜂蜜芥末。新小料：辣椒。']},
+   news:['新酱料：蜂蜜芥末。新小料：辣椒。','要「脆」的客人更多了。']},
   {name:'攒人气', time:90, goal:{hearts:9}, slots:3, pat:51, spawn:[5.5,8], bands:['嫩','脆'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
    news:['顾客耐心还剩 35% 以上时交付顾客心巴上的烤肠，就会给你一颗爱心。']},
   {name:'有人逃单！', time:120, goal:{money:20}, slots:3, pat:47, spawn:[5.2,7.8], bands:['嫩','脆'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:.18, feat:['oil'],
