@@ -1338,3 +1338,7 @@ input[type=range]{touch-action:pan-x}
 #app.scene #itembar{-webkit-transform:scale(.81);transform:scale(.81)}
 /* 暂停页顶部的道具装饰图去掉 */
 .ps-props{display:none}
+/* 拖烤肠进盒子：手指下跟着一根烤肠 */
+.ghost.sausg{width:64px;height:104px;margin:-52px 0 0 -32px;pointer-events:none}
+.ghost.sausg img{width:100%;height:100%;object-fit:contain;-webkit-filter:drop-shadow(0 6px 6px rgba(60,20,0,.45));filter:drop-shadow(0 6px 6px rgba(60,20,0,.45))}
+.ghost.sausg{margin:0}

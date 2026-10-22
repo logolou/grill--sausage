@@ -205,7 +205,7 @@ var TUT = [
   {text:'等另一面也变绿。别烤太久，进度条走到头变黑就焦了。', spot:'slot0',
    until:function () { var s = R.slots[0].s; return s && judge(s) === '嫩'; }},
   {text:'两面都烤得嫩嫩的了！先停一下，看看烤肠不同火候的标准：', btn:'懂了', hand:'[data-act=tutnext]', freeze:true, extra:lessonHTML},
-  {text:'两面都熟了，标签变成「嫩」。点锅前面的「夹起」，烤肠会放进下面的打包盒。', spot:'pick0', wait:'pick', hand:'[data-act=pick][data-i="0"]'},
+  {text:'两面都熟了，标签变成「嫩」。按住烤肠，拖进下面的打包盒里松手，就夹起来了。', spot:'pick0', wait:'pick', drag:['[data-act=flip][data-i="0"]', '[data-box="0"]']},
   {text:'第一位小客人来了！看他的要求：要「一根烤得嫩嫩的加番茄酱的烤肠」。', spot:'t1', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted(); }},
   {text:'按住右边的番茄酱瓶，拖到打包盒里的烤肠上，松手挤上酱。', spot:'tool-番茄 item00', wait:'topping', drag:['[data-tool="sauce"]', '[data-item="0-0"]']},
   {text:'酱挤好了。点打包盒下面的「装盒」，把盒盖合上。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
@@ -213,7 +213,7 @@ var TUT = [
   {text:'听！「叮咚」一声到账，才说明客人真付了钱。有人可能会逃单，要留意有没有听到到账声。', spot:'speaker', btn:'懂了', hand:'[data-act=tutnext]',
    until:function () { return R.pay.length > 0; }, untilShowsBtn:true},
   {text:'又来一位！王阿姨要「两根」：一根要烤得「嫩」不刷酱，一根「脆」的，刷番茄酱。两根装进同一个盒子。', spot:'t2', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted2(); }},
-  {text:'放两根肠下锅。一根到「嫩」就夹出来；另一根多烤一会儿，两面都变黄（过第二条刻度），变「脆」再夹。记得勤点烤肠翻面，别烤成阴阳面！', free:{place:1, flip:1, pick:1}, handFn:cookHand, twoBands:true,
+  {text:'放两根肠下锅。一根到「嫩」就拖进盒子；另一根多烤一会儿，两面都变黄（过第二条刻度），变「脆」再拖进去。记得勤点烤肠翻面，别烤成阴阳面！', free:{place:1, flip:1, pick:1}, handFn:cookHand, twoBands:true,
    until:function () { return boxHas('嫩') && boxHas('脆'); }},
   {text:'只给「脆」的那根挤番茄酱，「嫩」的那根不要酱。', spot:'tool-番茄 crisp', wait:'topping', crispSauce:true,
    dragFn:function () { return ['[data-tool="sauce"]', '[data-item="0-' + bandIndex('脆') + '"]']; },
@@ -253,7 +253,7 @@ function cookHand() {
   for (i = 0; i < R.slots.length; i++) {
     sl = R.slots[i]; if (!sl.s) continue;
     var s = sl.s, up = s.down === 'a' ? 'b' : 'a', j = judge(s), avg = (s.a + s.b) / 2;
-    if (need.indexOf(j) >= 0) return '[data-act=pick][data-i="' + i + '"]';
+    if (need.indexOf(j) >= 0) return '[data-act=flip][data-i="' + i + '"]';   // 该夹了：手指指着这根，提示拖进盒子
     if (need.some(function (b) { return avg < LIMIT[b]; })) useful++;
     if (s[s.down] - s[up] > 22) return '[data-act=flip][data-i="' + i + '"]';
   }
@@ -539,7 +539,7 @@ function act(a, i) {
       tutEvent('place'); break;
     case 'flip':
       if (!sl.s) return;
-      sl.flipT = now();   // 防误触：刚点完翻面，同一格的「夹起」短时间内不响应
+      sl.flipT = now();   // 防误触：刚点完翻面，同一根短时间内拖不走
       // 粘锅时要点两下才能翻：第一下撬松（烤肠抖一下）
       if (has('oil') && R.oil < 25) {
         sl.pry = (sl.pry || 0) + 1; sl.jolt = now();
@@ -750,7 +750,7 @@ function tapCust(c) {
   }
   if (anyBox(function (b) { return b.stage === 'box'; })) log('按住打包盒，拖到客人身上', 'bad');
   else if (anyBox(function (b) { return b.items.length; })) log('先装盒，再把盒子拖给客人', 'bad');
-  else log('先从锅里夹起烤肠', 'bad');
+  else log('先把锅里的烤肠拖进盒子', 'bad');
 }
 function deliver(c, k) {
   var bx = R.boxes[k];
@@ -856,6 +856,11 @@ var drag = null;
 function dropTarget(x, y, type, from) {
   var el = document.elementFromPoint(x, y); if (!el) return null;
   if (type === 'bag') return el.closest('[data-cid]');
+  if (type === 'saus') {
+    var sb = el.closest('[data-box]'); if (!sb) return null;
+    var sk = +sb.getAttribute('data-box'), sbx = R.boxes[sk];
+    return boxOpen(sk) && sbx.stage === 'open' && sbx.items.length < 2 ? sb : null;
+  }
   if (type === 'item') {
     var bxEl = el.closest('[data-box]'); if (!bxEl) return null;
     var k = +bxEl.getAttribute('data-box'), b = R.boxes[k];
@@ -879,6 +884,13 @@ function startItemDrag(e, k, j) {
   drag = {type:'item', box:k, j:j, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
   moveDrag(e);
 }
+function startSausDrag(e, i, el) {
+  var g = document.createElement('div'); g.className = 'ghost sausg';
+  var img = el.querySelector('img'); if (img) g.innerHTML = '<img alt="" src="' + img.getAttribute('src') + '">';
+  document.body.appendChild(g);
+  drag = {type:'saus', slot:i, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
+  moveDrag(e);
+}
 function startBagDrag(e, k) {
   var g = document.createElement('div'); g.className = 'ghost bagg';
   g.innerHTML = boxHTML('', R.boxes[k].items.length);
@@ -891,6 +903,7 @@ function moveDrag(e) {
   if (!drag) return;
   drag.g.style.left = e.clientX + 'px'; drag.g.style.top = e.clientY + 'px';
   if (Math.abs(e.clientX - drag.x0) + Math.abs(e.clientY - drag.y0) > 8) drag.moved = true;
+  if (drag.type === 'saus') drag.g.style.opacity = drag.moved ? '' : '0';
   var t = dropTarget(e.clientX, e.clientY, drag.type, drag.box);
   if (drag.type === 'bag') {
     var id = t ? +t.getAttribute('data-cid') : null;
@@ -907,6 +920,13 @@ function endDrag(e) {
   if (d.g.parentNode) d.g.parentNode.removeChild(d.g);
   if (d.type !== 'bag' && d.over) d.over.classList.remove('drop');
   if (!R || R.over || R.paused) { render(); return; }
+  if (d.type === 'saus') {
+    if (!d.moved) { act('flip', d.slot); render(); return; }
+    var stb = dropTarget(e.clientX, e.clientY, 'saus');
+    if (stb) { R.sel = +stb.getAttribute('data-box'); act('pick', d.slot); }
+    else log('拖进下面的打包盒里松手', 'bad');
+    render(); return;
+  }
   if (d.type === 'item') {
     var src = R.boxes[d.box], tb = dropTarget(e.clientX, e.clientY, 'item', d.box);
     if (tb && src.stage === 'open' && src.items[d.j]) {
@@ -1093,7 +1113,7 @@ function render() {
       (v2 && sticky ? '<span class="stuck">' + (ost === 2 ? '干锅' : '粘锅') + (sl.pry ? ' ' + sl.pry + '/' + (ost === 2 ? 3 : 2) : '') + '</span>' : '') +
       '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><img class="saus-img' + (j === 'burnt' ? ' smoke' : '') + '" alt="" src="' + SC + 's_' + (SAUS_ART[j] || 'raw') + '_' + (i + 1) + '.webp' + V + '"></div>' +
       '<div class="meters">' + m('上', s[up], false) + m('下', s[s.down], true) + '</div>' +
-      '<button class="pick ' + (j === 'burnt' ? 'red' : '') + (i === 0 ? spot('pick0') : '') + '" data-act="pick" data-i="' + i + '">夹起</button></div>';
+      '</div>';
   }
   setHTML('slots', html);
 
@@ -1593,6 +1613,13 @@ document.addEventListener('pointerdown', function (e) {
     var rst = tutStep();
     if (rst && !tutAllows('scrape') && !(rst.free && rst.free.scrape)) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
     scrapeTap(+rubEl.getAttribute('data-rub'));
+    return;
+  }
+  var sausEl = e.target.closest('[data-act=flip]');
+  if (sausEl && R && !R.over && !R.paused) {
+    e.preventDefault();
+    var si = +sausEl.getAttribute('data-i');
+    if (R.slots[si] && R.slots[si].s) { startSausDrag(e, si, sausEl); watchTarget(e.target); }
     return;
   }
   var tool = e.target.closest('[data-tool]');
