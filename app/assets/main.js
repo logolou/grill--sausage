@@ -1125,7 +1125,7 @@ function render() {
   var t0 = now();
   var panels = [0, 1, 2].map(function (k) {
     if (!boxOpen(k)) {
-      return '<div class="bx locked" data-act="selbox" data-i="' + k + '"><img class="bx-img" alt="" src="' + SC + 'box_open.webp' + V + '"><div class="lockbody"><i class="lock"></i><span>升级小摊解锁</span></div></div>';
+      return '<div class="bx locked" data-act="selbox" data-i="' + k + '"><img class="bx-img" alt="" src="' + SC + 'box_open.webp' + V + '"><div class="lockbody"><i class="lock"></i></div></div>';
     }
     var b = R.boxes[k], n = b.items.length, pf = b.fx && t0 - b.fx.t < 900 ? b.fx.kind : '';
     if (b.stage === 'box') {

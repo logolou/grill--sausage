@@ -1288,3 +1288,10 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* 顾客着急 / 生气：只换图，不加抖动、表情角标和滤镜 */
 #app.scene .cust .mood{display:none}
 #app.scene .cust.anxious .who,#app.scene .cust.angry .who{-webkit-animation:none;animation:none;-webkit-filter:none;filter:none}
+/* 锁着的打包盒：只放一个小锁，锁梁和锁身居中对齐 */
+#app.scene .bx.locked .lockbody{top:40%}
+#app.scene .bx.locked i.lock{box-sizing:border-box;width:30px;height:24px;margin:14px 0 0;border-radius:5px;background:#9C7A4E;box-shadow:0 2px 0 rgba(90,58,34,.35)}
+#app.scene .bx.locked i.lock::before{box-sizing:border-box;left:50%;top:-14px;width:18px;height:16px;margin-left:-9px;border:4px solid #9C7A4E;border-bottom:0;border-radius:10px 10px 0 0}
+#app.scene .bx.locked i.lock::after{content:"";position:absolute;left:50%;top:7px;width:5px;height:9px;margin-left:-2.5px;border-radius:3px;background:#FFF3E0}
+/* 夹起按钮再窄一些，相邻两个之间留出更大空隙防误触 */
+#app.scene .pick{width:54px;margin-left:-27px;font-size:15px;height:36px}
