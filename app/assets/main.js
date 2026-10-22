@@ -9,25 +9,25 @@ var SPICE_COL = {'孜然':'#8A6A3A','葱花':'#4FA83D','辣椒':'#C0180C'};
 var LEVELS = [
   {name:'教学关·开张大吉', time:90, goal:{money:10}, slots:3, pat:75, spawn:[8,11], bands:['嫩'], sauces:['番茄'], spices:[], two:.15, runner:0, feat:[], tutorial:true,
    news:['摊主王姐手把手教你怎么摆烤肠摊','教学结束后，自己动手试试吧，今天赚 ¥10 就能收摊！']},
-  {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩','脆'], bandW:[.8,.2], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
-   news:['新口感：「脆」——烤肠两面都需要烤过第二条刻度。偶尔会有客人要。','锅里的油会越烤越少。油量低于红线时会粘锅，烤肠成熟更快，更容易焦，点烤肠翻面要多点一下才撬得动。','点「加油」补油；油很满时再加会溢出，损失 ¥1。','新小料：孜然。使用方法：把调料罐拖到烤肠上抖一抖。']},
-  {name:'口味多起来', time:90, goal:{money:18}, slots:3, pat:65, spawn:[6,9], bands:['嫩','脆'], bandW:[.7,.3], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
+  {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩','脆'], bandW:[.55,.45], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
+   news:['新口感：「脆」——烤肠两面都需要烤过第二条刻度。不少客人会要。','锅里的油会越烤越少。油量低于红线时会粘锅，烤肠成熟更快，更容易焦，点烤肠翻面要多点一下才撬得动。','点「加油」补油；油很满时再加会溢出，损失 ¥1。','新小料：孜然。使用方法：把调料罐拖到烤肠上抖一抖。']},
+  {name:'口味多起来', time:90, goal:{money:18}, slots:3, pat:65, spawn:[6,9], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
    news:['新酱料：蜂蜜芥末。新小料：辣椒。','要「脆」的客人更多了。']},
-  {name:'攒人气', time:90, goal:{hearts:9}, slots:3, pat:51, spawn:[5.5,8], bands:['嫩','脆'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
+  {name:'攒人气', time:90, goal:{hearts:9}, slots:3, pat:51, spawn:[5.5,8], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
    news:['顾客耐心还剩 35% 以上时交付顾客心巴上的烤肠，就会给你一颗爱心。']},
-  {name:'有人逃单！', time:120, goal:{money:20}, slots:3, pat:47, spawn:[5.2,7.8], bands:['嫩','脆'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:.18, feat:['oil'],
+  {name:'有人逃单！', time:120, goal:{money:20}, slots:3, pat:47, spawn:[5.2,7.8], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:.18, feat:['oil'],
    news:['顾客拿到烤肠都会说「扫好啦」。正常顾客片刻后会响起「叮咚」到账声，然后才离开。','逃单的人没有到账声，拿了就走——在他走远前点击喊他站住！','喊错了（人家其实付了）要扣一颗爱心！']},
-  {name:'微焦党来了', time:120, goal:{money:30}, slots:4, pat:45, spawn:[4.8,7.2], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.35, runner:.05, bandRule:{band:'微焦', within:3, max:.2}, feat:['oil'],
+  {name:'微焦党来了', time:120, goal:{money:30}, slots:4, pat:45, spawn:[4.8,7.2], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.35, runner:.2, bandRule:{band:'微焦', within:3, max:.2}, feat:['oil'],
    news:['新口感：「微焦」——两面过第三条刻度，但不能烤到头。','锅位增加到 4 个。']},
-  {name:'自己串签', time:120, goal:{hearts:12}, slots:4, pat:43, spawn:[4.6,7], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.5, runner:.2, bandRule:{band:'微焦', within:0, max:.25}, feat:['oil','skewer'],
+  {name:'自己串签', time:120, goal:{hearts:12}, slots:4, pat:43, spawn:[4.6,7], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.5, runner:.3, bandRule:{band:'微焦', within:0, max:.25}, feat:['oil','skewer'],
    news:['预串好的肠用完了。先点「串一根」，串好的肠才能下锅。']},
-  {name:'放学高峰', time:150, goal:{money:30}, slots:4, pat:40, spawn:[3.8,5.8], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.45, runner:.2, feat:['oil','skewer'],
+  {name:'放学高峰', time:150, goal:{money:30}, slots:4, pat:40, spawn:[3.8,5.8], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.45, runner:.32, feat:['oil','skewer'],
    news:['全校一起放学：顾客来得更快、更没耐心，要两根的更多了。']},
-  {name:'锅底要铲', time:150, goal:{money:40}, slots:4, pat:39, spawn:[4,6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.4, runner:.22, feat:['oil','skewer','scrape'],
-   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要用右下角的铲子拖到锅巴上铲掉才能再用。','新酱料：甜辣。']},
-  {name:'校门口之王', time:180, goal:{money:50,hearts:12}, slots:4, pat:39, spawn:[3.5,5.6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.45, runner:.25, feat:['oil','skewer','scrape'],
+  {name:'锅底要铲', time:150, goal:{money:40}, slots:4, pat:39, spawn:[4,6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.4, runner:.35, feat:['oil','skewer','scrape'],
+   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要在锅巴上连点 3 下或来回拖几下铲掉才能再用。','新酱料：甜辣。']},
+  {name:'校门口之王', time:180, goal:{money:50,hearts:12}, slots:4, pat:39, spawn:[3.5,5.6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.45, runner:.38, feat:['oil','skewer','scrape'],
    news:['最终关：钱和爱心两个目标都要达成。']},
-  {name:'无尽模式', endless:true, time:0, goal:{}, slots:4, pat:44, spawn:[5,7.5], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.35, runner:.12, feat:['oil'],
+  {name:'无尽模式', endless:true, time:0, goal:{}, slots:4, pat:44, spawn:[5,7.5], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.35, runner:.25, feat:['oil'],
    news:['不限时间：客人会越来越多、越来越急，逃单的也越来越多。','开局口碑 ❤5。差评、客人等不及走掉、被逃单跑掉，各扣 1 颗；做对且够快 +1。','口碑扣光就收摊，看看你能坚持到第几关！']}
 ];
 var ENDLESS = 10, ENDLESS_HEARTS = 5, START_HEARTS = 3;   // 开局爱心；扣到 0 当场收摊
@@ -291,7 +291,7 @@ var SKEWER_TUT = [
 var SKEWER_MAX = 4;   // 串好的肠最多备几根
 var SCRAPE_TUT = [
   {text:'第九关！王姐来提个醒：锅用久了会结锅巴。每个锅位烤完 3 根肠，或者烤焦一根，就会结一层锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
-  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>按住右下角的铲子，拖到锅巴上</b>铲干净！', spot:'scrape0', drag:['.scraper', '[data-rub="0"]'], wait:'scrape',
+  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>在锅巴上连点 3 下，或者按住来回拖几下</b>就能铲干净！', spot:'scrape0', drag:['[data-rub="0"] .g7', '[data-rub="0"] .g6'], wait:'scrape',
    enter:function () { R.slots[0].s = null; R.slots[0].dirt = true; R.slots[0].scrub = 0; }},
   {text:'铲干净了！忙起来也要留意锅巴，别让锅位闲着。<br>另外这关多了新酱料「甜辣」，看清客人要哪种酱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true}
 ];
@@ -430,7 +430,10 @@ function applyBandRule(L, specs, n) {
   if (has) R.bandCount = cnt + 1;
 }
 function spawn() {
-  var L = R.L, p = pick(PEOPLE), k = ramp();
+  var L = R.L, k = ramp();
+  var onScreen = R.cust.map(function (c) { return c.name; });   // 同屏三位尽量不重复
+  var fresh = PEOPLE.filter(function (x) { return onScreen.indexOf(x[1]) < 0; });
+  var p = pick(fresh.length ? fresh : PEOPLE);
   var pat = L.pat * PAT_SCALE * (1 - .35 * k) * (G.up.horn ? 1.25 : 1) * rnd(.85, 1.15);
   var base = {band: pickBand(L),
     sauce: L.sauces.length && Math.random() < .7 ? pick(L.sauces) : null,
@@ -910,11 +913,12 @@ function startSausDrag(e, i, el) {
   drag = {type:'saus', slot:i, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
   moveDrag(e);
 }
-function startScrapeDrag(e) {
+var SCRAPE_DIST = 160;   // 在锅巴上来回拖的总距离（屏幕像素）够了就铲干净
+function startScrapeDrag(e, i) {
   var g = document.createElement('div'); g.className = 'ghost scrg';
   g.innerHTML = '<img alt="" src="' + SC + 'scraper.webp?v=' + BUILD_V + '">';
   document.body.appendChild(g);
-  drag = {type:'scrape', g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
+  drag = {type:'scrape', slot:i, g:g, x0:e.clientX, y0:e.clientY, lx:e.clientX, ly:e.clientY, dist:0, moved:false, over:null};
   moveDrag(e);
 }
 function startBagDrag(e, k) {
@@ -928,6 +932,19 @@ function startBagDrag(e, k) {
 function moveDrag(e) {
   if (!drag) return;
   drag.g.style.left = e.clientX + 'px'; drag.g.style.top = e.clientY + 'px';
+  if (drag.type === 'scrape') {
+    var sl0 = R && R.slots[drag.slot];
+    drag.dist += Math.abs(e.clientX - drag.lx) + Math.abs(e.clientY - drag.ly); drag.lx = e.clientX; drag.ly = e.clientY;
+    if (sl0 && sl0.dirt) {
+      var step = Math.floor(drag.dist / (SCRAPE_DIST / 4));
+      if (step > (drag.step || 0)) { drag.step = step; ding(150 + Math.random() * 60, .05, .35, 'sawtooth'); }
+      if (drag.base == null) drag.base = sl0.scrub || 0;
+      sl0.scrub = Math.min(3, drag.base + Math.floor(drag.dist / (SCRAPE_DIST / 3)));
+      if (sl0.scrub >= SCRAPE_TAPS || drag.dist >= SCRAPE_DIST) { sl0.cleanT = now(); act('scrape', drag.slot); burst(e.clientX, e.clientY, 'spice', '#8A5A30'); }
+      render();
+    }
+    return;
+  }
   if (Math.abs(e.clientX - drag.x0) + Math.abs(e.clientY - drag.y0) > 8) drag.moved = true;
   if (drag.type === 'saus') drag.g.style.opacity = drag.moved ? '' : '0';
   var t = dropTarget(e.clientX, e.clientY, drag.type, drag.box);
@@ -947,9 +964,15 @@ function endDrag(e) {
   if (d.type !== 'bag' && d.over) d.over.classList.remove('drop');
   if (!R || R.over || R.paused) { render(); return; }
   if (d.type === 'scrape') {
-    var rt = dropTarget(e.clientX, e.clientY, 'scrape');
-    if (rt) { var ri = +rt.getAttribute('data-rub'); R.slots[ri].cleanT = now(); act('scrape', ri); burst(e.clientX, e.clientY, 'spice', '#3A2A20'); }
-    else log('按住铲子，拖到锅巴上松手', 'bad');
+    var rsl = R.slots[d.slot];
+    if (rsl && rsl.dirt && !d.moved) {
+      // 点一下也算铲一下：铲子在点的位置停一会儿再消失，点满 SCRAPE_TAPS 下铲干净
+      var fl = document.createElement('div'); fl.className = 'ghost scrg tapfx';
+      fl.innerHTML = '<img alt="" src="' + SC + 'scraper.webp?v=' + BUILD_V + '">';
+      fl.style.left = e.clientX + 'px'; fl.style.top = e.clientY + 'px'; document.body.appendChild(fl);
+      setTimeout(function () { if (fl.parentNode) fl.parentNode.removeChild(fl); }, 380);
+      scrapeTap(d.slot); return;
+    }
     render(); return;
   }
   if (d.type === 'saus') {
@@ -1127,7 +1150,7 @@ function render() {
     var lockTut = !!st && i !== 0;
     if (sl.dirt) {
       var hit = sl.scrub || 0;
-      html += '<div class="slot"><div class="slot-btn dirt' + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '">' +
+      html += '<div class="slot"><div class="slot-btn dirt p' + (sl.scrub || 0) + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '">' +
         '<i class="gb g1"></i><i class="gb g2"></i><i class="gb g3"></i><i class="gb g4"></i><i class="gb g5"></i><i class="gb g6"></i><i class="gb g7"></i></div></div>';
       continue;
     }
@@ -1142,6 +1165,7 @@ function render() {
     };
     html += '<div class="slot' + (sticky ? ' sticky' : '') + (ost === 2 ? ' dry' : '') + (jolt ? ' jolt' : '') + (i === 0 ? spot('slot0') : '') + '">' +
       '<span class="tag ' + j + '">' + ({raw:'还生', burnt:'焦了！'}[j] || JUDGE_TEXT[j]) + '</span>' +
+      (sticky ? '<i class="stk s1"></i><i class="stk s2"></i><i class="stk s3"></i><i class="stk s4"></i><i class="stk s5"></i>' : '') +
       (v2 && sticky ? '<span class="stuck">' + (ost === 2 ? '干锅' : '粘锅') + (sl.pry ? ' ' + sl.pry + '/' + (ost === 2 ? 3 : 2) : '') + '</span>' : '') +
       '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><img class="saus-img' + (j === 'burnt' ? ' smoke' : '') + '" alt="" src="' + SC + 's_' + (SAUS_ART[j] || 'raw') + '_' + (i + 1) + '.webp' + V + '"></div>' +
       '<div class="meters">' + m('上', s[up], false) + m('下', s[s.down], true) + '</div>' +
@@ -1151,7 +1175,6 @@ function render() {
 
   // 油壶 + 竹签筒
   var tools = '';
-  if (has('scrape')) tools += '<button class="scraper' + spot('scraper') + '" aria-label="铲子"><img alt="" src="' + SC + 'scraper.webp' + V + '"></button>';
   if (has('oil')) tools += '<button class="oilcan' + (v2 && sticky ? ' low' : '') + '" data-act="oil" aria-label="加油"><img alt="" src="' + SC + 'oil.webp' + V + '"><b>加油</b></button>' +
     '<div class="oilgauge' + (R.oil < (typeof OIL_STICKY !== 'undefined' ? OIL_STICKY : 25) ? ' low' : '') + '"><em>油量</em><span class="og-bar"><i style="width:' + Math.round(R.oil) + '%"></i><u style="left:' + (typeof OIL_STICKY !== 'undefined' ? OIL_STICKY : 25) + '%"></u></span></div>';
   if (has('skewer')) tools += '<button class="sticks" data-act="skewer"' + (R.stock >= SKEWER_MAX ? ' disabled' : '') + ' aria-label="串一根"><img alt="" src="' + SC + 'sticks.webp' + V + '"><b>串一根 ' + R.stock + '/' + SKEWER_MAX + '</b></button>';
@@ -1639,16 +1662,14 @@ document.addEventListener('pointerdown', function (e) {
     var kj = itemEl.getAttribute('data-item').split('-'), ib = R.boxes[+kj[0]];
     if (ib && ib.stage === 'open' && ib.items[+kj[1]]) { e.preventDefault(); startItemDrag(e, +kj[0], +kj[1]); watchTarget(e.target); return; }
   }
-  var scrEl = e.target.closest('.scraper');
-  if (scrEl) {
+  var rubEl = e.target.closest('[data-rub]');
+  if (rubEl) {
     e.preventDefault();
     if (!R || R.over || R.paused) return;
     var rst = tutStep();
     if (rst && !tutAllows('scrape') && !(rst.free && rst.free.scrape)) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
-    startScrapeDrag(e); watchTarget(e.target); return;
+    startScrapeDrag(e, +rubEl.getAttribute('data-rub')); watchTarget(e.target); return;
   }
-  var rubEl = e.target.closest('[data-rub]');
-  if (rubEl) { e.preventDefault(); if (R && !R.over && !R.paused) { log('按住右下角的铲子，拖到锅巴上铲掉', 'bad'); nudge(); } return; }
   var sausEl = e.target.closest('[data-act=flip]');
   if (sausEl && R && !R.over && !R.paused) {
     e.preventDefault();

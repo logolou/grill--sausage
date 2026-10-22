@@ -1365,3 +1365,21 @@ input[type=range]{touch-action:pan-x}
 .ghost.scrg{width:84px;height:84px;margin:0}
 .ghost.scrg img{width:100%;height:100%;object-fit:contain}
 #app.scene .scraper{left:570px}
+/* 锅巴：棕色的点，越刮越淡；粘锅：黑点 */
+#app.scene .slot-btn.dirt .gb{background:radial-gradient(circle at 35% 35%,#B07A45,#6A4220);box-shadow:0 1px 1px rgba(255,255,255,.15)}
+#app.scene .slot-btn.dirt.p1 .gb{opacity:.75}#app.scene .slot-btn.dirt.p2 .gb{opacity:.45}#app.scene .slot-btn.dirt.p3 .gb{opacity:.2}
+#app.scene .slot .stk{position:absolute;z-index:0;border-radius:50%;background:radial-gradient(circle at 35% 35%,#3A3430,#0E0C0B);pointer-events:none}
+#app.scene .slot .stk.s1{left:28%;top:18%;width:12px;height:10px}
+#app.scene .slot .stk.s2{left:62%;top:28%;width:9px;height:9px}
+#app.scene .slot .stk.s3{left:24%;top:50%;width:14px;height:12px}
+#app.scene .slot .stk.s4{left:66%;top:58%;width:11px;height:10px}
+#app.scene .slot .stk.s5{left:44%;top:74%;width:10px;height:9px}
+#app.scene .saus-area{z-index:1}
+#app.scene .scraper{display:none}
+.ghost.scrg{width:90px;height:90px;transform:translate(-30%,-75%)}
+.ghost.scrg.tapfx{-webkit-animation:scrTap .38s ease-out forwards;animation:scrTap .38s ease-out forwards}
+@-webkit-keyframes scrTap{0%{opacity:1;-webkit-transform:translate(-30%,-75%) rotate(-12deg)}60%{opacity:1;-webkit-transform:translate(-30%,-70%) rotate(8deg)}100%{opacity:0;-webkit-transform:translate(-30%,-70%) rotate(8deg)}}
+@keyframes scrTap{0%{opacity:1;transform:translate(-30%,-75%) rotate(-12deg)}60%{opacity:1;transform:translate(-30%,-70%) rotate(8deg)}100%{opacity:0;transform:translate(-30%,-70%) rotate(8deg)}}
+/* 粘锅的黑点在槽边，压在烤肠上面也看得见 */
+#app.scene .slot .stk{z-index:2;opacity:.85}
+#app.scene .slot .stk.s1{left:10%;top:14%}#app.scene .slot .stk.s2{left:78%;top:26%}#app.scene .slot .stk.s3{left:8%;top:52%}#app.scene .slot .stk.s4{left:80%;top:60%}#app.scene .slot .stk.s5{left:14%;top:78%}
