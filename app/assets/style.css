@@ -1448,3 +1448,7 @@ html.sa .overlay,html.sa .ts,html.sa .lvmap,html.sa #flash,html.sa #app.scene,ht
 #app.scene{background:#3A2A4A url(img/scene/bg_long.webp) center center/cover no-repeat}
 .lvmap .lm-bg{top:-67.1% !important;height:auto !important;width:100% !important}
 .st-ver{margin-top:8px;text-align:center;font-size:10px;color:#C7A08A;letter-spacing:.02em}
+/* 保底：全屏层至少有「大视口」那么高（主屏幕模式下 = 整块屏幕）；页面底色 = 游戏台面最底下的木头色 */
+html,body{min-height:100lvh}
+.overlay,.ts,.lvmap,#app.scene,.ld{min-height:100lvh}
+html,body{background-color:#D3662A}

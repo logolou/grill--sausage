@@ -1848,7 +1848,7 @@ function showTitle() {
     var el = ts.querySelector(p[0]); el.style.left = p[1][0] + '%'; el.style.top = p[1][1] + '%'; el.style.width = p[1][2] + '%';
   });
   // iPhone Safari 会用页面底色给顶部状态栏 / 底部工具栏染色：开始画面期间换成画面里天空和路边的颜色
-  setBarColor('#9F76CA'); document.body.style.backgroundColor = '#C47C5C';
+  setBarColor('#9F76CA'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#C47C5C';
   var stage = ts.querySelector('.ts-col');
   function fitStage() {
     var W = ts.clientWidth, H = ts.clientHeight, sc = Math.max(W / TITLE_W, H / TITLE_H);
@@ -1954,7 +1954,7 @@ function setBarColor(c) {
 function hideTitle() {
   var ts = $('title'); if (!ts) return;
   if (ts.__orbitStop) ts.__orbitStop();
-  setBarColor(null); document.body.style.backgroundColor = '';
+  setBarColor(null); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '';
   ts.className += ' out';
   setTimeout(function () { if (ts.parentNode) ts.parentNode.removeChild(ts); }, 350);
 }
@@ -2011,7 +2011,7 @@ function loadLevel(i) {
     '<g fill="#F7C795" opacity=".3">' + SAUS + '</g><g fill="#F7C795" clip-path="url(#ldClip)">' + SAUS + '</g>' + CUTS + '</svg>' +
     '<div class="ld-txt">LOADING<span>...</span></div></div>';
   document.body.appendChild(ld);
-  setBarColor('#E0833F');
+  setBarColor('#E0833F'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#E4864C';
   var clip = ld.querySelector('.ld-clip'), t0 = now(), DUR = 1300;
   (function step() {
     var k = Math.min(1, (now() - t0) / DUR), e = 1 - Math.pow(1 - k, 2.2);
@@ -2020,7 +2020,7 @@ function loadLevel(i) {
     // 加载完：在加载画面后面开局，再淡出
     startLevel(i);
     ld.className = 'ld out'; loading = false;
-    setTimeout(function () { if (ld.parentNode) ld.parentNode.removeChild(ld); setBarColor(null); }, 380);
+    setTimeout(function () { if (ld.parentNode) ld.parentNode.removeChild(ld); setBarColor(null); if (!document.querySelector('.ts, #lvmap')) document.body.style.backgroundColor = document.documentElement.style.backgroundColor = ''; }, 380);
   })();
 }
 function showMap() {
@@ -2049,7 +2049,7 @@ function showMap() {
   mp.innerHTML = h;
   document.body.appendChild(mp);
   // Safari 状态栏 / 工具栏跟着地图的颜色走（不再是开始画面的紫色）
-  setBarColor('#D68550'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#D68550';
+  setBarColor('#D68550'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#CF9379';   // 底色 = 地图最底下的颜色，万一没铺满也看不出
   // 地图整张铺满屏幕（像开始画面一样等比放大，多出来的两边 / 上下裁掉），不用滚动
   var stage = mp.querySelector('.lm-stage');
   function fitMap() {
