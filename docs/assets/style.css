@@ -1316,3 +1316,16 @@ input[type=range]{touch-action:pan-x}
 #app.scene .cust .who{z-index:1}
 /* 气泡底边固定（尖角位置不变），需求多时往上长，不往下压到脸 */
 #app.scene .cust .bubble{top:auto;bottom:320px}
+/* 油量条：做在锅（炉子前面板）上，粗一点、显眼一点 */
+.oilcan .lvl{display:none}
+#app.scene .oilgauge{position:absolute;left:142px;top:858px;width:232px;height:30px;display:flex;align-items:center;padding:0 10px;border-radius:15px;background:rgba(60,30,20,.72);box-shadow:0 2px 0 rgba(0,0,0,.25);z-index:5;pointer-events:none}
+#app.scene .oilgauge em{font-style:normal;font-size:14px;font-weight:700;color:#FFE9C7;margin-right:8px;white-space:nowrap}
+#app.scene .oilgauge .og-bar{position:relative;flex:1;height:14px;border-radius:7px;background:#3A2418;box-shadow:0 0 0 2px #FFF3E0;overflow:hidden}
+#app.scene .oilgauge .og-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:7px;background:linear-gradient(180deg,#FFE27A,#F2A600)}
+#app.scene .oilgauge .og-bar u{position:absolute;top:-2px;bottom:-2px;width:3px;margin-left:-1.5px;background:#FF4A3D}
+#app.scene .oilgauge.low{background:rgba(200,40,30,.85);-webkit-animation:pulse 1s infinite;animation:pulse 1s infinite}
+#app.scene .oilgauge.low .og-bar i{background:linear-gradient(180deg,#FF8A72,#E5473A)}
+/* 道具栏再缩小 10%（累计 0.81） */
+#app.scene #itembar{-webkit-transform:scale(.81);transform:scale(.81)}
+/* 暂停页顶部的道具装饰图去掉 */
+.ps-props{display:none}

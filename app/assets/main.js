@@ -275,6 +275,13 @@ var SHOP_TUT = [
   {text:'🍭 棒棒糖：排队客人耐心回满<br>⏳ 沙漏：本关多加 30 秒<br>🙋 课代表：瞬间做完所有订单', btn:'然后呢', hand:'[data-act=tutnext]'},
   {text:'道具在屏幕最下方，点一下就用。', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
+// 第二关第一次开张：王姐教加油、撒孜然
+var OIL_TUT = [
+  {text:'第二关！从今天起锅里要放油。看锅上这条黄色的就是油量。', btn:'然后呢', hand:'.oilgauge', freeze:true},
+  {text:'烤着烤着油会越来越少。油量掉到红线以下就会粘锅：烤肠熟得更快、容易焦，翻面也要多点几下。', btn:'那怎么办', hand:'.oilgauge', freeze:true},
+  {text:'点一下右边的油瓶就能加油！不过油还很满的时候再加会溢出来，白白亏 ¥1。', btn:'记住了', hand:'[data-act=oil]', freeze:true},
+  {text:'今天还多了孜然。客人要孜然的话，按住孜然盒，拖到打包盒里的烤肠上松手就撒好了。', btn:'开始营业', hand:'[data-tool=spice]', freeze:true}
+];
 var SKEWER_TUT = [
   {text:'王姐又来啦！今天预串好的肠用完了，从这关起得自己串签。', btn:'怎么串', hand:'[data-act=tutnext]'},
   {text:'点左边的竹签筒「串一根」，点一下就串好一根，最多能备 4 根。先串两根试试。', hand:'[data-act=skewer]', free:{skewer:1}, until:function () { return R.stock >= 2; }},
@@ -380,7 +387,9 @@ function startLevel(i, demo) {
        tut: L.tutorial ? {i:0, steps:TUT, label:'教学'} : null};
   // 第二关第一次开张：王姐介绍道具商店
   G.seen = G.seen || {};
-  if (i === 1 && !demo && !G.seen.itemShop) { R.tut = {i:0, steps:SHOP_TUT, label:'王姐小课堂'}; G.seen.itemShop = 1; save(); }
+  if (i === 1 && !demo && !G.seen.oilTut) {
+    R.tut = {i:0, steps:OIL_TUT.concat(G.seen.itemShop ? [] : SHOP_TUT), label:'王姐小课堂'}; G.seen.oilTut = 1; G.seen.itemShop = 1; save();
+  } else if (i === 1 && !demo && !G.seen.itemShop) { R.tut = {i:0, steps:SHOP_TUT, label:'王姐小课堂'}; G.seen.itemShop = 1; save(); }
   // 第七关第一次开张：王姐教串签
   if (i === 8 && !demo && !G.seen.scrape) { R.tut = {i:0, steps:SCRAPE_TUT, label:'王姐小课堂'}; G.seen.scrape = 1; save(); }
   if (i === 6 && !demo && !G.seen.skewer) { R.tut = {i:0, steps:SKEWER_TUT, label:'王姐小课堂'}; G.seen.skewer = 1; save(); }
@@ -1017,7 +1026,7 @@ function orderHTML(c) {
 function zoneCol(v) { return v < 40 ? '#5BB8F5' : v < 70 ? '#4CD06A' : v < 88 ? '#FFC21A' : v <= 100 ? '#FF6A3D' : '#2B2B2B'; }
 var SAUS_ART = {raw:'raw', '嫩':'tender', '脆':'crispy', '微焦':'charred', burnt:'burnt', uneven:'half'};
 var TOOL_SPOT = {'番茄':[494, 598, 50], '蜂蜜芥末':[546, 598, 50], '甜辣':[598, 598, 50]};   // 番茄酱和锅拉开一点
-var SPICE_SPOT = {'孜然':[508, 748, 106], '辣椒':[612, 748, 106]};
+var SPICE_SPOT = {'孜然':[520, 758, 86], '辣椒':[612, 748, 106]};   // 孜然盒小一点
 function render() {
   if (!R) return;
   var L = R.L, g = L.goal, st = tutStep(), k, V = '?v=' + BUILD_V;
@@ -1105,7 +1114,8 @@ function render() {
 
   // 油壶 + 竹签筒
   var tools = '';
-  if (has('oil')) tools += '<button class="oilcan' + (v2 && sticky ? ' low' : '') + '" data-act="oil" aria-label="加油"><img alt="" src="' + SC + 'oil.webp' + V + '"><span class="lvl"><i style="height:' + Math.round(R.oil) + '%"></i></span><b>加油</b></button>';
+  if (has('oil')) tools += '<button class="oilcan' + (v2 && sticky ? ' low' : '') + '" data-act="oil" aria-label="加油"><img alt="" src="' + SC + 'oil.webp' + V + '"><b>加油</b></button>' +
+    '<div class="oilgauge' + (R.oil < (typeof OIL_STICKY !== 'undefined' ? OIL_STICKY : 25) ? ' low' : '') + '"><em>油量</em><span class="og-bar"><i style="width:' + Math.round(R.oil) + '%"></i><u style="left:' + (typeof OIL_STICKY !== 'undefined' ? OIL_STICKY : 25) + '%"></u></span></div>';
   if (has('skewer')) tools += '<button class="sticks" data-act="skewer"' + (R.stock >= SKEWER_MAX ? ' disabled' : '') + ' aria-label="串一根"><img alt="" src="' + SC + 'sticks.webp' + V + '"><b>串一根 ' + R.stock + '/' + SKEWER_MAX + '</b></button>';
   setHTML('gtools', tools);
 
