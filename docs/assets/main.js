@@ -220,10 +220,10 @@ var TUT = [
    until:function () { var it = R.boxes[0].items; return it.length === 2 && it[bandIndex('脆')].sauce === '番茄' && !it[bandIndex('嫩')].sauce; }},
   {text:'全对！点「装盒」。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
   {text:'拖给王阿姨！', spot:'bag0 t2', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t2"]']},
-  {text:'做得好！全做对、客人没等太久，就能拿爱心。', btn:'记住了', hand:'[data-act=tutnext]'},
+  {text:'做得好！根数、火候、酱、小料全对，客人耐心还剩三分之一以上，就能拿爱心。', btn:'记住了', hand:'[data-act=tutnext]'},
   {text:'做错会少给钱、扣爱心，爱心扣光就收摊。', btn:'知道了', hand:'[data-act=tutnext]'},
   {text:'忙不过来就关火。点旋钮关火。', spot:'fire', wait:'fire', hand:'[data-act=fire]'},
-  {text:'再点就能点火。摊子交给你了！', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'再点旋钮点火，要预热一会儿才能烤。摊子交给你了！', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 // 火候小课堂：四根示意烤肠，各带「上 / 下」两条进度条
 function lessonHTML() {
