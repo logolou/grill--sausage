@@ -1309,3 +1309,14 @@ input[type=range]{touch-action:pan-x}
 #app.scene .minibag{display:none}
 /* 最左边槽位整体左移 20px */
 #app.scene .slot:nth-child(1){left:calc(10.9% - 20px)}
+/* 「放一根」按钮中心对准槽中心（和烤肠同一个中心点） */
+#app.scene .slot-btn{top:-7px;height:108px;left:0;width:100%;justify-content:center;align-items:center;padding:0}
+/* 锁着的打包盒：小锁在盒子图上水平垂直居中（盒图 214×159） */
+#app.scene .bx.locked .lockbody{top:0;height:159px;display:flex;align-items:center;justify-content:center}
+#app.scene .bx.locked i.lock{margin:14px 0 0}
+#app.scene .bx.locked i.lock{margin:6px 0 0}
+/* 第一槽位置还原（烤肠居中在槽里），只把它的「夹起」按钮往左挪 40px */
+#app.scene .slot:nth-child(1){left:10.9%}
+#app.scene .slot:nth-child(1) .pick{margin-left:-67px}
+/* 酱瓶名字小一点，相邻不挤在一起 */
+#app.scene .tool:not(.spicebox) span{font-size:11.5px;padding:0 3px;letter-spacing:-.02em}

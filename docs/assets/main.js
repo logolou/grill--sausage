@@ -1001,7 +1001,7 @@ function orderHTML(c) {
 // 熟度条用醒目的分段色：生 蓝 → 嫩 绿 → 脆 黄 → 微焦 橙 → 焦 黑
 function zoneCol(v) { return v < 40 ? '#5BB8F5' : v < 70 ? '#4CD06A' : v < 88 ? '#FFC21A' : v <= 100 ? '#FF6A3D' : '#2B2B2B'; }
 var SAUS_ART = {raw:'raw', '嫩':'tender', '脆':'crispy', '微焦':'charred', burnt:'burnt', uneven:'half'};
-var TOOL_SPOT = {'番茄':[478, 598, 52], '蜂蜜芥末':[533, 598, 52], '甜辣':[588, 598, 52]};
+var TOOL_SPOT = {'番茄':[494, 598, 50], '蜂蜜芥末':[546, 598, 50], '甜辣':[598, 598, 50]};   // 番茄酱和锅拉开一点
 var SPICE_SPOT = {'孜然':[508, 748, 106], '辣椒':[612, 748, 106]};
 function render() {
   if (!R) return;
