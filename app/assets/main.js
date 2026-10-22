@@ -24,7 +24,7 @@ var LEVELS = [
   {name:'放学高峰', time:150, goal:{money:30}, slots:4, pat:40, spawn:[3.8,5.8], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.45, runner:.2, feat:['oil','skewer'],
    news:['全校一起放学：顾客来得更快、更没耐心，要两根的更多了。']},
   {name:'锅底要铲', time:150, goal:{money:40}, slots:4, pat:39, spawn:[4,6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.4, runner:.22, feat:['oil','skewer','scrape'],
-   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要在锅巴上连点 3 下铲掉才能再用。','新酱料：甜辣。']},
+   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要用右下角的铲子拖到锅巴上铲掉才能再用。','新酱料：甜辣。']},
   {name:'校门口之王', time:180, goal:{money:50,hearts:12}, slots:4, pat:39, spawn:[3.5,5.6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.45, runner:.25, feat:['oil','skewer','scrape'],
    news:['最终关：钱和爱心两个目标都要达成。']},
   {name:'无尽模式', endless:true, time:0, goal:{}, slots:4, pat:44, spawn:[5,7.5], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.35, runner:.12, feat:['oil'],
@@ -291,7 +291,7 @@ var SKEWER_TUT = [
 var SKEWER_MAX = 4;   // 串好的肠最多备几根
 var SCRAPE_TUT = [
   {text:'第九关！王姐来提个醒：锅用久了会结锅巴。每个锅位烤完 3 根肠，或者烤焦一根，就会结一层锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
-  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>连点 3 下</b>把锅巴铲干净！', spot:'scrape0', hand:'[data-rub="0"]', wait:'scrape',
+  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>按住右下角的铲子，拖到锅巴上</b>铲干净！', spot:'scrape0', drag:['.scraper', '[data-rub="0"]'], wait:'scrape',
    enter:function () { R.slots[0].s = null; R.slots[0].dirt = true; R.slots[0].scrub = 0; }},
   {text:'铲干净了！忙起来也要留意锅巴，别让锅位闲着。<br>另外这关多了新酱料「甜辣」，看清客人要哪种酱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true}
 ];
@@ -871,6 +871,10 @@ var drag = null;
 function dropTarget(x, y, type, from) {
   var el = document.elementFromPoint(x, y); if (!el) return null;
   if (type === 'bag') return el.closest('[data-cid]');
+  if (type === 'scrape') {
+    var rb = el.closest('[data-rub]');
+    return rb && R.slots[+rb.getAttribute('data-rub')] && R.slots[+rb.getAttribute('data-rub')].dirt ? rb : null;
+  }
   if (type === 'saus') {
     var sb = el.closest('[data-box]'); if (!sb) return null;
     var sk = +sb.getAttribute('data-box'), sbx = R.boxes[sk];
@@ -906,6 +910,13 @@ function startSausDrag(e, i, el) {
   drag = {type:'saus', slot:i, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
   moveDrag(e);
 }
+function startScrapeDrag(e) {
+  var g = document.createElement('div'); g.className = 'ghost scrg';
+  g.innerHTML = '<img alt="" src="' + SC + 'scraper.webp?v=' + BUILD_V + '">';
+  document.body.appendChild(g);
+  drag = {type:'scrape', g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
+  moveDrag(e);
+}
 function startBagDrag(e, k) {
   var g = document.createElement('div'); g.className = 'ghost bagg';
   g.innerHTML = boxHTML('', R.boxes[k].items.length);
@@ -935,6 +946,12 @@ function endDrag(e) {
   if (d.g.parentNode) d.g.parentNode.removeChild(d.g);
   if (d.type !== 'bag' && d.over) d.over.classList.remove('drop');
   if (!R || R.over || R.paused) { render(); return; }
+  if (d.type === 'scrape') {
+    var rt = dropTarget(e.clientX, e.clientY, 'scrape');
+    if (rt) { var ri = +rt.getAttribute('data-rub'); R.slots[ri].cleanT = now(); act('scrape', ri); burst(e.clientX, e.clientY, 'spice', '#3A2A20'); }
+    else log('按住铲子，拖到锅巴上松手', 'bad');
+    render(); return;
+  }
   if (d.type === 'saus') {
     if (!d.moved) { act('flip', d.slot); render(); return; }
     var stb = dropTarget(e.clientX, e.clientY, 'saus');
@@ -1110,8 +1127,8 @@ function render() {
     var lockTut = !!st && i !== 0;
     if (sl.dirt) {
       var hit = sl.scrub || 0;
-      html += '<div class="slot"><div class="slot-btn dirt p' + hit + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '"><img alt="" src="' + SC + 'dirty.webp' + V + '"><b>铲锅巴</b><span class="rubdots">' +
-        new Array(SCRAPE_TAPS + 1).join('·').split('').map(function (x, k) { return k < hit ? '●' : '○'; }).join('') + '</span></div></div>';
+      html += '<div class="slot"><div class="slot-btn dirt' + (i === 0 ? spot('scrape0') : '') + '" data-rub="' + i + '">' +
+        '<i class="gb g1"></i><i class="gb g2"></i><i class="gb g3"></i><i class="gb g4"></i><i class="gb g5"></i><i class="gb g6"></i><i class="gb g7"></i></div></div>';
       continue;
     }
     if (!sl.s) {
@@ -1134,6 +1151,7 @@ function render() {
 
   // 油壶 + 竹签筒
   var tools = '';
+  if (has('scrape')) tools += '<button class="scraper' + spot('scraper') + '" aria-label="铲子"><img alt="" src="' + SC + 'scraper.webp' + V + '"></button>';
   if (has('oil')) tools += '<button class="oilcan' + (v2 && sticky ? ' low' : '') + '" data-act="oil" aria-label="加油"><img alt="" src="' + SC + 'oil.webp' + V + '"><b>加油</b></button>' +
     '<div class="oilgauge' + (R.oil < (typeof OIL_STICKY !== 'undefined' ? OIL_STICKY : 25) ? ' low' : '') + '"><em>油量</em><span class="og-bar"><i style="width:' + Math.round(R.oil) + '%"></i><u style="left:' + (typeof OIL_STICKY !== 'undefined' ? OIL_STICKY : 25) + '%"></u></span></div>';
   if (has('skewer')) tools += '<button class="sticks" data-act="skewer"' + (R.stock >= SKEWER_MAX ? ' disabled' : '') + ' aria-label="串一根"><img alt="" src="' + SC + 'sticks.webp' + V + '"><b>串一根 ' + R.stock + '/' + SKEWER_MAX + '</b></button>';
@@ -1621,15 +1639,16 @@ document.addEventListener('pointerdown', function (e) {
     var kj = itemEl.getAttribute('data-item').split('-'), ib = R.boxes[+kj[0]];
     if (ib && ib.stage === 'open' && ib.items[+kj[1]]) { e.preventDefault(); startItemDrag(e, +kj[0], +kj[1]); watchTarget(e.target); return; }
   }
-  var rubEl = e.target.closest('[data-rub]');
-  if (rubEl) {
+  var scrEl = e.target.closest('.scraper');
+  if (scrEl) {
     e.preventDefault();
     if (!R || R.over || R.paused) return;
     var rst = tutStep();
     if (rst && !tutAllows('scrape') && !(rst.free && rst.free.scrape)) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
-    scrapeTap(+rubEl.getAttribute('data-rub'));
-    return;
+    startScrapeDrag(e); watchTarget(e.target); return;
   }
+  var rubEl = e.target.closest('[data-rub]');
+  if (rubEl) { e.preventDefault(); if (R && !R.over && !R.paused) { log('按住右下角的铲子，拖到锅巴上铲掉', 'bad'); nudge(); } return; }
   var sausEl = e.target.closest('[data-act=flip]');
   if (sausEl && R && !R.over && !R.paused) {
     e.preventDefault();
