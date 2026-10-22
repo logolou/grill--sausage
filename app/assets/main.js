@@ -1246,6 +1246,8 @@ function placeCoach(st) {
 // 这种模式下按整块屏幕的真实高度来铺满所有全屏层。
 function isStandalone() { return !!(navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)); }
 function realH() {
+  // 状态栏改成不透明后，iOS 给网页的区域就是状态栏以下的整块，innerHeight 就是真实可用高度，不再自己补
+  return window.innerHeight || document.documentElement.clientHeight;
   var h = window.innerHeight || document.documentElement.clientHeight;
   if (isStandalone() && screen && screen.height) {
     var portrait = (window.innerWidth || 0) < (window.innerHeight || 1);
