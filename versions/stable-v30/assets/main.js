@@ -1200,8 +1200,8 @@ function pausePop() {
     '<div class="ps-tab">暂停</div>' +
     '<button class="ps-x" data-act="resume" aria-label="关闭"></button>' +
     '<div class="ps-panel">' +
-      '<div class="ps-row"><span class="ps-ic">' + NOTE + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vm + '" data-vol="m" style="--p:' + vm + '%" aria-label="背景音乐音量"></div>' +
-      '<div class="ps-row"><span class="ps-ic">' + SPK + '</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vs + '" data-vol="s" style="--p:' + vs + '%" aria-label="音效音量"></div>' +
+      '<div class="st-row"><span class="st-name">音乐音量</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vm + '" data-vol="m" style="--p:' + vm + '%" aria-label="背景音乐音量"></div>' +
+      '<div class="st-row"><span class="st-name">音效音量</span><input class="ps-range" type="range" min="0" max="100" step="5" value="' + vs + '" data-vol="s" style="--p:' + vs + '%" aria-label="音效音量"></div>' +
       '<div class="ps-div"></div>' +
       '<button class="rp-btn sub ps-wide" data-act="go" data-i="' + R.i + '">重玩本关</button>' +
       '<div class="ps-bottom"><button class="ps-home" data-act="quit" aria-label="回到地图"><img alt="" src="./assets/img/res/ic_home.webp' + V + '"></button>' +

@@ -1295,3 +1295,7 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #app.scene .bx.locked i.lock::after{content:"";position:absolute;left:50%;top:7px;width:5px;height:9px;margin-left:-2.5px;border-radius:3px;background:#FFF3E0}
 /* 夹起按钮再窄一些，相邻两个之间留出更大空隙防误触 */
 #app.scene .pick{width:54px;margin-left:-27px;font-size:15px;height:36px}
+/* 关卡里不要顶部时间进度条 */
+#app.scene .timebar{display:none}
+/* 暂停弹窗的叉号收进卡片右上角 */
+.ps-x{top:108px;right:16px;width:36px;height:36px}
