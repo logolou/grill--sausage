@@ -1401,3 +1401,4 @@ input[type=range]{touch-action:pan-x}
 /* 三角放在头顶正中；开溜时气泡尖角让出位置 */
 #app.scene .cust.cam::after{left:50%;margin-left:-18px;top:170px}
 #app.scene .cust.cam .bubble::after{display:none}
+#app.scene .cust.cam::after{border-top-color:#FFD23F;-webkit-filter:drop-shadow(0 0 3px #FFF6C8) drop-shadow(0 0 8px rgba(255,214,70,.95)) drop-shadow(0 0 14px rgba(255,190,40,.75));filter:drop-shadow(0 0 3px #FFF6C8) drop-shadow(0 0 8px rgba(255,214,70,.95)) drop-shadow(0 0 14px rgba(255,190,40,.75))}
