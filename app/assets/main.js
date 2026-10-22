@@ -440,15 +440,15 @@ function spawn() {
     spice: L.spices.length && Math.random() < .6 ? pick(L.spices) : null};
   var specs = [base];
   if (Math.random() < L.two + .15 * k) {
-    // 两根：可能一根一个要求（火候 / 酱 / 小料都可以不同），但这种「混搭单」每局最多占客人总数的 25%
+    // 两根：可能一根一个要求（火候 / 酱 / 小料都可以不同），这种「混搭单」每局最多占客人总数的一半
     var s2 = {band:base.band, sauce:base.sauce, spice:base.spice};
-    var canMix = (R.mixed || 0) + 1 <= .25 * ((R.spawned || 0) + 1);
-    if (canMix && Math.random() < .6) {
+    var canMix = (R.mixed || 0) + 1 <= .5 * ((R.spawned || 0) + 1);
+    if (canMix && Math.random() < .8) {
       var parts = [];
       if (L.bands.length > 1) parts.push('band');
       if (L.sauces.length) parts.push('sauce');
       if (L.spices.length) parts.push('spice');
-      var pickParts = parts.filter(function () { return Math.random() < .5; });
+      var pickParts = parts.filter(function (f) { return Math.random() < (f === 'spice' ? .75 : .45); });   // 小料最常不一样
       if (!pickParts.length && parts.length) pickParts = [pick(parts)];
       pickParts.forEach(function (f) {
         if (f === 'band') s2.band = pick(L.bands.filter(function (b) { return b !== base.band; }));
