@@ -1115,7 +1115,7 @@ function render() {
     var r = Math.max(0, c.pat / c.patMax), cls = 'cust', style = '';
     if (c.state === 'wait' && anyBox(function (b) { return b.stage === 'box'; })) cls += ' ready';
     if (c.state === 'wait' && drag && drag.type === 'bag' && drag.over === c.id) cls += ' drop';
-    if (G.up.cam && c.state === 'flee') cls += ' cam';   // 门口监控：逃单的人跑的时候头顶才出现红三角（隐蔽一点）
+    if (G.up.cam && c.state === 'flee') cls += ' cam';   // 门口监控：逃单的人开溜时整个人描一圈黄光
     if (c.state === 'flee') style = walkStyle(1 - c.timer / 3.2);
     if (c.state === 'leave') style = walkStyle(1 - c.timer / 1);
     if (c.tag) cls += spot(c.tag);
@@ -1124,8 +1124,7 @@ function render() {
     q += '<div class="' + cls + '"' + style + (clickable ? ' data-act="cust" data-i="' + c.id + '"' : '') + (c.state === 'wait' ? ' data-cid="' + c.id + '"' : '') + (c.tag ? ' data-tag="' + c.tag + '"' : '') + '>' +
       '<div class="bubble">' + (c.say ? '<div class="say">' + c.say + '</div>' : orderHTML(c)) +
       (c.state === 'wait' ? '<div class="pat"><i style="width:' + (r * 100) + '%;background:' + patColor(r) + '"></i></div>' : '') + '</div>' +
-      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' +
-      (cls.indexOf(' cam') >= 0 ? '<svg class="camtri" viewBox="0 0 36 30" aria-hidden="true"><path d="M3 3h30L18 27z" fill="#FFD23F" stroke="#FFF6C8" stroke-width="2.5" stroke-linejoin="round"/></svg>' : '') + (mood ? '<i class="mood">' + (mood === 'angry' ? '💢' : '💦') + '</i>' : '') + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
+      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' + (mood ? '<i class="mood">' + (mood === 'angry' ? '💢' : '💦') + '</i>' : '') + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
   }
   $('queue').innerHTML = q;
 

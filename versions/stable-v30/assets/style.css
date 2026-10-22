@@ -1407,3 +1407,12 @@ input[type=range]{touch-action:pan-x}
 /* 地图上的「无限」：缩小 10%，可点，进无限模式 */
 .lm-stat.heart{pointer-events:auto;padding:0;border:0;background:none;cursor:pointer;-webkit-transform:scale(.9);transform:scale(.9);-webkit-transform-origin:0 50%;transform-origin:0 50%}
 .lm-stat.heart:active{-webkit-transform:scale(.85);transform:scale(.85)}
+/* 监控：不要三角，开溜的人整个描一圈黄光 */
+#app.scene .cust .camtri{display:none}
+#app.scene .cust.cam .who{-webkit-filter:drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 8px rgba(255,200,40,.9)) !important;filter:drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 8px rgba(255,200,40,.9)) !important;-webkit-animation:camAura .6s ease-in-out infinite alternate !important;animation:camAura .6s ease-in-out infinite alternate !important}
+@-webkit-keyframes camAura{from{-webkit-filter:drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 6px rgba(255,200,40,.7))}to{-webkit-filter:drop-shadow(0 0 3px #FFF07A) drop-shadow(0 0 3px #FFE45C) drop-shadow(0 0 14px rgba(255,200,40,1))}}
+@keyframes camAura{from{filter:drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 2px #FFE45C) drop-shadow(0 0 6px rgba(255,200,40,.7))}to{filter:drop-shadow(0 0 3px #FFF07A) drop-shadow(0 0 3px #FFE45C) drop-shadow(0 0 14px rgba(255,200,40,1))}}
+/* 黄光描边加粗：四向实心描边 + 外发光 */
+#app.scene .cust.cam .who{-webkit-filter:drop-shadow(3px 0 0 #FFE03A) drop-shadow(-3px 0 0 #FFE03A) drop-shadow(0 3px 0 #FFE03A) drop-shadow(0 -3px 0 #FFE03A) drop-shadow(0 0 12px rgba(255,200,30,.95)) !important;filter:drop-shadow(3px 0 0 #FFE03A) drop-shadow(-3px 0 0 #FFE03A) drop-shadow(0 3px 0 #FFE03A) drop-shadow(0 -3px 0 #FFE03A) drop-shadow(0 0 12px rgba(255,200,30,.95)) !important;-webkit-animation:camPulse .6s ease-in-out infinite alternate !important;animation:camPulse .6s ease-in-out infinite alternate !important}
+@-webkit-keyframes camPulse{from{opacity:.88}to{opacity:1}}
+@keyframes camPulse{from{opacity:.88}to{opacity:1}}
