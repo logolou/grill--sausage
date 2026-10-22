@@ -46,8 +46,8 @@ var UPGRADES = [
   {id:'fire', name:'可调火力烤肠锅', desc:'火力可调小中大', cost:[35], max:1},
   {id:'nonstick', name:'不粘锅涂层', desc:'耗油慢 40%', cost:[25], max:1},
   {id:'horn', name:'吆喝小喇叭', desc:'客人耐心 +25%', cost:[30], max:1},
-  {id:'smart', name:'智能番茄涂抹机', desc:'自动涂番茄酱', cost:[30], max:1},
-  {id:'spicer', name:'智能撒料机', desc:'自动撒孜然、辣椒', cost:[50], max:1},
+  {id:'smart', name:'智能番茄涂抹机', desc:'点盒里的烤肠，自动按要求涂番茄酱', cost:[30], max:1},
+  {id:'spicer', name:'智能撒料机', desc:'点盒里的烤肠，自动按要求撒孜然、辣椒', cost:[50], max:1},
   {id:'cam', name:'门口监控', desc:'会提示逃单的人', cost:[40], max:1}
 ];
 // 第三项是内设性格，不在界面上显示：easy 随和（做错少收 $1），picky 挑剔（做错少收 $2）
@@ -1229,7 +1229,7 @@ function render() {
       '<button class="bx-dump" data-act="dump" data-i="' + k + '"' + (n ? '' : ' disabled') + ' aria-label="倒掉">倒掉</button>' +
       '<button class="bx-pack' + spot('pack' + k) + '" data-act="pack" data-i="' + k + '"' + (n ? '' : ' disabled') + '>装盒</button></div>';
   });
-  setHTML('trayBox', (smartOn() ? '<em class="smart">' + smartLabel() + '</em>' : '') + panels.join(''));
+  setHTML('trayBox', panels.join(''));   // 智能机器的用法写在商店介绍里，局中不再显示
   if (st) placeCoach(st);
 }
 // 讲解框放在不挡目标的那一头：目标在画面上半部分 → 讲解框放到底部，反之放顶部
