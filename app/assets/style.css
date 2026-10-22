@@ -1398,3 +1398,6 @@ input[type=range]{touch-action:pan-x}
 #app.scene .cust.cam::after{border-top-color:#fff;-webkit-filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px rgba(255,240,180,.95)) drop-shadow(0 0 14px rgba(255,220,120,.8));filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px rgba(255,240,180,.95)) drop-shadow(0 0 14px rgba(255,220,120,.8));-webkit-animation:camGlow .7s ease-in-out infinite alternate;animation:camGlow .7s ease-in-out infinite alternate}
 @-webkit-keyframes camGlow{from{opacity:.75}to{opacity:1}}
 @keyframes camGlow{from{opacity:.75}to{opacity:1}}
+/* 三角放在头顶正中；开溜时气泡尖角让出位置 */
+#app.scene .cust.cam::after{left:50%;margin-left:-18px;top:170px}
+#app.scene .cust.cam .bubble::after{display:none}
