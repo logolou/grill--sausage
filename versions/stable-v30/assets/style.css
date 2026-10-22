@@ -1311,3 +1311,8 @@ input[type=range]{touch-action:pan-x}
 #app.scene .slot:nth-child(1) .pick{margin-left:-67px}
 /* 酱瓶名字小一点，相邻不挤在一起 */
 #app.scene .tool:not(.spicebox) span{font-size:11.5px;padding:0 3px;letter-spacing:-.02em}
+/* 两份需求时气泡变高：气泡压在人物上面，不被头挡住 */
+#app.scene .cust .bubble{z-index:3}
+#app.scene .cust .who{z-index:1}
+/* 气泡底边固定（尖角位置不变），需求多时往上长，不往下压到脸 */
+#app.scene .cust .bubble{top:auto;bottom:320px}
