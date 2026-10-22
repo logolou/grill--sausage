@@ -1285,3 +1285,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* 两根装盒：两行都放在盒底内（盒底约 54–136px），不压到「装盒」按钮 */
 #app.scene .bx-items{top:56px;height:78px;left:10%;right:10%}
 #app.scene .bitem .tsvg{width:80px;height:26px}
+/* 顾客着急 / 生气：只换图，不加抖动、表情角标和滤镜 */
+#app.scene .cust .mood{display:none}
+#app.scene .cust.anxious .who,#app.scene .cust.angry .who{-webkit-animation:none;animation:none;-webkit-filter:none;filter:none}

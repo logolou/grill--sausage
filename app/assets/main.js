@@ -472,7 +472,7 @@ function tick(dt) {
   var stickMul = !ost ? 1 : !STICKY_V2 ? 1.6 : ost === 2 ? 2.6 : 2;
   if (STICKY_V2 && ost && !R.stickWarned && cooking) { R.stickWarned = true; log(ost === 2 ? '锅干了！烤肠粘死在锅上，快加油' : '油不够，粘锅了！翻面要用力撬，快加油', 'bad'); ding(140, .25); }
   if (!ost) R.stickWarned = false;
-  var rate = (tut ? (tut.freeze ? 0 : 6) : 7) * heatMul() * stickMul * R.heat;
+  var rate = (tut ? (tut.freeze ? 0 : 6) : 7) * COOK_SLOW * heatMul() * stickMul * R.heat;
   for (i = 0; i < R.slots.length; i++) {
     var sl = R.slots[i]; if (!sl.s) continue;
     var s = sl.s, up = s.down === 'a' ? 'b' : 'a';
@@ -648,6 +648,7 @@ function screenFlash() {
 var HEAT_LV = [{name:'小', mul:.7}, {name:'中', mul:1}, {name:'大', mul:1.35}];
 // 第一关（教学）不管有没有买「可调火力」，旋钮都只有 开 ↔ 关
 function fireUp() { return !!G.up.fire && !(R && R.i === 0); }
+var COOK_SLOW = 0.7;   // 进度条变短后整体烤慢 30%
 function heatMul() { return fireUp() ? HEAT_LV[R.heatLv == null ? 1 : R.heatLv].mul : 1; }
 function blinkOn() { return Math.floor(now() / 250) % 2 === 0; }
 function itemBar() {
@@ -732,6 +733,7 @@ function toggleTomato(k, j) {
 }
 var BOXB_FREE = true;   // 测试版：两个打包盒开局就有（false = 盒 B 要在升级小摊买）
 function boxTotal() {
+  if (R && R.L && R.L.tutorial) return 1;   // 第一关只开一个打包盒，另外两个锁着
   var n = BOXB_FREE ? 2 : 1 + Math.min(1, G.up.boxb || 0);
   return Math.min(3, n + (G.up.boxc ? 1 : 0));
 }
@@ -989,8 +991,11 @@ function custArt(c) {
   // 只用三种表情：等待 / 耐心快没了着急 / 做错了或等太久生气
   if (c.state === 'wait') st = r > .35 ? 'wait' : 'anxious';
   else if (c.review === 'bad' || (c.state === 'leave' && !c.served)) st = 'angry';
+  // 有表情图的顾客直接换图（家长 02、老师、奶奶暂时没有，保持原图）
+  if (st !== 'wait' && MOOD_ART[id]) id += '_' + st;
   return './assets/img/cust/' + id + '.webp?v=' + BUILD_V;
 }
+var MOOD_ART = {kid01:1, kid02:1, kid03:1, kid04:1, kid05:1, kid06:1, parent01:1};
 var BAND_ICON = {'嫩':'tender', '脆':'crispy', '微焦':'charred'};
 var SAUCE_ICON = {'番茄':'tomato', '蜂蜜芥末':'honeymustard', '甜辣':'sweetchili'};
 var SPICE_ICON = {'孜然':'cumin', '辣椒':'chili'};
