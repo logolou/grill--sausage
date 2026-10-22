@@ -1031,7 +1031,7 @@ function orderHTML(c) {
 function zoneCol(v) { return v < 40 ? '#5BB8F5' : v < 70 ? '#4CD06A' : v < 88 ? '#FFC21A' : v <= 100 ? '#FF6A3D' : '#2B2B2B'; }
 var SAUS_ART = {raw:'raw', '嫩':'tender', '脆':'crispy', '微焦':'charred', burnt:'burnt', uneven:'half'};
 var TOOL_SPOT = {'番茄':[494, 598, 50], '蜂蜜芥末':[546, 598, 50], '甜辣':[598, 598, 50]};   // 番茄酱和锅拉开一点
-var SPICE_SPOT = {'孜然':[520, 758, 86], '辣椒':[612, 748, 106]};   // 孜然盒小一点
+var SPICE_SPOT = {'孜然':[515, 768, 96], '辣椒':[617, 768, 96]};   // 孜然、辣椒盒同样大小，顶边对齐
 function render() {
   if (!R) return;
   var L = R.L, g = L.goal, st = tutStep(), k, V = '?v=' + BUILD_V;
