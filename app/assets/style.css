@@ -1279,3 +1279,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #app.scene #grillInfo{display:none !important}
 /* 教学不用黄色高亮框，只靠手势指引 */
 #app.scene .spot{box-shadow:none !important;outline:0 !important;-webkit-animation:none !important;animation:none !important}
+/* 相邻槽的进度条卡片和夹起按钮不要重叠：都收进槽宽以内 */
+#app.scene .meters{left:4%;right:4%;padding:5px 5px 4px}
+#app.scene .pick{width:64px;margin-left:-32px;font-size:16px}
