@@ -2006,7 +2006,7 @@ function showMap() {
   h += '</div><div class="lm-hud">' +
     '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
     '<div class="lm-stat star"><img alt="" src="' + UI + 'ui_star.webp' + V + '"><b>¥' + G.bank + '</b></div>' +
-    '<div class="lm-stat heart"><img alt="" src="' + UI + 'ui_heart.webp' + V + '"><b>无限</b></div>' +
+    '<button class="lm-stat heart" data-act="mapnode" data-i="' + (LEVELS.length - 1) + '" aria-label="无限模式"><img alt="" src="' + UI + 'ui_heart.webp' + V + '"><b>无限</b></button>' +   // 无限模式入口
     '<button class="lm-ico set" data-act="tsettings" aria-label="设置"><img alt="" src="' + UI + 'ui_settings.webp' + V + '"></button>' +
     '<div class="lm-side"><button class="lm-ico" data-act="shop" aria-label="升级小摊"><img alt="" src="' + UI + 'ui_upgrade.webp' + V + '"><small>升级小摊</small></button>' +
     '<button class="lm-ico" data-act="mapitems" aria-label="道具商店"><img alt="" src="' + UI + 'ui_shop.webp' + V + '"><small>道具商店</small></button></div></div>' +
@@ -2031,7 +2031,7 @@ function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.r
 function mapNode(i) {
   if (i > G.cleared) {
     var b = document.querySelector('.lm-node[data-i="' + i + '"]'); if (b) { b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); }
-    ding(180, .12); mapToast('先通过第 ' + (G.cleared + 1) + ' 关才能解锁');
+    ding(180, .12); mapToast(LEVELS[i] && LEVELS[i].endless ? '通关全部 ' + (LEVELS.length - 1) + ' 关后解锁无限模式' : '先通过第 ' + (G.cleared + 1) + ' 关才能解锁');
     return;
   }
   ding(880, .06); intro(i);
