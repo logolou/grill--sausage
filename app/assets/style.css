@@ -1263,3 +1263,13 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 .guide .ring{left:-20px;top:-20px;width:40px;height:40px}
 .guide .hand{width:22px;left:-9px;top:-30px}.guide .ring{left:-14px;top:-14px;width:28px;height:28px}
 #app.scene .coach .who{bottom:0}   /* 王姐的围裙底边和对话框内底边对齐 */
+/* 带签烤肠：每槽单独一张已按锅槽角度旋转的图，中心对准槽中心 */
+#app.scene .slot:nth-child(1){left:10.9%}#app.scene .slot:nth-child(2){left:29.8%}#app.scene .slot:nth-child(3){left:48.8%}#app.scene .slot:nth-child(4){left:68.5%}
+#app.scene .saus-area{overflow:visible}
+#app.scene .saus-img{position:absolute;left:50%;top:47px;width:78px;height:125px;margin:-62px 0 0 -39px;max-width:none}
+#app.scene .pick{font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;font-weight:700;font-size:17px}
+/* 到账不冒提示，只听声音 */
+#app.scene .speaker{display:none}
+/* HUD：数值在胶囊里居中，字号统一，不加粗 */
+.h-stat{justify-content:center;padding-left:48px;padding-right:8px}
+.h-stat b,.h-stat b small{font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;font-weight:400;font-size:26px;opacity:1;margin:0;letter-spacing:0;font-variant-numeric:tabular-nums}
