@@ -205,33 +205,33 @@ function syncMusic() {
 
 /* ============ 教学关脚本 ============ */
 var TUT = [
-  {text:'还有 1 分钟放学！我是摊主王姐，跟我学卖烤肠吧～', btn:'好嘞', hand:'[data-act=tutnext]'},
-  {text:'先点亮着的空锅位，放一根肠下锅（进价 ¥1）。', spot:'place0', wait:'place', hand:'[data-act=place][data-i="0"]'},
-  {text:'朝下那面正在烤。看锅上方的进度条，变成绿色（过第一条刻度）这面就熟了……', spot:'slot0',
+  {text:'快放学啦！我是王姐，跟我学卖烤肠～', btn:'好嘞', hand:'[data-act=tutnext]'},
+  {text:'点空锅位，放一根肠（¥1）。', spot:'place0', wait:'place', hand:'[data-act=place][data-i="0"]'},
+  {text:'朝下那面在烤，进度条变绿就熟了……', spot:'slot0',
    until:function () { var s = R.slots[0].s; return s && s[s.down] >= 42; }},
-  {text:'这面熟了！点一下锅里的烤肠，它就会翻面，烤另一面。', spot:'flip0', wait:'flip', hand:'[data-act=flip][data-i="0"]'},
-  {text:'等另一面也变绿。别烤太久，进度条走到头变黑就焦了。', spot:'slot0',
+  {text:'熟了！点烤肠翻个面。', spot:'flip0', wait:'flip', hand:'[data-act=flip][data-i="0"]'},
+  {text:'等这面也变绿，烤到头会焦哦。', spot:'slot0',
    until:function () { var s = R.slots[0].s; return s && judge(s) === '嫩'; }},
-  {text:'两面都烤得嫩嫩的了！先停一下，看看烤肠不同火候的标准：', btn:'懂了', hand:'[data-act=tutnext]', freeze:true, extra:lessonHTML},
-  {text:'两面都熟了，标签变成「嫩」。按住烤肠，拖进下面的打包盒里松手，就夹起来了。', spot:'pick0', wait:'pick', drag:['[data-act=flip][data-i="0"]', '[data-box="0"]']},
-  {text:'第一位小客人来了！看他的要求：要「一根烤得嫩嫩的加番茄酱的烤肠」。', spot:'t1', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted(); }},
-  {text:'按住右边的番茄酱瓶，拖到打包盒里的烤肠上，松手挤上酱。', spot:'tool-番茄 item00', wait:'topping', drag:['[data-tool="sauce"]', '[data-item="0-0"]']},
-  {text:'酱挤好了。点打包盒下面的「装盒」，把盒盖合上。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
-  {text:'盒子盖好了！按住打包盒，拖到豆豆身上，松手递给他！', spot:'bag0 t1', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t1"]']},
-  {text:'听！「叮咚」一声到账，才说明客人真付了钱。有人可能会逃单，要留意有没有听到到账声。', spot:'speaker', btn:'懂了', hand:'[data-act=tutnext]',
+  {text:'嫩嫩的了！看看各种火候：', btn:'懂了', hand:'[data-act=tutnext]', freeze:true, extra:lessonHTML},
+  {text:'按住烤肠，拖进打包盒。', spot:'pick0', wait:'pick', drag:['[data-act=flip][data-i="0"]', '[data-box="0"]']},
+  {text:'客人来了！他要一根「嫩」的，加番茄酱。', spot:'t1', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted(); }},
+  {text:'把番茄酱拖到盒里的烤肠上。', spot:'tool-番茄 item00', wait:'topping', drag:['[data-tool="sauce"]', '[data-item="0-0"]']},
+  {text:'点「装盒」盖上盒子。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
+  {text:'把盒子拖给豆豆！', spot:'bag0 t1', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t1"]']},
+  {text:'听到「叮咚」才是付了钱，小心有人逃单！', spot:'speaker', btn:'懂了', hand:'[data-act=tutnext]',
    until:function () { return R.pay.length > 0; }, untilShowsBtn:true},
-  {text:'又来一位！王阿姨要「两根」：一根要烤得「嫩」不刷酱，一根「脆」的，刷番茄酱。两根装进同一个盒子。', spot:'t2', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted2(); }},
-  {text:'放两根肠下锅。一根到「嫩」就拖进盒子；另一根多烤一会儿，两面都变黄（过第二条刻度），变「脆」再拖进去。记得勤点烤肠翻面，别烤成阴阳面！', free:{place:1, flip:1, pick:1}, handFn:cookHand, twoBands:true,
+  {text:'王阿姨要两根：一根「嫩」不加酱，一根「脆」加番茄酱，装一盒。', spot:'t2', btn:'看懂了', hand:'[data-act=tutnext]', enter:function () { spawnScripted2(); }},
+  {text:'放两根。一根「嫩」就拖进盒；另一根烤到两面变黄（「脆」）再拖。记得翻面！', free:{place:1, flip:1, pick:1}, handFn:cookHand, twoBands:true,
    until:function () { return boxHas('嫩') && boxHas('脆'); }},
-  {text:'只给「脆」的那根挤番茄酱，「嫩」的那根不要酱。', spot:'tool-番茄 crisp', wait:'topping', crispSauce:true,
+  {text:'只给「脆」的那根加番茄酱。', spot:'tool-番茄 crisp', wait:'topping', crispSauce:true,
    dragFn:function () { return ['[data-tool="sauce"]', '[data-item="0-' + bandIndex('脆') + '"]']; },
    until:function () { var it = R.boxes[0].items; return it.length === 2 && it[bandIndex('脆')].sauce === '番茄' && !it[bandIndex('嫩')].sauce; }},
-  {text:'一根「嫩」没酱、一根「脆」有酱，全对。点「装盒」。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
-  {text:'按住打包盒，拖给王阿姨！', spot:'bag0 t2', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t2"]']},
-  {text:'做得好！拿爱心的条件：根数、火候、酱、小料全做对，并且客人耐心条还剩三分之一以上。', btn:'记住了', hand:'[data-act=tutnext]'},
-  {text:'做错了，客人会少给钱、打差评；生的、烤焦的直接不给钱。差评会让店里的爱心减少，爱心减为零时会强制收摊。', btn:'知道了', hand:'[data-act=tutnext]'},
-  {text:'锅里忙不过来时可以关火，烤肠就不会继续受热。点一下锅右下角的旋钮，把火关掉。', spot:'fire', wait:'fire', hand:'[data-act=fire]'},
-  {text:'火灭了！再点一次旋钮就会重新点火，要预热一会儿才能烤下一批。现在摊子就交给你了！', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'全对！点「装盒」。', spot:'pack0', wait:'pack', hand:'[data-act=pack][data-i="0"]'},
+  {text:'拖给王阿姨！', spot:'bag0 t2', wait:'serve', drag:['[data-bag="0"]', '[data-tag="t2"]']},
+  {text:'做得好！全做对、客人没等太久，就能拿爱心。', btn:'记住了', hand:'[data-act=tutnext]'},
+  {text:'做错会少给钱、扣爱心，爱心扣光就收摊。', btn:'知道了', hand:'[data-act=tutnext]'},
+  {text:'忙不过来就关火。点旋钮关火。', spot:'fire', wait:'fire', hand:'[data-act=fire]'},
+  {text:'再点就能点火。摊子交给你了！', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 // 火候小课堂：四根示意烤肠，各带「上 / 下」两条进度条
 function lessonHTML() {
@@ -271,29 +271,29 @@ function cookHand() {
   return null;
 }
 var SHOP_TUT = [
-  {text:'存款能买道具了，关键时刻救急！', btn:'说说看', hand:'[data-act=tutnext]'},
-  {text:'🍭 棒棒糖：排队客人耐心回满<br>⏳ 沙漏：本关多加 30 秒<br>🙋 课代表：瞬间做完所有订单', btn:'然后呢', hand:'[data-act=tutnext]'},
-  {text:'道具在屏幕最下方：点一下用存款买下（右上角显示数量），再点一下就用掉。', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'存款能买道具，救急用！', btn:'说说看', hand:'[data-act=tutnext]'},
+  {text:'🍭 耐心回满<br>⏳ 多加 30 秒<br>🙋 瞬间做完所有单', btn:'然后呢', hand:'[data-act=tutnext]'},
+  {text:'点一下买，再点一下用。', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 // 第二关第一次开张：王姐教加油、撒孜然
 var OIL_TUT = [
-  {text:'第二关！从今天起锅里要放油。看锅上这条黄色的就是油量。', btn:'然后呢', hand:'.oilgauge', freeze:true},
-  {text:'烤着烤着油会越来越少。油量掉到红线以下就会粘锅：烤肠熟得更快、容易焦，翻面也要多点几下。', btn:'那怎么办', hand:'.oilgauge', freeze:true},
-  {text:'点一下右边的油瓶就能加油！不过油还很满的时候再加会溢出来，白白亏 ¥1。', btn:'记住了', hand:'[data-act=oil]', freeze:true},
-  {text:'今天还多了孜然。客人要孜然的话，按住孜然盒，拖到打包盒里的烤肠上松手就撒好了。', btn:'开始营业', hand:'[data-tool=spice]', freeze:true}
+  {text:'今天开始要放油，锅上这条是油量。', btn:'然后呢', hand:'.oilgauge', freeze:true},
+  {text:'油低于红线会粘锅，容易焦、难翻面。', btn:'那怎么办', hand:'.oilgauge', freeze:true},
+  {text:'点油瓶加油，太满会溢出亏 ¥1。', btn:'记住了', hand:'[data-act=oil]', freeze:true},
+  {text:'新小料孜然：拖到盒里的烤肠上就行。', btn:'开始营业', hand:'[data-tool=spice]', freeze:true}
 ];
 var SKEWER_TUT = [
-  {text:'王姐又来啦！今天预串好的肠用完了，从这关起得自己串签。', btn:'怎么串', hand:'[data-act=tutnext]'},
-  {text:'点左边的竹签筒「串一根」，点一下就串好一根，最多能备 4 根。先串两根试试。', hand:'[data-act=skewer]', free:{skewer:1}, until:function () { return R.stock >= 2; }},
-  {text:'串好了！现在点空锅位，把串好的肠放上去。', hand:'[data-act=place][data-i="0"]', wait:'place', free:{skewer:1}},
-  {text:'记住：没有串好的肠，锅位是放不上去的。<br>客人少的时候多串几根备着，放学高峰才不手忙脚乱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true, free:{skewer:1}}
+  {text:'串好的肠用完了，得自己串签！', btn:'怎么串', hand:'[data-act=tutnext]'},
+  {text:'点竹签筒串一根，先串两根。', hand:'[data-act=skewer]', free:{skewer:1}, until:function () { return R.stock >= 2; }},
+  {text:'串好了！点空锅位放上去。', hand:'[data-act=place][data-i="0"]', wait:'place', free:{skewer:1}},
+  {text:'闲的时候多串几根备着！', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true, free:{skewer:1}}
 ];
 var SKEWER_MAX = 4;   // 串好的肠最多备几根
 var SCRAPE_TUT = [
-  {text:'第九关！王姐来提个醒：锅用久了会结锅巴。每个锅位烤完 3 根肠，或者烤焦一根，就会结一层锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
-  {text:'结了锅巴的锅位放不了新肠。看，这格结锅巴了——<b>在锅巴上连点 3 下，或者按住来回拖几下</b>就能铲干净！', spot:'scrape0', drag:['[data-rub="0"] .g7', '[data-rub="0"] .g6'], wait:'scrape',
+  {text:'锅用久了会结锅巴。', btn:'那怎么办', hand:'[data-act=tutnext]'},
+  {text:'有锅巴就放不了肠。连点 3 下或来回拖，铲干净！', spot:'scrape0', drag:['[data-rub="0"] .g7', '[data-rub="0"] .g6'], wait:'scrape',
    enter:function () { R.slots[0].s = null; R.slots[0].dirt = true; R.slots[0].scrub = 0; }},
-  {text:'铲干净了！忙起来也要留意锅巴，别让锅位闲着。<br>另外这关多了新酱料「甜辣」，看清客人要哪种酱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true}
+  {text:'铲干净了！这关还多了甜辣酱。', btn:'开始营业', hand:'[data-act=tutnext]', freeze:true}
 ];
 function tutStep() { return R && R.tut ? R.tut.steps[R.tut.i] : null; }
 function tutGo(i) {
