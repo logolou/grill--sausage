@@ -1299,3 +1299,5 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #app.scene .timebar{display:none}
 /* 暂停弹窗的叉号收进卡片右上角 */
 .ps-x{top:108px;right:16px;width:36px;height:36px}
+/* 道具栏整体缩小 10%，防误触 */
+#app.scene #itembar{-webkit-transform:scale(.9);transform:scale(.9);-webkit-transform-origin:50% 50%;transform-origin:50% 50%}
