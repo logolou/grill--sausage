@@ -1627,9 +1627,9 @@ function framePop(title, body, back, shopDeco) {
   if (back) addBack(back);
 }
 function priceBtn(act, i, cost, ok) {
-  return '<button class="sp-price' + (ok ? '' : ' off') + '" data-act="' + act + '" data-i="' + i + '"' + (ok ? '' : ' disabled') + '><span>$' + cost + '</span></button>';
+  return '<button class="sp-price' + (ok ? '' : ' off') + '" data-act="' + act + '" data-i="' + i + '"' + (ok ? '' : ' disabled') + '><span><i class="cur">$</i>' + cost + '</span></button>';
 }
-function bankBar() { return '<div class="sp-bank"><img alt="" src="./assets/img/shop/bank.webp?v=' + BUILD_V + '"><b>$' + G.bank + '</b></div>'; }
+function bankBar() { return '<div class="sp-bank"><img alt="" src="./assets/img/shop/bank.webp?v=' + BUILD_V + '"><b><i class="cur">$</i>' + G.bank + '</b></div>'; }
 function shop() {
   var V = '?v=' + BUILD_V, inGame = R && !R.over && !R.demo, fromRes = R && R.over && !R.demo && lastResult, nxt = Math.min(G.cleared, 9);
   var rows = UPGRADES.map(function (u, idx) {

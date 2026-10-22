@@ -1418,3 +1418,6 @@ input[type=range]{touch-action:pan-x}
 @keyframes camPulse{from{opacity:.88}to{opacity:1}}
 /* 「无限模式」字小一点，正好在奶白色条的正中 */
 .lm-stat.heart b{left:39%;right:2%;top:3%;bottom:7%;font-size:10px !important;letter-spacing:0;white-space:nowrap}
+/* 商店按钮和存款条里的 $ 加粗；存款数字在整条图案里居中 */
+.sp-price .cur,.sp-bank .cur{font-style:normal;-webkit-text-stroke:1.2px currentColor;paint-order:stroke fill;margin-right:1px}
+.sp-bank b{left:0;right:0}
