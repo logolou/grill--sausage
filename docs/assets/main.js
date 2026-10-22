@@ -1665,10 +1665,20 @@ document.addEventListener('visibilitychange', function () {
 /* ============ 防误触：不让页面被放大、滑动、回弹或弹出系统菜单 ============ */
 (function guardTouch() {
   var opt = {passive:false};
-  function inScroller(t) { return t && t.closest && t.closest('.overlay, .lvmap'); }   // 弹窗和关卡地图可以上下滑
+  // 只有内容真的超出、能上下滑的弹窗才放行；其余一律不让页面跟着手指动
+  function inScroller(t) {
+    for (var el = t; el && el !== document.body; el = el.parentNode) {
+      if (el.scrollHeight > el.clientHeight + 2) {
+        var oy = window.getComputedStyle ? getComputedStyle(el).overflowY : '';
+        if (oy === 'auto' || oy === 'scroll') return true;
+      }
+    }
+    return false;
+  }
   // 双指缩放、页面拖动 / 回弹 / 下拉；弹窗内部仍可上下滑
   document.addEventListener('touchmove', function (e) {
     if (e.touches && e.touches.length > 1) { e.preventDefault(); return; }
+    if (e.target && e.target.type === 'range') return;   // 音量条照常拖
     if (!inScroller(e.target)) e.preventDefault();
   }, opt);
   // iOS 双击放大：两次抬手间隔很短时拦掉默认行为（游戏用 pointerdown，不受影响）
