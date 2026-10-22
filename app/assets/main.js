@@ -273,7 +273,7 @@ function cookHand() {
 var SHOP_TUT = [
   {text:'存款能买道具了，关键时刻救急！', btn:'说说看', hand:'[data-act=tutnext]'},
   {text:'🍭 棒棒糖：排队客人耐心回满<br>⏳ 沙漏：本关多加 30 秒<br>🙋 课代表：瞬间做完所有订单', btn:'然后呢', hand:'[data-act=tutnext]'},
-  {text:'道具在屏幕最下方，点一下就用。', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'道具在屏幕最下方：点一下用存款买下（右上角显示数量），再点一下就用掉。', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 // 第二关第一次开张：王姐教加油、撒孜然
 var OIL_TUT = [
@@ -674,19 +674,21 @@ function itemBar() {
   }).join('') + '</div>';
 }
 // 道具反馈：在道具按钮上方飘一行字（不用提示框）
+// 道具用不了：按钮抖一下（不飘字）
 function itemFx(i, text, ok) {
+  if (ok) return;
   var b = document.querySelector('.itm[data-i="' + i + '"]'); if (!b) return;
-  var r = b.getBoundingClientRect(), f = document.createElement('div');
-  f.className = 'itemfx' + (ok ? ' ok' : ' bad'); f.textContent = text;
-  f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = r.top + 'px';
-  document.body.appendChild(f);
-  if (!ok) { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); }
-  setTimeout(function () { if (f.parentNode) f.parentNode.removeChild(f); }, 1300);
+  b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); ding(180, .06);
 }
 function useItem(i) {
   var it = ITEMS[i]; if (!it) return;
   var have = (G.items[it.id] || 0) > 0;
-  if (!have && G.bank < it.cost) { log('存款不够买' + it.name, 'bad'); itemFx(i, '存款不够', false); return; }
+  if (!have) {
+    // 手上没有：先用存款买一个，右上角显示 ×1；再点一下才用
+    if (it.id === 'hourglass' && R.L.endless) { itemFx(i, '', false); return; }
+    if (G.bank < it.cost) { log('存款不够买' + it.name, 'bad'); itemFx(i, '', false); return; }
+    G.bank -= it.cost; G.items[it.id] = 1; save(); ding(880, .08); render(); return;
+  }
   if (it.id === 'hourglass') {
     if (R.L.endless) { log('无尽模式不能用沙漏', 'bad'); itemFx(i, '无尽模式不能用', false); return; }
     R.bonusT = (R.bonusT || 0) + 30; R.urged = false; log('沙漏：时间 +30 秒', 'good'); itemFx(i, '+30 秒', true);
@@ -708,8 +710,7 @@ function useItem(i) {
     if (!n) { log('现在没有排队的客人', 'bad'); itemFx(i, '还没有客人', false); return; }
     log('棒棒糖：' + n + ' 位客人耐心回满', 'good'); itemFx(i, '耐心回满', true);
   }
-  if (have) G.items[it.id]--;
-  else { G.bank -= it.cost; log('花 ¥' + it.cost + ' 买了' + it.name + '，当场用掉', ''); setTimeout(function () { itemFx(i, '-¥' + it.cost, true); }, 450); }
+  G.items[it.id]--;
   save(); ding(990, .1); setTimeout(function () { ding(1320, .12); }, 90);
 }
 // 智能机器：番茄涂抹机管番茄；撒料机管孜然、辣椒。返回本关它们能管的 {料名: 'sauce'|'spice'}

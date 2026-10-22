@@ -1408,3 +1408,5 @@ input[type=range]{touch-action:pan-x}
 @-webkit-keyframes itemFx{0%{opacity:0;-webkit-transform:translate(-50%,-80%)}15%{opacity:1;-webkit-transform:translate(-50%,-110%)}75%{opacity:1}100%{opacity:0;-webkit-transform:translate(-50%,-200%)}}
 @keyframes itemFx{0%{opacity:0;transform:translate(-50%,-80%)}15%{opacity:1;transform:translate(-50%,-110%)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-200%)}}
 .itm.shake{-webkit-animation:shakeX .35s;animation:shakeX .35s}
+.ghost.useg{width:80px;height:80px;margin:0}.ghost.useg img{width:100%;height:100%;object-fit:contain;-webkit-filter:drop-shadow(0 4px 6px rgba(0,0,0,.35));filter:drop-shadow(0 4px 6px rgba(0,0,0,.35))}
+.itemfx{display:none}
