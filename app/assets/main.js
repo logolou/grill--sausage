@@ -1254,6 +1254,19 @@ function realH() {
   }
   return h;
 }
+// 排查用：各种「屏幕高度」的读数
+function viewDiag() {
+  var pr = document.createElement('div');
+  pr.style.cssText = 'position:fixed;left:0;top:0;width:1px;height:100lvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);visibility:hidden;pointer-events:none';
+  document.body.appendChild(pr);
+  var cs = getComputedStyle(pr), lvh = pr.getBoundingClientRect().height - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  var out = 'in ' + innerWidth + '×' + innerHeight + ' · cl ' + document.documentElement.clientHeight + ' · lvh ' + Math.round(lvh) +
+    ' · vv ' + (window.visualViewport ? Math.round(visualViewport.height) : '-') + ' · 屏 ' + screen.width + '×' + screen.height +
+    ' · 安全区 ' + parseFloat(cs.paddingTop) + '/' + parseFloat(cs.paddingBottom) + ' · app ' + Math.round(($('app') || document.body).getBoundingClientRect().height) +
+    ' · sa ' + (document.documentElement.classList.contains('sa') ? 1 : 0);
+  pr.parentNode.removeChild(pr);
+  return out;
+}
 function syncAppH() {
   var de = document.documentElement, h = realH();
   de.style.setProperty('--appH', h + 'px');
@@ -1972,7 +1985,7 @@ function titleSettings(msg) {
     '<div class="ps-div st-div"></div>' +
     row(ICON_BOOK, '游戏教学', '<button class="st-btn" data-act="retut">重新看一遍</button>') +
     (msg ? '<div class="st-msg">' + msg + '</div>' : '') +
-    '<div class="st-ver">版本 ' + BUILD_V + ' · ' + (isStandalone() ? '主屏幕' : '浏览器') + ' ' + (window.innerWidth || 0) + '×' + (window.innerHeight || 0) + ' / 屏幕 ' + (screen ? screen.width + '×' + screen.height : '?') + '</div>' +
+    '<div class="st-ver">版本 ' + BUILD_V + ' · ' + (isStandalone() ? '主屏幕' : '浏览器') + '<br>' + viewDiag() + '</div>' +
     '<div class="sp-foot"><button class="sp-big list" data-act="tclose"><span>返回</span></button><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
 }
 
