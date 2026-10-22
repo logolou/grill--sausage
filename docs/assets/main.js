@@ -1098,6 +1098,7 @@ function render() {
       (showBtn ? '<button class="next" data-act="tutnext">' + st.btn + '</button>' : '') + '</div>');
   }
   var RES = './assets/img/res/';
+  $('hud').classList.toggle('tut-hide', !!(st && R.tut && R.tut.steps === TUT));   // 王姐教完再出钱、爱心、时间
   setHTML('hud',
     '<div class="h-stat' + (g.money != null && R.net >= g.money ? ' done' : '') + '"><img alt="" src="' + RES + 'coin.webp' + V + '"><b>' + (R.net < 0 ? '-$' + (-R.net) : '$' + R.net) + (g.money != null ? '<small>/' + g.money + '</small>' : '') + '</b></div>' +
     '<div class="h-stat' + (g.hearts != null && R.hearts >= g.hearts ? ' done' : '') + (L.endless && R.hearts <= 2 ? ' low' : '') + '"><img alt="" src="' + RES + 'heart.webp' + V + '"><b>' + R.hearts + (g.hearts != null ? '<small>/' + g.hearts + '</small>' : '') + '</b></div>' +
@@ -1849,7 +1850,7 @@ function showTitle() {
     var el = ts.querySelector(p[0]); el.style.left = p[1][0] + '%'; el.style.top = p[1][1] + '%'; el.style.width = p[1][2] + '%';
   });
   // iPhone Safari 会用页面底色给顶部状态栏 / 底部工具栏染色：开始画面期间换成画面里天空和路边的颜色
-  setBarColor('#9F76CA'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#C47C5C';
+  setBarColor('#735DBF'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#C47C5C';
   var stage = ts.querySelector('.ts-col');
   function fitStage() {
     var W = ts.clientWidth, H = ts.clientHeight, sc = Math.max(W / TITLE_W, H / TITLE_H);
@@ -1950,7 +1951,7 @@ function startOrbit(ts, lay) {
 function setBarColor(c) {
   var m = document.querySelector('meta[name="theme-color"]');
   if (!m) { m = document.createElement('meta'); m.name = 'theme-color'; document.head.appendChild(m); }
-  m.content = c || '#D68550';
+  m.content = c || '#744F80';   // 默认 = 游戏画面顶端的天空色
 }
 function hideTitle() {
   var ts = $('title'); if (!ts) return;
@@ -2050,7 +2051,7 @@ function showMap() {
   mp.innerHTML = h;
   document.body.appendChild(mp);
   // Safari 状态栏 / 工具栏跟着地图的颜色走（不再是开始画面的紫色）
-  setBarColor('#D68550'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#CF9379';   // 底色 = 地图最底下的颜色，万一没铺满也看不出
+  setBarColor('#C38F5E'); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = '#CF9379';   // 底色 = 地图最底下的颜色，万一没铺满也看不出
   // 地图整张铺满屏幕（像开始画面一样等比放大，多出来的两边 / 上下裁掉），不用滚动
   var stage = mp.querySelector('.lm-stage');
   function fitMap() {

@@ -1449,3 +1449,9 @@ html,body{background-color:#D3662A}
 /* 顶栏（暂停 / 钱 / 爱心 / 时间）贴到屏幕最顶端；王姐对话框也尽量往上，只给头顶留一点 */
 #app.scene .hud{top:calc(14px - var(--topgap, 0px))}
 #app.scene .coach:not(.bottom){top:calc(16px - max(0px, var(--topgap, 0px) - 18px))}
+/* 第一关教学中：顶栏只留暂停 */
+#app.scene .hud.tut-hide .h-stat{visibility:hidden}
+/* 暂停弹窗：去掉原装饰图留下的空白，整体在屏幕正中 */
+.ps{padding-top:26px}
+.ps-tab{top:0}
+.ps-x{top:42px}
