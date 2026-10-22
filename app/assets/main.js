@@ -273,7 +273,7 @@ function cookHand() {
 var SHOP_TUT = [
   {text:'存款能买道具，救急用！', btn:'说说看', hand:'[data-act=tutnext]'},
   {text:'🍭 耐心回满<br>⏳ 多加 30 秒<br>🙋 瞬间做完所有单', btn:'然后呢', hand:'[data-act=tutnext]'},
-  {text:'点一下买，再点一下用。', btn:'开始营业', hand:'[data-act=tutnext]'}
+  {text:'点击道具购买，再点一下使用道具。', btn:'开始营业', hand:'[data-act=tutnext]'}
 ];
 // 第二关第一次开张：王姐教加油、撒孜然
 var OIL_TUT = [
