@@ -1434,3 +1434,12 @@ input[type=range]{touch-action:pan-x}
 #app.scene .cust.cam .who{-webkit-filter:drop-shadow(6px 0 0 #FFE03A) drop-shadow(-6px 0 0 #FFE03A) drop-shadow(0 6px 0 #FFE03A) drop-shadow(0 -6px 0 #FFE03A) drop-shadow(0 0 18px rgba(255,200,30,1)) !important;filter:drop-shadow(6px 0 0 #FFE03A) drop-shadow(-6px 0 0 #FFE03A) drop-shadow(0 6px 0 #FFE03A) drop-shadow(0 -6px 0 #FFE03A) drop-shadow(0 0 18px rgba(255,200,30,1)) !important}
 /* $ 再加粗 */
 .sp-price .cur,.sp-bank .cur{-webkit-text-stroke:2.2px currentColor;margin-right:2px}
+/* 主屏幕模式：所有全屏层按真实屏幕高度铺满（iOS 少报一截状态栏高度） */
+html.sa,html.sa body{height:var(--appH) !important}
+html.sa .overlay,html.sa .ts,html.sa .lvmap,html.sa #flash,html.sa #app.scene,html.sa .ld{bottom:auto !important;height:var(--appH) !important}
+/* 拖盒子时手里的盒子 = 场景里的合盖盒 */
+.ghost.bagg{width:150px;height:auto;margin:0}
+.ghost.bagg img{display:block;width:100%;height:auto;-webkit-filter:drop-shadow(0 8px 10px rgba(60,20,0,.35));filter:drop-shadow(0 8px 10px rgba(60,20,0,.35))}
+/* 油瓶永远在最上层，不被顾客挡住 */
+#app.scene .oilcan{z-index:30}
+.ghost.bagg{width:120px}

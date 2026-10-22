@@ -919,7 +919,7 @@ function startScrapeDrag(e, i) {
 }
 function startBagDrag(e, k) {
   var g = document.createElement('div'); g.className = 'ghost bagg';
-  g.innerHTML = boxHTML('', R.boxes[k].items.length);
+  g.innerHTML = '<img alt="" src="' + SC + 'box_closed.webp?v=' + BUILD_V + '">';   // 拖的时候手里是同一个合好的盒子（不再用旧的棕色纸盒）
   document.body.appendChild(g);
   drag = {type:'bag', box:k, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
   moveDrag(e);
@@ -1227,10 +1227,30 @@ function placeCoach(st) {
 }
 
 /* ============ 竖屏适配：内容高于屏幕时整体等比缩小 ============ */
+// 「添加到主屏幕」打开时（状态栏透明），iOS 报告的页面高度会少一截状态栏，底部留出一条空白。
+// 这种模式下按整块屏幕的真实高度来铺满所有全屏层。
+function isStandalone() { return !!(navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches)); }
+function realH() {
+  var h = window.innerHeight || document.documentElement.clientHeight;
+  if (isStandalone() && screen && screen.height) {
+    var portrait = (window.innerWidth || 0) < (window.innerHeight || 1);
+    var sh = portrait ? Math.max(screen.width, screen.height) : Math.min(screen.width, screen.height);
+    if (sh > h) h = sh;
+  }
+  return h;
+}
+function syncAppH() {
+  var de = document.documentElement, h = realH();
+  de.style.setProperty('--appH', h + 'px');
+  de.classList.toggle('sa', isStandalone() && h > (window.innerHeight || 0));
+}
+syncAppH();
+window.addEventListener('resize', syncAppH);
 function fit() {
   // 主界面是 720×1280 的舞台：整张等比缩小到放得下，左右 / 上下空出来的地方由背景图铺满
   var st = $('stage'); if (!st) return;
-  var W = window.innerWidth || document.documentElement.clientWidth, H = window.innerHeight || document.documentElement.clientHeight;
+  syncAppH();
+  var W = window.innerWidth || document.documentElement.clientWidth, H = realH();
   var sc = Math.min(W / 720, H / 1280);
   st.style.transform = 'scale(' + sc.toFixed(4) + ')';
 }
