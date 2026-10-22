@@ -8,7 +8,7 @@ var SAUCE_COL = {'番茄':'#D8342A','蜂蜜芥末':'#E7C43A','甜辣':'#F06A2B'}
 var SPICE_COL = {'孜然':'#8A6A3A','葱花':'#4FA83D','辣椒':'#C0180C'};
 var LEVELS = [
   {name:'教学关·开张大吉', time:90, goal:{money:10}, slots:3, pat:75, spawn:[8,11], bands:['嫩'], sauces:['番茄'], spices:[], two:.15, runner:0, feat:[], tutorial:true,
-   news:['王姐手把手教你摆摊','赚到 ¥10 就能收摊！']},
+   news:['王姐手把手教你摆摊','赚到 $10 就能收摊！']},
   {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩','脆'], bandW:[.55,.45], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
    news:['新口感「脆」：两面过第二条刻度','油低于红线会粘锅，记得加油','新小料：孜然']},
   {name:'口味多起来', time:90, goal:{money:18}, slots:3, pat:65, spawn:[6,9], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
@@ -42,7 +42,7 @@ var UPGRADES = [
   {id:'spicer', name:'智能撒料机', desc:'自动撒孜然、辣椒', cost:[50], max:1},
   {id:'cam', name:'门口监控', desc:'会提示逃单的人', cost:[40], max:1}
 ];
-// 第三项是内设性格，不在界面上显示：easy 随和（做错少收 ¥1），picky 挑剔（做错少收 ¥2）
+// 第三项是内设性格，不在界面上显示：easy 随和（做错少收 $1），picky 挑剔（做错少收 $2）
 // 一次性道具：花钱买，每局都能用，用掉就没了
 var ITEMS = [
   {id:'candy', icon:'🍭', name:'棒棒糖', desc:'客人耐心回满', short:'耐心回满', cost:5},
@@ -99,7 +99,7 @@ var JUDGE_TEXT = {raw:'生', uneven:'阴阳面', burnt:'焦', '嫩':'嫩', '脆'
 var BAND_VAL = {'嫩':62, '脆':80, '微焦':94, raw:22, uneven:56, burnt:116};
 var SHORT = {'番茄':'番茄酱', '蜂蜜芥末':'芥末酱', '甜辣':'甜辣酱'};
 function fmtT(t) { var s = Math.floor(t); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
-function goalText(g) { var a = []; if (g.money != null) a.push('净赚 ¥' + g.money); if (g.hearts != null) a.push(g.hearts + ' 颗爱心'); return a.join(' + '); }
+function goalText(g) { var a = []; if (g.money != null) a.push('净赚 $' + g.money); if (g.hearts != null) a.push(g.hearts + ' 颗爱心'); return a.join(' + '); }
 
 var audio = null;
 var SFX_VOL = .4;   // 音效音量（原 .12，被背景音乐盖住）
@@ -198,7 +198,7 @@ function syncMusic() {
 /* ============ 教学关脚本 ============ */
 var TUT = [
   {text:'快放学啦！我是王姐，跟我学卖烤肠～', btn:'好嘞', hand:'[data-act=tutnext]'},
-  {text:'点空锅位，放一根肠（¥1）。', spot:'place0', wait:'place', hand:'[data-act=place][data-i="0"]'},
+  {text:'点空锅位，放一根肠（$1）。', spot:'place0', wait:'place', hand:'[data-act=place][data-i="0"]'},
   {text:'朝下那面在烤，进度条变绿就熟了……', spot:'slot0',
    until:function () { var s = R.slots[0].s; return s && s[s.down] >= 42; }},
   {text:'熟了！点烤肠翻个面。', spot:'flip0', wait:'flip', hand:'[data-act=flip][data-i="0"]'},
@@ -271,7 +271,7 @@ var SHOP_TUT = [
 var OIL_TUT = [
   {text:'今天开始要放油，锅上这条是油量。', btn:'然后呢', hand:'.oilgauge', freeze:true},
   {text:'油低于红线会粘锅，容易焦、难翻面。', btn:'那怎么办', hand:'.oilgauge', freeze:true},
-  {text:'点油瓶加油，太满会溢出亏 ¥1。', btn:'记住了', hand:'[data-act=oil]', freeze:true},
+  {text:'点油瓶加油，太满会溢出亏 $1。', btn:'记住了', hand:'[data-act=oil]', freeze:true},
   {text:'新小料孜然：拖到盒里的烤肠上就行。', btn:'开始营业', hand:'[data-tool=spice]', freeze:true}
 ];
 var SKEWER_TUT = [
@@ -487,7 +487,7 @@ function tick(dt) {
     } else {
       c.timer -= dt;
       if (c.state === 'paying' && c.timer <= 0) { receive(c.price); c.state = 'leave'; c.timer = 1; if (c.review !== 'bad') c.say = c.heart ? '好吃！❤' : '谢谢~'; }
-      else if (c.state === 'flee' && c.timer <= 0) { R.st.fled++; log(c.name + ' 逃单跑了（-¥' + c.price + (L.endless ? '，-1❤' : '') + '）', 'bad'); if (L.endless) R.hearts--; c.gone = true; }
+      else if (c.state === 'flee' && c.timer <= 0) { R.st.fled++; log(c.name + ' 逃单跑了（-$' + c.price + (L.endless ? '，-1❤' : '') + '）', 'bad'); if (L.endless) R.hearts--; c.gone = true; }
       else if (c.state === 'leave' && c.timer <= 0) { c.gone = true; }
     }
   }
@@ -584,7 +584,7 @@ function act(a, i) {
     }
     case 'scrape': sl.dirt = false; sl.scrub = 0; ding(200, .08); ding(620, .12, null, 'triangle', .08); log('锅巴铲干净了', 'good'); tutEvent('scrape'); break;
     case 'oil':
-      if (R.oil > 85) { R.net -= COST; log('油溢出来了（-¥1）', 'bad'); }
+      if (R.oil > 85) { R.net -= COST; log('油溢出来了（-$1）', 'bad'); }
       R.oil = Math.min(100, R.oil + 35); ding(400, .08); break;
     case 'skewer': if (R.stock < SKEWER_MAX) { R.stock++; ding(760, .04); } break;
     case 'pack': {
@@ -659,7 +659,7 @@ function itemBar() {
     if (!n && G.bank < it.cost) off = true;
     var urge = it.id === 'hourglass' && urgeHourglass();
     return '<button class="itm' + (n ? '' : ' buy') + (urge ? ' urge' + (blinkOn() ? ' on' : '') : '') + '" data-act="useitem" data-i="' + idx + '"' + (off ? ' disabled' : '') + ' aria-label="' + it.name + '">' +
-      '<img alt="" src="./assets/img/items/' + it.id + '.webp?v=' + BUILD_V + '"><b>' + (n ? '×' + n : '¥' + it.cost) + '</b></button>';
+      '<img alt="" src="./assets/img/items/' + it.id + '.webp?v=' + BUILD_V + '"><b>' + (n ? '×' + n : '$' + it.cost) + '</b></button>';
   }).join('') + '</div>';
 }
 // 道具反馈：在道具按钮上方飘一行字（不用提示框）
@@ -756,7 +756,7 @@ function tapCust(c) {
   if (!c) return;
   if (c.state === 'flee') {
     c.state = 'leave'; c.timer = 1; c.say = '嘿嘿…忘了忘了'; c.accused = true;
-    R.st.caught++; log('喊住了 ' + c.name + (c.price ? '，补付 ¥' + c.price : ''), 'good'); if (c.price) receive(c.price); return;
+    R.st.caught++; log('喊住了 ' + c.name + (c.price ? '，补付 $' + c.price : ''), 'good'); if (c.price) receive(c.price); return;
   }
   if (c.state === 'paying' || c.state === 'leave') {
     if (c.served && !c.accused) { c.accused = true; R.hearts = Math.max(0, R.hearts - 1); R.st.wrong++; c.say = '我扫了啊！'; log('冤枉了 ' + c.name + '（-1❤）', 'bad'); }
@@ -794,7 +794,7 @@ function deliver(c, k) {
   } else if (issues.length) {
     c.price = Math.max(1, full - (PENALTY[c.trait] || 1)); c.review = 'bad';
     c.say = c.trait === 'picky' ? issues.join('、') + '不对！少给两块！' : issues.join('、') + '不对…算了，少给一块吧';
-    log(c.name + ' 差评：' + issues.join('、') + '不对（少收 ¥' + (full - c.price) + '，-1❤）', 'bad');
+    log(c.name + ' 差评：' + issues.join('、') + '不对（少收 $' + (full - c.price) + '，-1❤）', 'bad');
   } else {
     c.price = full; c.review = 'good'; c.say = '扫好啦~';
   }
@@ -1099,7 +1099,7 @@ function render() {
   }
   var RES = './assets/img/res/';
   setHTML('hud',
-    '<div class="h-stat' + (g.money != null && R.net >= g.money ? ' done' : '') + '"><img alt="" src="' + RES + 'coin.webp' + V + '"><b>' + (R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net) + (g.money != null ? '<small>/' + g.money + '</small>' : '') + '</b></div>' +
+    '<div class="h-stat' + (g.money != null && R.net >= g.money ? ' done' : '') + '"><img alt="" src="' + RES + 'coin.webp' + V + '"><b>' + (R.net < 0 ? '-$' + (-R.net) : '$' + R.net) + (g.money != null ? '<small>/' + g.money + '</small>' : '') + '</b></div>' +
     '<div class="h-stat' + (g.hearts != null && R.hearts >= g.hearts ? ' done' : '') + (L.endless && R.hearts <= 2 ? ' low' : '') + '"><img alt="" src="' + RES + 'heart.webp' + V + '"><b>' + R.hearts + (g.hearts != null ? '<small>/' + g.hearts + '</small>' : '') + '</b></div>' +
     '<div class="h-stat' + (urgeHourglass() && blinkOn() ? ' hurry' : '') + '"><img alt="" src="' + RES + 'clock.webp' + V + '"><b>' + fmtT(L.endless ? R.t : left) + '</b></div>' +
     '<button class="h-pause" data-act="menu" aria-label="暂停"><i></i><i></i></button>' +
@@ -1153,7 +1153,7 @@ function render() {
       continue;
     }
     if (!sl.s) {
-      html += '<div class="slot"><button class="slot-btn' + (lockTut ? ' locked' : '') + (i === 0 ? spot('place0') : '') + '" data-act="place" data-i="' + i + '"><i class="plus"></i><b>' + (R.stock > 0 ? '放一根' : '先串肠') + '</b><small>¥' + COST + '</small></button></div>';
+      html += '<div class="slot"><button class="slot-btn' + (lockTut ? ' locked' : '') + (i === 0 ? spot('place0') : '') + '" data-act="place" data-i="' + i + '"><i class="plus"></i><b>' + (R.stock > 0 ? '放一根' : '先串肠') + '</b><small>$' + COST + '</small></button></div>';
       continue;
     }
     var s = sl.s, j = judge(s), up = s.down === 'a' ? 'b' : 'a', jolt = sl.jolt && tNow - sl.jolt < 260;
@@ -1252,12 +1252,12 @@ function menu() {
   showOverlay('<div class="kicker">' + (inGame ? '已暂停 · 第 ' + (R.i + 1) + ' 关 · ' + R.L.name : '放学时间 · 17:00 · 实验二小东门') + '</div>' +
     '<h1>校门口<em>烤肠摊</em></h1>' +
     (inGame ? pauseShop(R.L.endless) : '') +
-    (inGame ? '' : '<p>一根 <span class="price">¥3</span>，两根 <span class="price">¥5</span>。</p>') +
+    (inGame ? '' : '<p>一根 <span class="price">$3</span>，两根 <span class="price">$5</span>。</p>') +
     (inGame ? '' : '<div class="lvgrid">' + LEVELS.map(function (L, i) {
       if (L.endless) {
         var best = G.best || {money:0, time:0}, open = G.cleared >= ENDLESS;
         return '<button class="lvbtn endless" data-act="intro" data-i="' + i + '"' + (open ? '' : ' disabled') + '>' +
-          '<i class="no">课外活动</i><b>无尽模式</b><span>' + (open ? (best.money ? '最高 ¥' + best.money + ' · 最久 ' + fmtT(best.time) : '口碑扣光前，能赚多少？') : '通关第 10 关解锁') + '</span></button>';
+          '<i class="no">课外活动</i><b>无尽模式</b><span>' + (open ? (best.money ? '最高 $' + best.money + ' · 最久 ' + fmtT(best.time) : '口碑扣光前，能赚多少？') : '通关第 10 关解锁') + '</span></button>';
       }
       return '<button class="lvbtn' + (i < G.cleared ? ' done' : '') + (i === cur ? ' cur' : '') + '" data-act="intro" data-i="' + i + '"' + (i > G.cleared ? ' disabled' : '') + '>' +
         '<i class="no">第 ' + (i + 1) + ' 课</i><b>' + L.name.replace('教学关·', '') + '</b><span>' + (L.tutorial ? '教学 · ' : '') + goalText(L.goal) + '</span></button>';
@@ -1305,7 +1305,7 @@ function goalCards(L) {
       '<div class="gc"><span>锅位</span><b>' + L.slots + ' 个</b></div></div>';
   }
   var g = L.goal, goal = [];
-  if (g.money != null) goal.push('净赚 ¥' + g.money);
+  if (g.money != null) goal.push('净赚 $' + g.money);
   if (g.hearts != null) goal.push('❤ ' + g.hearts + ' 颗');
   return '<div class="gcs"><div class="gc main"><span>过关目标</span><b>' + goal.join('<br>') + '</b></div>' +
     '<div class="gc"><span>营业时间</span><b>' + L.time + ' 秒</b></div>' +
@@ -1318,15 +1318,15 @@ function intro(i) {
   var L = LEVELS[i], POP = './assets/img/pop/', V = '?v=' + BUILD_V, done = !L.endless && i < G.cleared;
   var g = L.goal || {}, goal = [];
   if (L.endless) goal.push('口碑 ❤' + ENDLESS_HEARTS + '，扣光收摊');
-  else { if (g.money != null) goal.push('净赚 <em>¥' + g.money + '</em>'); if (g.hearts != null) goal.push('<em>❤ ' + g.hearts + '</em> 颗'); }
+  else { if (g.money != null) goal.push('净赚 <em>$' + g.money + '</em>'); if (g.hearts != null) goal.push('<em>❤ ' + g.hearts + '</em> 颗'); }
   var stars = '';
   for (var k = 0; k < 3; k++) stars += '<img class="s' + k + '" alt="" src="' + POP + (done ? 'star' : 'star_empty') + '.webp' + V + '">';
   var boost = L.tutorial ? '' : '<div class="lp-sec">带上道具</div><div class="lp-boost">' + ITEMS.map(function (it, idx) {
     var off = it.id === 'hourglass' && L.endless, have = G.items[it.id] || 0;
     return '<div class="lp-item' + (off ? ' off' : '') + '"><div class="lp-slot"><img alt="" src="./assets/img/items/' + it.id + '.webp' + V + '">' +
       (have ? '<i class="lp-cnt">' + have + '</i>' : '') + '</div><b>' + (it.bar || it.name) + '</b>' +
-      '<button class="lp-buy" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>¥' + it.cost + '</button></div>';
-  }).join('') + '</div><div class="lp-bank">存款 ¥' + G.bank + '</div>';
+      '<button class="lp-buy" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>$' + it.cost + '</button></div>';
+  }).join('') + '</div><div class="lp-bank">存款 $' + G.bank + '</div>';
   showOverlay('<div class="lp">' +
     '<div class="lp-ribbon"><small>' + (L.endless ? '课外活动' : '第 ' + (i + 1) + ' 关') + '</small><b>' + L.name.replace('教学关·', '') + '</b></div>' +
     '<div class="lp-panel">' +
@@ -1387,7 +1387,7 @@ function finish(win, why) {
   shareInfo = {endless:false, win:win, why:why, lv:i + 1, name:R.L.name.replace('教学关·', ''), net:R.net, hearts:R.hearts, sold:s.sold};
   var o = {win:win, sub:'第 ' + (i + 1) + ' 关 · ' + R.L.name.replace('教学关·', ''),
     title: win ? (i === 9 ? '校门口之王！' : '目标达成！') : why === 'hearts' ? '爱心扣光了…' : '差一点点…',
-    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本关净赚', bad:R.net < 0}, {icon:'heart', val:R.hearts, label:'剩余爱心'}, {icon:'orders', val:s.sold, label:'成交单数'}]};
+    stats:[{icon:'coin', val:(R.net < 0 ? '-$' + (-R.net) : '$' + R.net), label:'本关净赚', bad:R.net < 0}, {icon:'heart', val:R.hearts, label:'剩余爱心'}, {icon:'orders', val:s.sold, label:'成交单数'}]};
   if (win) {
     o.primary = i < 9 ? {act:'intro', i:i + 1, label:'下一关'} : {act:'intro', i:ENDLESS, label:'挑战无尽模式'};
     o.icons = resultIcons(i);
@@ -1405,16 +1405,16 @@ function finishEndless() {
   G.best = {money:Math.max(best.money, R.net), time:Math.max(best.time, Math.floor(R.t))};
   save();
   shareInfo = {endless:true, rec:rec, net:R.net, time:R.t, sold:R.st.sold, best:G.best.money};
-  resultPop({win:rec, sub:'无尽模式 · 最高 ¥' + G.best.money, title:rec ? '新纪录！' : '口碑扣光了',
-    stats:[{icon:'coin', val:(R.net < 0 ? '-¥' + (-R.net) : '¥' + R.net), label:'本局净赚', bad:R.net < 0}, {icon:'clock', val:fmtT(R.t), label:'坚持时间'}, {icon:'orders', val:R.st.sold, label:'成交单数'}],
+  resultPop({win:rec, sub:'无尽模式 · 最高 $' + G.best.money, title:rec ? '新纪录！' : '口碑扣光了',
+    stats:[{icon:'coin', val:(R.net < 0 ? '-$' + (-R.net) : '$' + R.net), label:'本局净赚', bad:R.net < 0}, {icon:'clock', val:fmtT(R.t), label:'坚持时间'}, {icon:'orders', val:R.st.sold, label:'成交单数'}],
     primary:{act:'go', i:ENDLESS, label:'再来一局'}, icons:resultIcons(ENDLESS).slice(1)});
 }
 function resultItems() { itemShop('shareback'); }
 function pauseShop(endless) {
-  return '<div class="pshop" data-endless="' + (endless ? 1 : 0) + '"><div class="pshop-h">道具商店<small>存款 ¥' + G.bank + '</small></div><div class="prow">' + ITEMS.map(function (it, idx) {
+  return '<div class="pshop" data-endless="' + (endless ? 1 : 0) + '"><div class="pshop-h">道具商店<small>存款 $' + G.bank + '</small></div><div class="prow">' + ITEMS.map(function (it, idx) {
     var off = it.id === 'hourglass' && endless;
     return '<div class="pitem' + (off ? ' off' : '') + '"><i>' + it.icon + '</i><b>' + it.name + '</b><small>' + (off ? '无尽模式不可用' : it.short) + '</small>' +
-      '<span>已有 ' + (G.items[it.id] || 0) + '</span><button class="b hot" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>¥' + it.cost + '</button></div>';
+      '<span>已有 ' + (G.items[it.id] || 0) + '</span><button class="b hot" data-act="buyitem" data-i="' + idx + '"' + (G.bank < it.cost || off ? ' disabled' : '') + '>$' + it.cost + '</button></div>';
   }).join('') + '</div></div>';
 }
 /* ============ 分享战绩：画一张战绩卡 → 发小红书笔记 / 存相册 ============ */
@@ -1434,14 +1434,14 @@ function rr(ctx, x, y, w, h, r) {
 // 分享文案：三套口吻，每次打开分享随机一套（卡片标语、笔记标题、正文保持同一套）
 var SHARE_COPY = [
   {title:'我在校门口卖烤肠！', tag:'你能比我卖得好吗？',
-   lv:function (i, v) { return '第 ' + i.lv + ' 关「' + i.name + '」' + v + '净赚 ¥' + i.net + '，爱心 ' + i.hearts + '，成交 ' + i.sold + ' 单。你能比我卖得好吗？'; },
-   en:function (i) { return '在实验二小门口的无尽模式里坚持了 ' + fmtT(i.time) + '，净赚 ¥' + i.net + '，成交 ' + i.sold + ' 单！' + (i.rec ? '刷新了最高纪录～' : '') + '你能坚持更久吗？'; }},
+   lv:function (i, v) { return '第 ' + i.lv + ' 关「' + i.name + '」' + v + '净赚 $' + i.net + '，爱心 ' + i.hearts + '，成交 ' + i.sold + ' 单。你能比我卖得好吗？'; },
+   en:function (i) { return '在实验二小门口的无尽模式里坚持了 ' + fmtT(i.time) + '，净赚 $' + i.net + '，成交 ' + i.sold + ' 单！' + (i.rec ? '刷新了最高纪录～' : '') + '你能坚持更久吗？'; }},
   {title:'放学铃一响，我的烤肠摊开张了', tag:'来校门口跟我比比？',
-   lv:function (i, v) { return '放学铃一响就开摊！第 ' + i.lv + ' 关「' + i.name + '」' + v + '今天净赚 ¥' + i.net + '，收获爱心 ' + i.hearts + ' 颗，卖出 ' + i.sold + ' 单。来实验二小门口跟我比比？'; },
-   en:function (i) { return '放学铃一响就开摊！无尽模式守了 ' + fmtT(i.time) + '，卖出 ' + i.sold + ' 单，净赚 ¥' + i.net + '。' + (i.rec ? '又破纪录啦～' : '') + '来实验二小门口跟我比比？'; }},
+   lv:function (i, v) { return '放学铃一响就开摊！第 ' + i.lv + ' 关「' + i.name + '」' + v + '今天净赚 $' + i.net + '，收获爱心 ' + i.hearts + ' 颗，卖出 ' + i.sold + ' 单。来实验二小门口跟我比比？'; },
+   en:function (i) { return '放学铃一响就开摊！无尽模式守了 ' + fmtT(i.time) + '，卖出 ' + i.sold + ' 单，净赚 $' + i.net + '。' + (i.rec ? '又破纪录啦～' : '') + '来实验二小门口跟我比比？'; }},
   {title:'今日烤肠摊战报来啦', tag:'香味飘进校门啦，你也来试试！',
-   lv:function (i, v) { return '烤肠摊老板打卡：第 ' + i.lv + ' 关「' + i.name + '」' + v + '¥' + i.net + ' 进账、爱心 ' + i.hearts + '、成交 ' + i.sold + ' 单～香味都飘进校门了，你也来试试？'; },
-   en:function (i) { return '烤肠摊老板打卡：无尽模式撑了 ' + fmtT(i.time) + '，' + i.sold + ' 单、¥' + i.net + ' 进账～' + (i.rec ? '新纪录到手！' : '') + '香味都飘进校门了，你也来试试？'; }}
+   lv:function (i, v) { return '烤肠摊老板打卡：第 ' + i.lv + ' 关「' + i.name + '」' + v + '$' + i.net + ' 进账、爱心 ' + i.hearts + '、成交 ' + i.sold + ' 单～香味都飘进校门了，你也来试试？'; },
+   en:function (i) { return '烤肠摊老板打卡：无尽模式撑了 ' + fmtT(i.time) + '，' + i.sold + ' 单、$' + i.net + ' 进账～' + (i.rec ? '新纪录到手！' : '') + '香味都飘进校门了，你也来试试？'; }}
 ];
 var shareCopy = SHARE_COPY[0];
 function drawShareCard(info) {
@@ -1456,8 +1456,8 @@ function drawShareCard(info) {
   c.fillStyle = '#F3F1E6'; c.font = 'bold 36px ' + K;
   c.fillText(info.endless ? '无尽模式 · 校门口烤肠摊' : '第' + info.lv + '关 · ' + info.name, W / 2, 80);
   var stats = info.endless
-    ? [['净赚', '¥' + info.net], ['坚持', fmtT(info.time)], ['成交', info.sold + ' 单']]
-    : [['净赚', '¥' + info.net], ['爱心', '❤ ' + info.hearts], ['成交', info.sold + ' 单']];
+    ? [['净赚', '$' + info.net], ['坚持', fmtT(info.time)], ['成交', info.sold + ' 单']]
+    : [['净赚', '$' + info.net], ['爱心', '❤ ' + info.hearts], ['成交', info.sold + ' 单']];
   for (k = 0; k < 3; k++) {
     x = 48 + k * 212;
     rr(c, x, 100, 200, 60, 8); c.fillStyle = '#3A5A48'; c.fill();
@@ -1479,7 +1479,7 @@ function drawShareCard(info) {
   c.fillStyle = '#FFD86B'; c.font = 'bold 32px ' + K; c.fillText('实 验 二 小', 132, 256);
   rr(c, 236, 218, W - 280, 52, 8); c.fillStyle = '#101820'; c.fill();
   c.textAlign = 'left'; c.fillStyle = '#9FB0C3'; c.font = '18px ' + F; c.fillText('收款音箱', 252, 250);
-  c.fillStyle = '#4FBF7A'; c.font = 'bold 26px ' + F; c.fillText('今日到账 ¥' + info.net, 346, 253);
+  c.fillStyle = '#4FBF7A'; c.font = 'bold 26px ' + F; c.fillText('今日到账 $' + info.net, 346, 253);
   c.textAlign = 'center';
   // 三位客人
   var who = [['🧒', '一年级·豆豆'], ['👧', '五年级·班长'], ['👩', '家长·王阿姨']];
@@ -1524,7 +1524,7 @@ function drawShareCard(info) {
   c.restore();
   var verdict = info.endless ? (info.rec ? '新纪录！' : '收摊了') : info.win ? '目标达成！' : info.why === 'hearts' ? '爱心扣光了…' : '差一点点…';
   c.fillStyle = good ? '#D7261E' : '#66717C'; c.font = 'bold 54px ' + F; c.fillText(verdict, W / 2, 818);
-  var tag = info.endless && info.best ? '最高纪录 ¥' + info.best + '，' + shareCopy.tag : shareCopy.tag, fs = 30;
+  var tag = info.endless && info.best ? '最高纪录 $' + info.best + '，' + shareCopy.tag : shareCopy.tag, fs = 30;
   c.fillStyle = '#27313A'; c.font = 'bold 30px ' + F;
   while (fs > 20 && c.measureText(tag).width > 400) { fs -= 2; c.font = 'bold ' + fs + 'px ' + F; }
   c.fillText(tag, W / 2, 864);
@@ -1592,8 +1592,8 @@ function refreshItemStrip() {
   var box = document.querySelector('#overlay .pshop'); if (!box) return;
   var tmp = document.createElement('div'); tmp.innerHTML = pauseShop(box.getAttribute('data-endless') === '1');
   box.parentNode.replaceChild(tmp.firstChild, box);
-  var bl = document.querySelector('#overlay .bankline b'); if (bl) bl.textContent = '¥' + G.bank;
-  var bv = document.querySelector('#overlay .bankv'); if (bv) bv.textContent = '¥' + G.bank;
+  var bl = document.querySelector('#overlay .bankline b'); if (bl) bl.textContent = '$' + G.bank;
+  var bv = document.querySelector('#overlay .bankv'); if (bv) bv.textContent = '$' + G.bank;
 }
 function shopBack(from) {
   // 从关卡开场进来 → 回开场；游戏暂停中进来 → 回暂停；否则回关卡列表
@@ -1613,9 +1613,9 @@ function framePop(title, body, back, shopDeco) {
   if (back) addBack(back);
 }
 function priceBtn(act, i, cost, ok) {
-  return '<button class="sp-price' + (ok ? '' : ' off') + '" data-act="' + act + '" data-i="' + i + '"' + (ok ? '' : ' disabled') + '><span>¥' + cost + '</span></button>';
+  return '<button class="sp-price' + (ok ? '' : ' off') + '" data-act="' + act + '" data-i="' + i + '"' + (ok ? '' : ' disabled') + '><span>$' + cost + '</span></button>';
 }
-function bankBar() { return '<div class="sp-bank"><img alt="" src="./assets/img/shop/bank.webp?v=' + BUILD_V + '"><b>¥' + G.bank + '</b></div>'; }
+function bankBar() { return '<div class="sp-bank"><img alt="" src="./assets/img/shop/bank.webp?v=' + BUILD_V + '"><b>$' + G.bank + '</b></div>'; }
 function shop() {
   var V = '?v=' + BUILD_V, inGame = R && !R.over && !R.demo, fromRes = R && R.over && !R.demo && lastResult, nxt = Math.min(G.cleared, 9);
   var rows = UPGRADES.map(function (u, idx) {
@@ -1697,7 +1697,7 @@ document.addEventListener('pointerdown', function (e) {
   if (a === 'intro') return intro(i);
   if (a === 'mapnode') return mapNode(i);
   if (a === 'resitems') return resultItems();
-  if (a === 'mapclose') { hideOverlay(); var bk = document.querySelector('#lvmap .lm-stat.star b'); if (bk) bk.textContent = '¥' + G.bank; return; }
+  if (a === 'mapclose') { hideOverlay(); var bk = document.querySelector('#lvmap .lm-stat.star b'); if (bk) bk.textContent = '$' + G.bank; return; }
   if (a === 'maphome') { hideMap(); return showTitle(); }
   if (a === 'mapitems') { menuShopOpen = true; return showItemShop(); }
   if (a === 'go') return loadLevel(i);
@@ -2005,8 +2005,8 @@ function showMap() {
   var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
   h += '</div><div class="lm-hud">' +
     '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
-    '<div class="lm-stat star"><img alt="" src="' + UI + 'ui_star.webp' + V + '"><b>¥' + G.bank + '</b></div>' +
-    '<button class="lm-stat heart" data-act="mapnode" data-i="' + (LEVELS.length - 1) + '" aria-label="无限模式"><img alt="" src="' + UI + 'ui_heart.webp' + V + '"><b>无限</b></button>' +   // 无限模式入口
+    '<div class="lm-stat star"><img alt="" src="' + UI + 'ui_star.webp' + V + '"><b>$' + G.bank + '</b></div>' +
+    '<button class="lm-stat heart" data-act="mapnode" data-i="' + (LEVELS.length - 1) + '" aria-label="无限模式"><img alt="" src="' + UI + 'ui_heart.webp' + V + '"><b>无限模式</b></button>' +   // 无限模式入口
     '<button class="lm-ico set" data-act="tsettings" aria-label="设置"><img alt="" src="' + UI + 'ui_settings.webp' + V + '"></button>' +
     '<div class="lm-side"><button class="lm-ico" data-act="shop" aria-label="升级小摊"><img alt="" src="' + UI + 'ui_upgrade.webp' + V + '"><small>升级小摊</small></button>' +
     '<button class="lm-ico" data-act="mapitems" aria-label="道具商店"><img alt="" src="' + UI + 'ui_shop.webp' + V + '"><small>道具商店</small></button></div></div>' +
