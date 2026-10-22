@@ -1464,3 +1464,5 @@ html,body{background-color:#D3662A}
 .ps{padding-top:26px}
 .ps-tab{top:0}
 .ps-x{top:42px}
+/* 所有弹窗上下留白一样，正好在屏幕正中 */
+.overlay{padding-top:calc(var(--sat) + 30px);padding-bottom:calc(var(--sab) + 30px)}

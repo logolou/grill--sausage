@@ -1113,7 +1113,7 @@ function render() {
       (showBtn ? '<button class="next" data-act="tutnext">' + st.btn + '</button>' : '') + '</div>');
   }
   var RES = './assets/img/res/';
-  $('hud').classList.toggle('tut-hide', !!(st && R.tut && R.tut.steps === TUT));   // 王姐教完再出钱、爱心、时间
+  $('hud').classList.toggle('tut-hide', !!st);   // 王姐讲话时（教学和各关小课堂）先不出钱、爱心、时间
   setHTML('hud',
     '<div class="h-stat' + (g.money != null && R.net >= g.money ? ' done' : '') + '"><img alt="" src="' + RES + 'coin.webp' + V + '"><b>' + (R.net < 0 ? '-$' + (-R.net) : '$' + R.net) + (g.money != null ? '<small>/' + g.money + '</small>' : '') + '</b></div>' +
     '<div class="h-stat' + (g.hearts != null && R.hearts >= g.hearts ? ' done' : '') + (L.endless && R.hearts <= 2 ? ' low' : '') + '"><img alt="" src="' + RES + 'heart.webp' + V + '"><b>' + R.hearts + (g.hearts != null ? '<small>/' + g.hearts + '</small>' : '') + '</b></div>' +
