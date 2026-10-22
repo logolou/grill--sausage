@@ -1162,7 +1162,7 @@ function render() {
         [40, 70, 88].map(function (x) { return '<span class="tk" style="left:' + x + '%"></span>'; }).join('') + '</div>';
     };
     html += '<div class="slot' + (sticky ? ' sticky' : '') + (ost === 2 ? ' dry' : '') + (jolt ? ' jolt' : '') + (i === 0 ? spot('slot0') : '') + '">' +
-      '<span class="tag ' + j + '">' + ({raw:'还生', burnt:'焦了！'}[j] || JUDGE_TEXT[j]) + '</span>' +
+      '<span class="tag ' + j + '">' + ({raw:'生', burnt:'焦了！'}[j] || JUDGE_TEXT[j]) + '</span>' +
       (sticky ? '<i class="stk s1"></i><i class="stk s2"></i><i class="stk s3"></i><i class="stk s4"></i><i class="stk s5"></i>' : '') +
       (v2 && sticky ? '<span class="stuck">' + (ost === 2 ? '干锅' : '粘锅') + (sl.pry ? ' ' + sl.pry + '/' + (ost === 2 ? 3 : 2) : '') + '</span>' : '') +
       '<div class="saus-area tap' + (i === 0 ? spot('flip0') : '') + '" data-act="flip" data-i="' + i + '"><img class="saus-img' + (j === 'burnt' ? ' smoke' : '') + '" alt="" src="' + SC + 's_' + (SAUS_ART[j] || 'raw') + '_' + (i + 1) + '.webp' + V + '"></div>' +
