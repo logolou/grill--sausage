@@ -1446,3 +1446,6 @@ html,body{background-color:#D3662A}
 /* 王姐对话框往上挪约 100px（屏幕上方有空就往上，不会超出屏幕） */
 #app.scene .coach:not(.bottom){top:calc(16px - min(100px, var(--topgap, 0px)))}
 #app.scene .coach:not(.bottom){top:calc(16px - max(0px, min(100px, var(--topgap, 0px) - 24px)))}
+/* 顶栏（暂停 / 钱 / 爱心 / 时间）贴到屏幕最顶端；王姐对话框也尽量往上，只给头顶留一点 */
+#app.scene .hud{top:calc(14px - var(--topgap, 0px))}
+#app.scene .coach:not(.bottom){top:calc(16px - max(0px, var(--topgap, 0px) - 18px))}
