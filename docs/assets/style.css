@@ -1434,3 +1434,7 @@ html.sa .overlay,html.sa .ts,html.sa .lvmap,html.sa #flash,html.sa #app.scene,ht
 /* 油瓶永远在最上层，不被顾客挡住 */
 #app.scene .oilcan{z-index:30}
 .ghost.bagg{width:120px}
+/* 加长版背景：原 720×1280 / 1125×2000 的画面对齐在长图中间，上下延伸部分补满高屏手机 */
+.sc-bg{top:-724px !important;height:2160px !important}
+#app.scene{background:#3A2A4A url(img/scene/bg_long.webp) center center/cover no-repeat}
+.lvmap .lm-bg{top:-67.1% !important;height:auto !important;width:100% !important}
