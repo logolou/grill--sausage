@@ -1268,6 +1268,7 @@ function fit() {
   var W = window.innerWidth || document.documentElement.clientWidth, H = realH();
   var sc = Math.min(W / 720, H / 1280);
   st.style.transform = 'scale(' + sc.toFixed(4) + ')';
+  st.style.setProperty('--topgap', Math.max(0, (H - 1280 * sc) / 2 / sc).toFixed(1) + 'px');   // 舞台上方多出来的空白（舞台像素）
 }
 window.addEventListener('resize', fit);
 window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });

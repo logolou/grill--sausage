@@ -1452,3 +1452,6 @@ html.sa .overlay,html.sa .ts,html.sa .lvmap,html.sa #flash,html.sa #app.scene,ht
 html,body{min-height:100lvh}
 .overlay,.ts,.lvmap,#app.scene,.ld{min-height:100lvh}
 html,body{background-color:#D3662A}
+/* 王姐对话框往上挪约 100px（屏幕上方有空就往上，不会超出屏幕） */
+#app.scene .coach:not(.bottom){top:calc(16px - min(100px, var(--topgap, 0px)))}
+#app.scene .coach:not(.bottom){top:calc(16px - max(0px, min(100px, var(--topgap, 0px) - 24px)))}
