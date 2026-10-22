@@ -1273,3 +1273,7 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* HUD：数值在胶囊里居中，字号统一，不加粗 */
 .h-stat{justify-content:center;padding-left:48px;padding-right:8px}
 .h-stat b,.h-stat b small{font-family:-apple-system,"PingFang SC","Hiragino Sans GB",sans-serif;font-weight:400;font-size:26px;opacity:1;margin:0;letter-spacing:0;font-variant-numeric:tabular-nums}
+/* 不要底部文字提示框 */
+#app.scene .log{display:none !important}
+.h-stat b,.h-stat b small{font-weight:700}
+#app.scene #grillInfo{display:none !important}
