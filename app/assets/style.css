@@ -1425,3 +1425,5 @@ input[type=range]{touch-action:pan-x}
 #app.scene .cust.cam .who{-webkit-filter:drop-shadow(3px 0 0 #FFE03A) drop-shadow(-3px 0 0 #FFE03A) drop-shadow(0 3px 0 #FFE03A) drop-shadow(0 -3px 0 #FFE03A) drop-shadow(0 0 12px rgba(255,200,30,.95)) !important;filter:drop-shadow(3px 0 0 #FFE03A) drop-shadow(-3px 0 0 #FFE03A) drop-shadow(0 3px 0 #FFE03A) drop-shadow(0 -3px 0 #FFE03A) drop-shadow(0 0 12px rgba(255,200,30,.95)) !important;-webkit-animation:camPulse .6s ease-in-out infinite alternate !important;animation:camPulse .6s ease-in-out infinite alternate !important}
 @-webkit-keyframes camPulse{from{opacity:.88}to{opacity:1}}
 @keyframes camPulse{from{opacity:.88}to{opacity:1}}
+/* 「无限模式」字小一点，正好在奶白色条的正中 */
+.lm-stat.heart b{left:39%;right:2%;top:3%;bottom:7%;font-size:10px !important;letter-spacing:0;white-space:nowrap}
