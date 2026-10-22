@@ -1273,3 +1273,6 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 /* 相邻槽的进度条卡片和夹起按钮不要重叠：都收进槽宽以内 */
 #app.scene .meters{left:4%;right:4%;padding:5px 5px 4px}
 #app.scene .pick{width:64px;margin-left:-32px;font-size:16px}
+/* 两根装盒：两行都放在盒底内（盒底约 54–136px），不压到「装盒」按钮 */
+#app.scene .bx-items{top:56px;height:78px;left:10%;right:10%}
+#app.scene .bitem .tsvg{width:80px;height:26px}

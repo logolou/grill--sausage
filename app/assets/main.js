@@ -598,18 +598,18 @@ function act(a, i) {
       break; }
     case 'useitem': useItem(i); break;
     case 'heatlv':
-      if (!G.up.fire || !HEAT_LV[i]) return;
+      if (!fireUp() || !HEAT_LV[i]) return;
       R.heatLv = i; ding(360 + i * 180, .08);
       log('火力调到' + HEAT_LV[i].name + '火' + (i === 2 ? '，小心烤焦' : i === 0 ? '，烤得慢但稳' : ''), '');
       break;
     case 'fire':
       // 旋钮顺时针拧：关 → 小 → 中 → 大 → 关（没买「可调火力」时只有 关 ↔ 中）
-      if (!G.up.fire) { R.fire = !R.fire; R.heatLv = 1; }
+      if (!fireUp()) { R.fire = !R.fire; R.heatLv = 1; }
       else if (!R.fire) { R.fire = true; R.heatLv = 0; }
       else if ((R.heatLv == null ? 1 : R.heatLv) < 2) R.heatLv = (R.heatLv == null ? 1 : R.heatLv) + 1;
       else R.fire = false;
       ding(R.fire ? 420 + R.heatLv * 120 : 260, .1);
-      log(!R.fire ? '已停火，烤肠不会再继续烤' : G.up.fire ? '火力：' + HEAT_LV[R.heatLv].name + '火' + (R.heatLv === 2 ? '，小心烤焦' : '') : '点火了，锅要热一会儿', R.fire ? 'good' : '');
+      log(!R.fire ? '已停火，烤肠不会再继续烤' : fireUp() ? '火力：' + HEAT_LV[R.heatLv].name + '火' + (R.heatLv === 2 ? '，小心烤焦' : '') : '点火了，锅要热一会儿', R.fire ? 'good' : '');
       tutEvent('fire'); break;
     case 'cust': tapCust(R.cust.filter(function (c) { return c.id === i; })[0]); break;
   }
@@ -646,7 +646,9 @@ function screenFlash() {
 }
 // 可调火力：小 0.7 / 中 1 / 大 1.35（没买就一直是中火）
 var HEAT_LV = [{name:'小', mul:.7}, {name:'中', mul:1}, {name:'大', mul:1.35}];
-function heatMul() { return G.up.fire ? HEAT_LV[R.heatLv == null ? 1 : R.heatLv].mul : 1; }
+// 第一关（教学）不管有没有买「可调火力」，旋钮都只有 开 ↔ 关
+function fireUp() { return !!G.up.fire && !(R && R.i === 0); }
+function heatMul() { return fireUp() ? HEAT_LV[R.heatLv == null ? 1 : R.heatLv].mul : 1; }
 function blinkOn() { return Math.floor(now() / 250) % 2 === 0; }
 function itemBar() {
   if (R.L.tutorial) return '';   // 第一关（教学关）不显示道具
@@ -1063,9 +1065,9 @@ function render() {
   info.className = sticky && R.fire ? 'warn' : '';
   $('grill').className = 'grill' + (R.heat < .5 ? ' off' : '');
   var lv = R.heatLv == null ? 1 : R.heatLv;
-  var gs = !R.fire ? 'off' : 'sml'.charAt(G.up.fire ? lv : 1);
+  var gs = !R.fire ? 'off' : 'sml'.charAt(fireUp() ? lv : 1);
   var gb = $('gbody'), gsrc = SC + 'grill_' + gs + '.webp' + V; if (gb.getAttribute('src') !== gsrc) gb.setAttribute('src', gsrc);
-  setHTML('fireCtl', (G.up.fire ? '<i class="kl k1">小</i><i class="kl k2">中</i><i class="kl k3">大</i>' : '<i class="kl k2">开</i>') +
+  setHTML('fireCtl', (fireUp() ? '<i class="kl k1">小</i><i class="kl k2">中</i><i class="kl k3">大</i>' : '<i class="kl k2">开</i>') +
     '<button class="knob' + (R.fire ? ' on' : '') + spot('fire') + '" data-act="fire" aria-label="' + (R.fire ? '停火' : '点火') + '"></button>');
   var slotsEl = $('slots'), html = '';
   for (var i = 0; i < 4; i++) {
