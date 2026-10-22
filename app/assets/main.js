@@ -53,7 +53,7 @@ var UPGRADES = [
 // 第三项是内设性格，不在界面上显示：easy 随和（做错少收 $1），picky 挑剔（做错少收 $2）
 // 一次性道具：花钱买，每局都能用，用掉就没了
 var ITEMS = [
-  {id:'candy', icon:'🍭', name:'棒棒糖', desc:'客人耐心回满', short:'耐心回满', cost:5},
+  {id:'candy', icon:'🍭', name:'棒棒糖', desc:'页面上所有客人耐心回满', short:'耐心回满', cost:5},
   {id:'hourglass', icon:'⏳', name:'沙漏', desc:'本关 +30 秒', short:'时间 +30 秒', cost:5},
   {id:'flower', icon:'🙋', name:'烤肠课代表', bar:'课代表', desc:'瞬间做完所有单', short:'瞬间做完所有单', cost:20}
 ];
