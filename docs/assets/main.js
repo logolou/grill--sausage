@@ -976,11 +976,11 @@ function custArt(c) {
   // 只用三种表情：等待 / 耐心快没了着急 / 做错了或等太久生气
   if (c.state === 'wait') st = r > .35 ? 'wait' : 'anxious';
   else if (c.review === 'bad' || (c.state === 'leave' && !c.served)) st = 'angry';
-  // 有表情图的顾客直接换图（家长 02、老师、奶奶暂时没有，保持原图）
+  // 着急 / 生气直接换对应表情图
   if (st !== 'wait' && MOOD_ART[id]) id += '_' + st;
   return './assets/img/cust/' + id + '.webp?v=' + BUILD_V;
 }
-var MOOD_ART = {kid01:1, kid02:1, kid03:1, kid04:1, kid05:1, kid06:1, parent01:1};
+var MOOD_ART = {kid01:1, kid02:1, kid03:1, kid04:1, kid05:1, kid06:1, parent01:1, parent02:1, teacher:1, grandma:1};
 var BAND_ICON = {'嫩':'tender', '脆':'crispy', '微焦':'charred'};
 var SAUCE_ICON = {'番茄':'tomato', '蜂蜜芥末':'honeymustard', '甜辣':'sweetchili'};
 var SPICE_ICON = {'孜然':'cumin', '辣椒':'chili'};
