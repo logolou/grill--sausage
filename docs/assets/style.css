@@ -1421,3 +1421,5 @@ input[type=range]{touch-action:pan-x}
 /* 商店按钮和存款条里的 $ 加粗；存款数字在整条图案里居中 */
 .sp-price .cur,.sp-bank .cur{font-style:normal;-webkit-text-stroke:1.2px currentColor;paint-order:stroke fill;margin-right:1px}
 .sp-bank b{left:0;right:0}
+/* 监控黄边再宽：6px 实心描边（8 个方向）+ 更大的外发光 */
+#app.scene .cust.cam .who{-webkit-filter:drop-shadow(6px 0 0 #FFE03A) drop-shadow(-6px 0 0 #FFE03A) drop-shadow(0 6px 0 #FFE03A) drop-shadow(0 -6px 0 #FFE03A) drop-shadow(0 0 18px rgba(255,200,30,1)) !important;filter:drop-shadow(6px 0 0 #FFE03A) drop-shadow(-6px 0 0 #FFE03A) drop-shadow(0 6px 0 #FFE03A) drop-shadow(0 -6px 0 #FFE03A) drop-shadow(0 0 18px rgba(255,200,30,1)) !important}
