@@ -1124,7 +1124,8 @@ function render() {
     q += '<div class="' + cls + '"' + style + (clickable ? ' data-act="cust" data-i="' + c.id + '"' : '') + (c.state === 'wait' ? ' data-cid="' + c.id + '"' : '') + (c.tag ? ' data-tag="' + c.tag + '"' : '') + '>' +
       '<div class="bubble">' + (c.say ? '<div class="say">' + c.say + '</div>' : orderHTML(c)) +
       (c.state === 'wait' ? '<div class="pat"><i style="width:' + (r * 100) + '%;background:' + patColor(r) + '"></i></div>' : '') + '</div>' +
-      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' + (mood ? '<i class="mood">' + (mood === 'angry' ? '💢' : '💦') + '</i>' : '') + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
+      '<img class="who" alt="' + c.name + '" src="' + custArt(c) + '">' +
+      (cls.indexOf(' cam') >= 0 ? '<svg class="camtri" viewBox="0 0 36 30" aria-hidden="true"><path d="M3 3h30L18 27z" fill="#FFD23F" stroke="#FFF6C8" stroke-width="2.5" stroke-linejoin="round"/></svg>' : '') + (mood ? '<i class="mood">' + (mood === 'angry' ? '💢' : '💦') + '</i>' : '') + (c.got ? '<i class="minibag"></i>' : '') + '</div>';
   }
   $('queue').innerHTML = q;
 
