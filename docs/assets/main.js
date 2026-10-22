@@ -8,46 +8,46 @@ var SAUCE_COL = {'番茄':'#D8342A','蜂蜜芥末':'#E7C43A','甜辣':'#F06A2B'}
 var SPICE_COL = {'孜然':'#8A6A3A','葱花':'#4FA83D','辣椒':'#C0180C'};
 var LEVELS = [
   {name:'教学关·开张大吉', time:90, goal:{money:10}, slots:3, pat:75, spawn:[8,11], bands:['嫩'], sauces:['番茄'], spices:[], two:.15, runner:0, feat:[], tutorial:true,
-   news:['摊主王姐手把手教你怎么摆烤肠摊','教学结束后，自己动手试试吧，今天赚 ¥10 就能收摊！']},
+   news:['王姐手把手教你摆摊','赚到 ¥10 就能收摊！']},
   {name:'油锅要伺候', time:90, goal:{money:10}, slots:3, pat:60, spawn:[7,10], bands:['嫩','脆'], bandW:[.55,.45], sauces:['番茄'], spices:['孜然'], two:.2, runner:0, feat:['oil'],
-   news:['新口感：「脆」——烤肠两面都需要烤过第二条刻度。不少客人会要。','锅里的油会越烤越少。油量低于红线时会粘锅，烤肠成熟更快，更容易焦。','点「加油」补油；油很满时再加会溢出，损失 ¥1。','新小料：孜然。使用方法：把调料罐拖到烤肠上抖一抖。']},
+   news:['新口感「脆」：两面过第二条刻度','油低于红线会粘锅，记得加油','新小料：孜然']},
   {name:'口味多起来', time:90, goal:{money:18}, slots:3, pat:65, spawn:[6,9], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
-   news:['新酱料：蜂蜜芥末。新小料：辣椒。','要「脆」的客人更多了。']},
+   news:['新酱料：芥末酱','新小料：辣椒']},
   {name:'攒人气', time:90, goal:{hearts:9}, slots:3, pat:51, spawn:[5.5,8], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:0, feat:['oil'],
-   news:['顾客耐心还剩 35% 以上时交付顾客心巴上的烤肠，就会给你一颗爱心。']},
+   news:['做对又够快，就能拿爱心']},
   {name:'有人逃单！', time:120, goal:{money:20}, slots:3, pat:47, spawn:[5.2,7.8], bands:['嫩','脆'], bandW:[.4,.6], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.3, runner:.18, feat:['oil'],
-   news:['顾客拿到烤肠都会说「扫好啦」。正常顾客片刻后会响起「叮咚」到账声，然后才离开。','逃单的人没有到账声，拿了就走——在他走远前点击喊他站住！','喊错了（人家其实付了）要扣一颗爱心！']},
+   news:['没听到「叮咚」就是逃单','趁他没走远，点他喊站住！','喊错了扣爱心']},
   {name:'微焦党来了', time:120, goal:{money:30}, slots:4, pat:45, spawn:[4.8,7.2], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.35, runner:.2, bandRule:{band:'微焦', within:3, max:.2}, feat:['oil'],
-   news:['新口感：「微焦」——两面过第三条刻度，但不能烤到头。','锅位增加到 4 个。']},
+   news:['新口感「微焦」：过第三条刻度','锅位变成 4 个']},
   {name:'自己串签', time:120, goal:{hearts:12}, slots:4, pat:43, spawn:[4.6,7], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.5, runner:.3, bandRule:{band:'微焦', within:0, max:.25}, feat:['oil','skewer'],
-   news:['预串好的肠用完了。先点「串一根」，串好的肠才能下锅。']},
+   news:['要自己串签了']},
   {name:'放学高峰', time:150, goal:{money:30}, slots:4, pat:40, spawn:[3.8,5.8], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末'], spices:['孜然','辣椒'], two:.45, runner:.32, feat:['oil','skewer'],
-   news:['全校一起放学：顾客来得更快、更没耐心，要两根的更多了。']},
+   news:['放学高峰：客人又多又急']},
   {name:'锅底要铲', time:150, goal:{money:40}, slots:4, pat:39, spawn:[4,6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.4, runner:.35, feat:['oil','skewer','scrape'],
-   news:['每个锅位烤完 3 根、或烤焦一根肠之后会结锅巴，要在锅巴上连点 3 下或来回拖几下铲掉才能再用。','新酱料：甜辣。']},
+   news:['锅会结锅巴，铲掉才能用','新酱料：甜辣酱']},
   {name:'校门口之王', time:180, goal:{money:50,hearts:12}, slots:4, pat:39, spawn:[3.5,5.6], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.45, runner:.38, feat:['oil','skewer','scrape'],
-   news:['最终关：钱和爱心两个目标都要达成。']},
+   news:['最终关：钱和爱心都要达标']},
   {name:'无尽模式', endless:true, time:0, goal:{}, slots:4, pat:44, spawn:[5,7.5], bands:['嫩','脆','微焦'], sauces:['番茄','蜂蜜芥末','甜辣'], spices:['孜然','辣椒'], two:.35, runner:.25, feat:['oil'],
-   news:['不限时间：客人会越来越多、越来越急，逃单的也越来越多。','开局口碑 ❤5。差评、客人等不及走掉、被逃单跑掉，各扣 1 颗；做对且够快 +1。','口碑扣光就收摊，看看你能坚持到第几关！']}
+   news:['不限时，客人越来越多','做错、跑单都扣口碑','扣光就收摊']}
 ];
 var ENDLESS = 10, ENDLESS_HEARTS = 5, START_HEARTS = 3;   // 开局爱心；扣到 0 当场收摊
 var MAXQ = 3;
 var PAT_SCALE = 1.25;   // 全局顾客耐心倍数：嫌客人太急就调大
 var UPGRADES = [
-  {id:'boxb', name:'多一个打包盒', desc:'第 2 个 ¥20，第 3 个 ¥40，最多 3 个盒子', cost:[20,40], max:2},
-  {id:'fire', name:'可调火力烤肠锅', desc:'火力分小 / 中 / 大，快慢自己调', cost:[35], max:1},
+  {id:'boxb', name:'多一个打包盒', desc:'多一个盒子，最多 3 个', cost:[20,40], max:2},
+  {id:'fire', name:'可调火力烤肠锅', desc:'火力可调小中大', cost:[35], max:1},
   {id:'nonstick', name:'不粘锅涂层', desc:'耗油慢 40%', cost:[25], max:1},
   {id:'horn', name:'吆喝小喇叭', desc:'客人耐心 +25%', cost:[30], max:1},
-  {id:'smart', name:'智能番茄涂抹机', desc:'点烤肠，按客人要求涂好番茄酱', cost:[30], max:1},
-  {id:'spicer', name:'智能撒料机', desc:'点烤肠，按客人要求撒孜然、辣椒', cost:[50], max:1},
+  {id:'smart', name:'智能番茄涂抹机', desc:'自动涂番茄酱', cost:[30], max:1},
+  {id:'spicer', name:'智能撒料机', desc:'自动撒孜然、辣椒', cost:[50], max:1},
   {id:'cam', name:'门口监控', desc:'会提示逃单的人', cost:[40], max:1}
 ];
 // 第三项是内设性格，不在界面上显示：easy 随和（做错少收 ¥1），picky 挑剔（做错少收 ¥2）
 // 一次性道具：花钱买，每局都能用，用掉就没了
 var ITEMS = [
-  {id:'candy', icon:'🍭', name:'棒棒糖', desc:'排队客人的耐心全部回满', short:'耐心回满', cost:5},
-  {id:'hourglass', icon:'⏳', name:'沙漏', desc:'本关时间 +30 秒（无尽模式不能用）', short:'时间 +30 秒', cost:5},
-  {id:'flower', icon:'🙋', name:'烤肠课代表', bar:'课代表', desc:'排队的客人瞬间全部做完，照价收钱', short:'瞬间做完所有单', cost:20}
+  {id:'candy', icon:'🍭', name:'棒棒糖', desc:'客人耐心回满', short:'耐心回满', cost:5},
+  {id:'hourglass', icon:'⏳', name:'沙漏', desc:'本关 +30 秒', short:'时间 +30 秒', cost:5},
+  {id:'flower', icon:'🙋', name:'烤肠课代表', bar:'课代表', desc:'瞬间做完所有单', short:'瞬间做完所有单', cost:20}
 ];
 var PEOPLE = [['🧒','一年级·豆豆','easy'],['👦','三年级·小胖','easy'],['👧','二年级·朵朵','easy'],['🧑‍🎓','六年级·学霸','picky'],['👦','四年级·皮皮','easy'],['👧','五年级·班长','picky'],['👩','家长·王阿姨','picky'],['👨','家长·李叔叔','easy'],['🧔','体育老师','picky'],['👵','接孙子的奶奶','easy']];
 var PENALTY = {easy:1, picky:2};
