@@ -1469,3 +1469,6 @@ html,body{background-color:#D3662A}
 /* 王姐对话框贴到最顶上（盖住暂停键）；王姐整个人收进对话框里，头不会出屏 */
 #app.scene .coach:not(.bottom){top:calc(10px - var(--topgap, 0px));z-index:40}
 #app.scene .coach .who{height:150px !important;bottom:0 !important}
+/* 升级小摊的 $ 细一点（道具商店保持加粗） */
+.sp-list:not(.sp-items) .sp-price .cur{-webkit-text-stroke:.8px currentColor;margin-right:1px}
+.sp-bank .cur{-webkit-text-stroke:1.4px currentColor}
