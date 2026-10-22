@@ -1394,3 +1394,7 @@ input[type=range]{touch-action:pan-x}
 #app.scene .slot .stk.s1{left:10%;top:14%}#app.scene .slot .stk.s2{left:78%;top:26%}#app.scene .slot .stk.s3{left:8%;top:52%}#app.scene .slot .stk.s4{left:80%;top:60%}#app.scene .slot .stk.s5{left:14%;top:78%}
 /* 监控三角：大一点，放在头顶正上方偏右，避开气泡尖角 */
 #app.scene .cust.cam::after{top:176px;margin-left:30px;border-left-width:18px;border-right-width:18px;border-top-width:28px;z-index:6}
+/* 监控三角：白色 + 发光 */
+#app.scene .cust.cam::after{border-top-color:#fff;-webkit-filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px rgba(255,240,180,.95)) drop-shadow(0 0 14px rgba(255,220,120,.8));filter:drop-shadow(0 0 4px #fff) drop-shadow(0 0 8px rgba(255,240,180,.95)) drop-shadow(0 0 14px rgba(255,220,120,.8));-webkit-animation:camGlow .7s ease-in-out infinite alternate;animation:camGlow .7s ease-in-out infinite alternate}
+@-webkit-keyframes camGlow{from{opacity:.75}to{opacity:1}}
+@keyframes camGlow{from{opacity:.75}to{opacity:1}}

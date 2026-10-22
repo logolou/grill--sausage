@@ -48,7 +48,7 @@ var UPGRADES = [
   {id:'horn', name:'吆喝小喇叭', desc:'客人耐心 +25%', cost:[30], max:1},
   {id:'smart', name:'智能番茄涂抹机', desc:'点烤肠，按客人要求涂好番茄酱', cost:[30], max:1},
   {id:'spicer', name:'智能撒料机', desc:'点烤肠，按客人要求撒孜然、辣椒', cost:[50], max:1},
-  {id:'cam', name:'门口监控', desc:'逃单的人开溜时头顶会冒出红色三角', cost:[40], max:1}
+  {id:'cam', name:'门口监控', desc:'逃单的人开溜时头顶会冒出发光的小三角', cost:[40], max:1}
 ];
 // 第三项是内设性格，不在界面上显示：easy 随和（做错少收 ¥1），picky 挑剔（做错少收 ¥2）
 // 一次性道具：花钱买，每局都能用，用掉就没了
