@@ -1268,3 +1268,5 @@ html,body{min-height:calc(100% + env(safe-area-inset-top, 0px))}
 #app.scene .log{display:none !important}
 .h-stat b,.h-stat b small{font-weight:700}
 #app.scene #grillInfo{display:none !important}
+/* 教学不用黄色高亮框，只靠手势指引 */
+#app.scene .spot{box-shadow:none !important;outline:0 !important;-webkit-animation:none !important;animation:none !important}
