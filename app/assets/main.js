@@ -1879,7 +1879,7 @@ function showTitle() {
     bg.style.transition = 'none'; bg.style.transform = 'translate3d(0,' + -panDist() + 'px,0)';
     ts.className = 'ts ready logo-on btns-on';
   }
-  function panDist() { return Math.max(0, bg.offsetHeight * TITLE_STOP - col.clientHeight); }
+  function panDist() { return Math.min(bg.offsetHeight - col.clientHeight, Math.max(0, bg.offsetHeight * TITLE_STOP - col.clientHeight) + 36); }   // 停下来时背景再往上 36px
   function go() {
     if (started) return; started = true;
     ts.className = 'ts ready';

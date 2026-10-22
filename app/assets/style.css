@@ -1466,3 +1466,6 @@ html,body{background-color:#D3662A}
 .ps-x{top:42px}
 /* 所有弹窗上下留白一样，正好在屏幕正中 */
 .overlay{padding-top:calc(var(--sat) + 30px);padding-bottom:calc(var(--sab) + 30px)}
+/* 王姐对话框贴到最顶上（盖住暂停键）；王姐整个人收进对话框里，头不会出屏 */
+#app.scene .coach:not(.bottom){top:calc(10px - var(--topgap, 0px));z-index:40}
+#app.scene .coach .who{height:150px !important;bottom:0 !important}
