@@ -1485,3 +1485,6 @@ html,body{background-color:#D3662A}
 #app.scene .hud{top:calc(14px - var(--topgap, 0px) + var(--tops, 0px) - var(--hudup, 0px))}
 /* 暂停弹窗叉号：压在橘色外框的右上角 */
 .ps-x{top:8px !important;right:-10px !important;width:38px;height:38px}
+/* 地图顶栏（返回 / 存款 / 无限模式 / 设置）上移 50px */
+.lvmap .lm-ico.back,.lvmap .lm-ico.set{top:calc(var(--sat) + 10px + var(--xhs-top) - 50px) !important}
+.lvmap .lm-stat{top:calc(var(--sat) + 14px + var(--xhs-top) - 50px) !important}
