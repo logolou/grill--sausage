@@ -1286,7 +1286,16 @@ function syncAppH() {
 }
 syncAppH();
 window.addEventListener('resize', syncAppH);
+// 小红书里网页不报状态栏高度（安全区 = 0），但状态栏和它的返回/分享按钮都盖在页面最上面：
+// 这时让位高度 = 状态栏约 54 + 按钮约 46；正常手机浏览器里只让开小红书按钮那 46
+function syncXhsTop() {
+  var pr = document.createElement('div'); pr.style.cssText = 'position:fixed;top:0;left:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
+  document.body.appendChild(pr); var safeT = parseFloat(getComputedStyle(pr).paddingTop) || 0; pr.parentNode.removeChild(pr);
+  var standalone = isStandalone();
+  document.documentElement.style.setProperty('--xhs-top', (standalone ? 0 : safeT < 20 ? 100 : 46) + 'px');
+}
 function fit() {
+  syncXhsTop();
   // 主界面是 720×1280 的舞台：整张等比缩小到放得下，左右 / 上下空出来的地方由背景图铺满。
   // 顶部要让开状态栏 + 小红书自己的返回/分享按钮：舞台只排在这条线以下，背景图仍然铺到最顶
   var st = $('stage'); if (!st) return;
@@ -2126,7 +2135,7 @@ function showMap() {
     var hudB = (mp.querySelector('.lm-ico.back') || {getBoundingClientRect: function () { return {top: 10}; }}).getBoundingClientRect().top + 46;   // 返回键下面（图还没加载时也按 35px 高算）
     side.style.top = Math.max(hudB, (H - hh) / 2 + MAP_SIDE_Y * sc) + 'px';   // 升级小摊 / 道具商店：放在校门下面一点
   }
-  fitMap(); window.addEventListener('resize', function () { if (mp.parentNode) fitMap(); });
+  syncXhsTop(); fitMap(); window.addEventListener('resize', function () { if (mp.parentNode) fitMap(); });
 }
 function showItemShop() { itemShop('mapclose'); }
 function hideMap() { var m = $('lvmap'); if (m && m.parentNode) { m.parentNode.removeChild(m); setBarColor(null); document.body.style.backgroundColor = document.documentElement.style.backgroundColor = ''; } }
