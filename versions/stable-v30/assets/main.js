@@ -1292,7 +1292,7 @@ function syncXhsTop() {
   var pr = document.createElement('div'); pr.style.cssText = 'position:fixed;top:0;left:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
   document.body.appendChild(pr); var safeT = parseFloat(getComputedStyle(pr).paddingTop) || 0; pr.parentNode.removeChild(pr);
   var standalone = isStandalone();
-  document.documentElement.style.setProperty('--xhs-top', (standalone ? 0 : safeT < 20 ? 100 : 46) + 'px');
+  document.documentElement.style.setProperty('--xhs-top', (standalone ? 0 : safeT < 20 ? 74 : 46) + 'px');
 }
 function fit() {
   syncXhsTop();
