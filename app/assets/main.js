@@ -2033,7 +2033,7 @@ function titleSettings(msg) {
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
 // 站点中心（地图图 750×1624 的坐标），1 在最下面，10 在校门口
 // 新地图（1125×2000）上 10 块石板的中心和宽度，1 在最下面
-var MAP_SIDE_Y = 98;    // 左侧两个按钮的顶边（地图坐标，校门下沿稍下）
+var MAP_SIDE_Y = 14;    // 左侧两个按钮的顶边（地图坐标，校门下沿稍下）
 var MAP_PADS = [[650,1850,270],[650,1560,250],[370,1350,240],[680,1200,230],[690,950,215],[490,810,205],[420,624,195],[660,510,185],[870,390,175],[720,300,165]];
 // 关卡站点：画成一块圆台，锁着的灰蓝色带小锁，解锁的金黄色，当前关会发光
 function nodeSVG(n, st) {
@@ -2112,7 +2112,7 @@ function showMap() {
     stage.style.width = w + 'px'; stage.style.height = hh + 'px'; stage.style.left = (W - w) / 2 + 'px'; stage.style.top = (H - hh) / 2 + 'px';
     [].forEach.call(mp.querySelectorAll('.lm-node'), function (b) { var t = b.querySelector('b'); if (t) t.style.fontSize = (b.offsetWidth * (b.classList.contains('lock') ? .3 : .24)).toFixed(1) + 'px'; });
     var side = mp.querySelector('.lm-side'), p10 = MAP_PADS[9];
-    side.style.top = Math.max(60, (H - hh) / 2 + MAP_SIDE_Y * sc) + 'px';   // 升级小摊 / 道具商店：放在校门下面一点
+    side.style.top = Math.max(50, (H - hh) / 2 + MAP_SIDE_Y * sc) + 'px';   // 升级小摊 / 道具商店：放在校门下面一点
   }
   fitMap(); window.addEventListener('resize', function () { if (mp.parentNode) fitMap(); });
 }
