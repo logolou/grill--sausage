@@ -1468,3 +1468,5 @@ html,body{background-color:#D3662A}
 .sp-bank .cur{-webkit-text-stroke:.8px currentColor}
 /* 拖着的调料瓶：更重的投影 */
 .ghost.sauce,.ghost.spice{transition:none !important;-webkit-filter:drop-shadow(0 14px 10px rgba(60,20,0,.45));filter:drop-shadow(0 14px 10px rgba(60,20,0,.45))}
+/* 存款条里的 $ 恢复正常粗细 */
+.sp-bank .cur{-webkit-text-stroke:0 !important;margin-right:0 !important}
