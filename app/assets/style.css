@@ -1514,3 +1514,15 @@ html,body{background-color:#D3662A}
 html,body{touch-action:manipulation !important}
 #app.scene,.ts,.lvmap{touch-action:none}
 .overlay{touch-action:pan-y}
+/* 软禁用：样子和原来的 :disabled 一样，但点得到（会抖一下） */
+.slot-btn.is-off{opacity:.35}
+.itm.is-off,#app.scene .itm.is-off{opacity:.45}
+.sticks.is-off{opacity:.6}
+.bx-pack.is-off{background:#D9CBBE;box-shadow:0 3px 0 #B8A594;color:#F5EDE4}
+.bx-dump.is-off{display:none}
+.lp-buy.is-off{background:#EBDDD2;color:#B9A091;box-shadow:none}
+.lvbtn.is-off{opacity:1;color:#A9B1A9;background:#F6F7F3}
+.b.is-off{opacity:.35}
+.off-shake{-webkit-animation:shakeX .3s;animation:shakeX .3s}
+/* 教学按钮点击区域加大（至少 44px 高） */
+#app.scene .coach .row button,#app.scene .coach .skip{min-height:56px;min-width:96px}

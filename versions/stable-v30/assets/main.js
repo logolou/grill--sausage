@@ -74,7 +74,18 @@ function $(id) { return document.getElementById(id); }
 function rnd(a, b) { return a + Math.random() * (b - a); }
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 function has(f) { return !!R && R.L.feat.indexOf(f) >= 0; }
-function setHTML(id, html) { var el = $(id); if (el._h !== html) { el._h = html; el.innerHTML = html; } }
+function setHTML(id, html) { var el = $(id); if (el._h !== html) { el._h = html; el.innerHTML = html; softDisable(el); } }
+// 「不能点」的按钮不用原生 disabled（原生 disabled 点了完全没反应，会被当成按钮坏了）：
+// 换成 .is-off，样子不变，点了会抖一下 + 低音提示
+function softDisable(root) {
+  var list = root.querySelectorAll('button[disabled]');
+  for (var n = 0; n < list.length; n++) { var b = list[n]; b.removeAttribute('disabled'); b.classList.add('is-off'); b.setAttribute('aria-disabled', 'true'); }
+}
+function isOff(el) { return !!(el && (el.disabled || (el.classList && el.classList.contains('is-off')))); }
+function offTap(el) {
+  if (!el || !el.classList) return;
+  el.classList.remove('off-shake'); void el.offsetWidth; el.classList.add('off-shake'); ding(180, .06);
+}
 function mix(c1, c2, t) {
   var a = parseInt(c1.slice(1), 16), b = parseInt(c2.slice(1), 16);
   var r = Math.round(((a >> 16) & 255) * (1 - t) + ((b >> 16) & 255) * t);
@@ -1316,7 +1327,7 @@ window.addEventListener('orientationchange', function () { setTimeout(fit, 200);
 /* ============ 弹层 ============ */
 var BG_OK = {};   // 已经加载好的背景图
 function showOverlay(html, cls) {
-  var o = $('overlay'); o.innerHTML = '<div class="card' + (cls ? ' ' + cls : '') + '">' + html + '</div>'; o.hidden = false; o.scrollTop = 0;
+  var o = $('overlay'); o.innerHTML = '<div class="card' + (cls ? ' ' + cls : '') + '">' + html + '</div>'; o.hidden = false; o.scrollTop = 0; softDisable(o);
   // 弹窗里的部件一起出现：图片都加载好（最多等 0.6 秒）再显示整张卡片
   var card = o.firstChild, imgs = [].slice.call(card.querySelectorAll('img')).filter(function (im) { return !im.complete; });
   [card].concat([].slice.call(card.querySelectorAll('*'))).forEach(function (el) {
@@ -1762,6 +1773,26 @@ function itemShop(back) {
 /* ============ 事件 ============ */
 // 兼容：有的环境（审核工具、旧系统、辅助功能）只发 click、不发 pointerdown。
 // 这时把 click 转成一次「按下 + 抬起」，按钮照样能点。
+// 兼容老系统：没有 PointerEvent 的环境（老 iOS / 老安卓 WebView），用触摸和鼠标事件模拟 pointer 事件，
+// 不然所有按钮都收不到点击
+(function pointerShim() {
+  if (window.PointerEvent) return;
+  function fire(type, src, pt) {
+    var ev; try { ev = new CustomEvent(type, {bubbles:true, cancelable:true}); } catch (e) { ev = document.createEvent('CustomEvent'); ev.initCustomEvent(type, true, true, null); }
+    ev.clientX = pt.clientX; ev.clientY = pt.clientY; ev.pointerId = 1; ev.isPrimary = true;
+    var t = type === 'pointerdown' ? src.target : (document.elementFromPoint(pt.clientX, pt.clientY) || src.target);
+    if (!t.dispatchEvent(ev)) src.preventDefault();
+  }
+  var touching = false;
+  document.addEventListener('touchstart', function (e) { touching = true; fire('pointerdown', e, e.changedTouches[0]); }, {passive:false, capture:true});
+  document.addEventListener('touchmove', function (e) { fire('pointermove', e, e.changedTouches[0]); }, {passive:false, capture:true});
+  document.addEventListener('touchend', function (e) { fire('pointerup', e, e.changedTouches[0]); setTimeout(function () { touching = false; }, 500); }, {passive:false, capture:true});
+  document.addEventListener('touchcancel', function (e) { fire('pointercancel', e, e.changedTouches[0]); }, true);
+  document.addEventListener('mousedown', function (e) { if (!touching) fire('pointerdown', e, e); }, true);
+  document.addEventListener('mousemove', function (e) { if (!touching) fire('pointermove', e, e); }, true);
+  document.addEventListener('mouseup', function (e) { if (!touching) fire('pointerup', e, e); }, true);
+  window.PointerEvent = function (type, o) { var ev = document.createEvent('CustomEvent'); ev.initCustomEvent(type, true, true, null); o = o || {}; ev.clientX = o.clientX; ev.clientY = o.clientY; ev.pointerId = 1; return ev; };
+})();
 var pdSeen = false;   // 这次点击前有没有收到过 pointerdown
 document.addEventListener('click', function (e) {
   if (pdSeen) { pdSeen = false; return; }
@@ -1806,12 +1837,13 @@ document.addEventListener('pointerdown', function (e) {
   var tool = e.target.closest('[data-tool]');
   if (tool) {
     e.preventDefault();
-    if (tool.disabled || !R || R.over || R.paused) return;
+    if (isOff(tool)) { offTap(tool); return; }
+    if (!R || R.over || R.paused) return;
     if (!tutAllows('topping')) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); return; }
     startDrag(tool, e); watchTarget(e.target); return;
   }
   var el = e.target.closest('[data-act]'); if (!el) return;
-  if (el.disabled) { if (el.classList.contains('itm')) { var di = +el.getAttribute('data-i'); itemFx(di, ITEMS[di] && ITEMS[di].id === 'hourglass' && R && R.L.endless ? '无尽模式不能用' : '存款不够', false); return; } if (tutStep()) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); } return; }
+  if (isOff(el)) { offTap(el); if (el.classList.contains('itm')) { var di = +el.getAttribute('data-i'); itemFx(di, ITEMS[di] && ITEMS[di].id === 'hourglass' && R && R.L.endless ? '无尽模式不能用' : '存款不够', false); return; } if (tutStep()) { log('先跟着王姐做亮起来的那一步', 'bad'); nudge(); } return; }
   var a = el.getAttribute('data-act'), i = +el.getAttribute('data-i');
   e.preventDefault();
   if (a === 'music') { G.music = !musicOn(); save(); syncMusic(); if (el.closest('#overlay')) menu(); else if (el.closest('#lvmap')) el.querySelector('img').src = './assets/img/ui/' + (musicOn() ? 'ui_music_on' : 'ui_music_off') + '.webp?v=' + BUILD_V; else render(); return; }
