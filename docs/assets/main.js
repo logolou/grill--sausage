@@ -1760,7 +1760,20 @@ function itemShop(back) {
 }
 
 /* ============ 事件 ============ */
+// 兼容：有的环境（审核工具、旧系统、辅助功能）只发 click、不发 pointerdown。
+// 这时把 click 转成一次「按下 + 抬起」，按钮照样能点。
+var pdSeen = false;   // 这次点击前有没有收到过 pointerdown
+document.addEventListener('click', function (e) {
+  if (pdSeen) { pdSeen = false; return; }
+  var t = e.target; if (!t || !t.closest || !t.closest('[data-act],[data-tool],[data-bag],[data-item],[data-rub],.itm')) return;
+  var o = {bubbles:true, cancelable:true, clientX:e.clientX, clientY:e.clientY, pointerId:1, isPrimary:true};
+  if (!o.clientX && !o.clientY) { var r = t.getBoundingClientRect(); o.clientX = r.left + r.width / 2; o.clientY = r.top + r.height / 2; }
+  t.dispatchEvent(new PointerEvent('pointerdown', o));
+  document.dispatchEvent(new PointerEvent('pointerup', o));
+  pdSeen = false;   // 上面是自己补发的按下，不算真的按过
+}, true);
 document.addEventListener('pointerdown', function (e) {
+  pdSeen = true;
   kickAudio();
   var bagEl = e.target.closest('[data-bag]');
   if (bagEl) {
