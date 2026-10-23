@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block}</style></head>
+<body><iframe id="f" src="index.html?shot=title"></iframe>
+<script>
+// 截图用：开始画面直接跳到最终状态（背景摇到底、标题和按钮都出来）
+var f = document.getElementById('f');
+f.onload = function () {
+  var w = f.contentWindow, d = w.document;
+  try { var g = JSON.parse(w.localStorage.getItem('sausage-stall') || '{}'); g.music = false; g.sfx = false; w.localStorage.setItem('sausage-stall', JSON.stringify(g)); } catch (e) {}
+  setTimeout(function () {
+    var st = d.createElement('style'); st.textContent = '.ts *,.ts{transition:none !important;animation:none !important}.ts-orbit{display:none !important}.ts .ts-logo{opacity:1 !important;transform:none !important}.ts .ts-btn{opacity:1 !important;transform:none !important}'; d.head.appendChild(st);
+    w.dispatchEvent(new w.Event('resize'));
+    var ts = d.querySelector('.ts'); if (ts) ts.className = 'ts ready logo-on btns-on';
+    var bg = d.querySelector('.ts-bg'), col = d.querySelector('.ts-col');
+    if (bg && col) bg.style.transform = 'translate3d(0,' + -Math.min(bg.offsetHeight - col.clientHeight, Math.max(0, bg.offsetHeight * .805 - col.clientHeight) + 36) + 'px,0)';
+    document.title = 'READY';
+  }, 5000);
+};
+</script></body></html>
