@@ -1494,3 +1494,8 @@ html,body{background-color:#D3662A}
 .lvmap .lm-ico.back,.lvmap .lm-ico.set{position:fixed !important}
 /* 王姐对话框和顶栏同高（再往上一点），盖住暂停键 */
 #app.scene .coach:not(.bottom){top:calc(6px - var(--topgap, 0px) + var(--tops, 0px) - var(--hudup, 0px));z-index:40}
+/* 地图左下角：小房子图标，和右下角设置一样大的圆底 */
+.lvmap .lm-ico.home{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#FFFBF2,#F3E2CC);box-shadow:0 3px 0 #D9BFA4,0 5px 8px rgba(90,40,10,.25);display:flex;align-items:center;justify-content:center}
+.lvmap .lm-ico.home img{width:70%;height:auto}
+.lvmap .lm-ico.home{width:48px;height:auto;border-radius:0;background:none;box-shadow:none;display:block}
+.lvmap .lm-ico.home img{width:100%;height:auto;-webkit-filter:drop-shadow(0 3px 3px rgba(80,30,0,.35));filter:drop-shadow(0 3px 3px rgba(80,30,0,.35))}

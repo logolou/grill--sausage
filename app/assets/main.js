@@ -2130,7 +2130,7 @@ function showMap() {
   });
   var UI = './assets/img/ui/', V = '?v=' + BUILD_V;
   h += '</div><div class="lm-hud">' +
-    '<button class="lm-ico back" data-act="maphome" aria-label="返回首页"><img alt="" src="' + UI + 'ui_back.webp' + V + '"></button>' +
+    '<button class="lm-ico back home" data-act="maphome" aria-label="返回首页"><img alt="" src="./assets/img/res/ic_home.webp' + V + '"></button>' +
     '<div class="lm-stat star"><img alt="" src="' + UI + 'ui_star.webp' + V + '"><b>$' + G.bank + '</b></div>' +
     '<button class="lm-stat heart" data-act="mapnode" data-i="' + (LEVELS.length - 1) + '" aria-label="无限模式"><img alt="" src="' + UI + 'ui_heart.webp' + V + '"><b>无限模式</b></button>' +   // 无限模式入口
     '<button class="lm-ico set" data-act="tsettings" aria-label="设置"><img alt="" src="' + UI + 'ui_settings.webp' + V + '"></button>' +
