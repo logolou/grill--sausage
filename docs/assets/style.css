@@ -1488,3 +1488,7 @@ html,body{background-color:#D3662A}
 /* 地图顶栏（返回 / 存款 / 无限模式 / 设置）上移 50px */
 .lvmap .lm-ico.back,.lvmap .lm-ico.set{top:calc(var(--sat) + 10px + var(--xhs-top) - 50px) !important}
 .lvmap .lm-stat{top:calc(var(--sat) + 14px + var(--xhs-top) - 50px) !important}
+/* 地图：返回主页放左下角，设置放右下角 */
+.lvmap .lm-ico.back,.lvmap .lm-ico.set{top:auto !important;bottom:calc(var(--sab, 0px) + 22px);width:44px}
+.lvmap .lm-ico.back{left:16px}.lvmap .lm-ico.set{right:16px}
+.lvmap .lm-ico.back,.lvmap .lm-ico.set{position:fixed !important}

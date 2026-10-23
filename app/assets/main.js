@@ -2148,7 +2148,7 @@ function showMap() {
     stage.style.width = w + 'px'; stage.style.height = hh + 'px'; stage.style.left = (W - w) / 2 + 'px'; stage.style.top = (H - hh) / 2 + 'px';
     [].forEach.call(mp.querySelectorAll('.lm-node'), function (b) { var t = b.querySelector('b'); if (t) t.style.fontSize = (b.offsetWidth * (b.classList.contains('lock') ? .3 : .24)).toFixed(1) + 'px'; });
     var side = mp.querySelector('.lm-side'), p10 = MAP_PADS[9];
-    var hudB = (mp.querySelector('.lm-ico.back') || {getBoundingClientRect: function () { return {top: 10}; }}).getBoundingClientRect().top + 46;   // 返回键下面（图还没加载时也按 35px 高算）
+    var hudB = (mp.querySelector('.lm-stat.star') || {getBoundingClientRect: function () { return {top: 10}; }}).getBoundingClientRect().top + 42;   // 存款条下面   // 返回键下面（图还没加载时也按 35px 高算）
     side.style.top = Math.max(hudB, (H - hh) / 2 + MAP_SIDE_Y * sc) + 'px';   // 升级小摊 / 道具商店：放在校门下面一点
   }
   syncXhsTop(); fitMap(); window.addEventListener('resize', function () { if (mp.parentNode) fitMap(); });
