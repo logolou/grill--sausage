@@ -906,13 +906,13 @@ function heavyFollow(d) {
   var vx = 0, vy = 0, rv = 0;
   (function step() {
     if (drag !== d) return;
-    var ex = d.tx - d.gx, ey = d.ty + 14 - d.gy;
-    vx = (vx + ex * .045) * .78; vy = (vy + ey * .045) * .78;   // 弹簧 + 阻尼：起步慢、停得也慢
+    var ex = d.tx - d.gx, ey = d.ty + 26 - d.gy;
+    vx = (vx + ex * .028) * .8; vy = (vy + ey * .028) * .8;   // 弹簧 + 阻尼：起步慢、停得也慢
     d.gx += vx; d.gy += vy;
-    var want = Math.max(-34, Math.min(34, -vx * 3.2)) + (d.g.classList.contains('pour') ? -20 : 0);
-    rv = (rv + (want - d.rot) * .08) * .86;                     // 钟摆：甩过头再荡回来
+    var want = Math.max(-40, Math.min(40, -vx * 4.2)) + (d.g.classList.contains('pour') ? -20 : 0);
+    rv = (rv + (want - d.rot) * .06) * .88;                     // 钟摆：甩过头再荡回来
     d.rot += rv;
-    var sag = Math.min(1.16, 1.08 + Math.abs(vx + vy) * .004);
+    var sag = Math.min(1.2, 1.1 + Math.abs(vx + vy) * .005);
     d.g.style.left = d.gx.toFixed(1) + 'px'; d.g.style.top = d.gy.toFixed(1) + 'px';
     d.g.style.transform = 'translate(-50%,-90%) rotate(' + d.rot.toFixed(1) + 'deg) scale(' + sag.toFixed(3) + ')';
     raf(step);
