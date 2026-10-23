@@ -75,7 +75,35 @@ if (location.hash.indexOf('resetitems') >= 0) {
 // 测试用：网址带 #money 打开时存款 +$100（小红书里没有地址栏，玩家碰不到）
 if (location.hash === '#money') { G.bank = (G.bank || 0) + 100; try { localStorage.setItem('sausage-stall', JSON.stringify(G)); } catch (e) {} try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} }
 if (location.hash === '#unlock') { G.cleared = Math.max(G.cleared || 0, 10); try { localStorage.setItem('sausage-stall', JSON.stringify(G)); } catch (e) {} }
-function save() { try { localStorage.setItem('sausage-stall', JSON.stringify(G)); } catch (e) {} }
+// 小工具官方存储（客户端 9.46+）：优先用它，浏览器 localStorage 只做低版本兜底（在线文档：浏览器存储不保证持久）
+function xhsApi(name) { var m = window.xhs && window.xhs.miniTool; return m && typeof m[name] === 'function' ? m : null; }
+function save() {
+  G.ts = Date.now();
+  var s = JSON.stringify(G);
+  try { localStorage.setItem('sausage-stall', s); } catch (e) {}
+  var m = xhsApi('setStorage');
+  if (m) { try { var r = m.setStorage({key:'sausage-stall', data:s, fail:function () {}}); if (r && r.catch) r.catch(function () {}); } catch (e) {} }
+}
+// 启动时再从官方存储读一次：哪份更新（ts 更大，老存档没有 ts 记为 0）用哪份，读到更新的就刷新当前页面
+(function loadXhsSave() {
+  var m = xhsApi('getStorage'); if (!m) return;
+  var done = false;
+  function apply(res) {
+    if (done) return; done = true;
+    var raw = res && (res.data != null ? res.data : res);
+    if (typeof raw !== 'string' || !raw) { save(); return; }   // 官方存储里还没有：把现在的进度写进去
+    var sv; try { sv = JSON.parse(raw); } catch (e) { return; }
+    if (!sv || !sv.up) return;
+    if ((sv.ts || 0) <= (G.ts || 0) && (sv.cleared || 0) <= (G.cleared || 0)) { save(); return; }
+    var up0 = G.up, items0 = G.items; G = Object.assign(G, sv); G.up = Object.assign(up0, sv.up); G.items = Object.assign(items0, sv.items || {});
+    try { localStorage.setItem('sausage-stall', JSON.stringify(G)); } catch (e) {}
+    if (document.getElementById('lvmap') && typeof showMap === 'function' && !(R && !R.over)) showMap();
+  }
+  try {
+    var r = m.getStorage({key:'sausage-stall', success:apply, fail:function () { apply(null); }});
+    if (r && r.then) r.then(apply, function () { apply(null); });
+  } catch (e) {}
+})();
 
 /* ============ 工具 ============ */
 function $(id) { return document.getElementById(id); }
@@ -1314,7 +1342,28 @@ syncAppH();
 window.addEventListener('resize', syncAppH);
 // 小红书里网页不报状态栏高度（安全区 = 0），但状态栏和它的返回/分享按钮都盖在页面最上面：
 // 这时让位高度 = 状态栏约 54 + 按钮约 46；正常手机浏览器里只让开小红书按钮那 46
+// 小红书顶部的返回 / 分享按钮位置：客户端 9.49+ 用 getWindowInfo 拿到真实位置，拿不到再按估计值
+var WIN_INFO = null;
+(function askWindowInfo() {
+  var m = xhsApi('getWindowInfo'); if (!m) return;
+  function got(info) {
+    if (!info || WIN_INFO) return; WIN_INFO = info;
+    if (typeof fit === 'function') fit();
+    var mp = document.getElementById('lvmap'); if (mp) window.dispatchEvent(new Event('resize'));
+  }
+  try { var r = m.getWindowInfo({success:got}); if (r && r.then) r.then(got, function () {}); else if (r && r.menuButtons !== undefined) got(r); } catch (e) {}
+})();
 function syncXhsTop() {
+  if (WIN_INFO) {
+    // 让开所有可见的原生按钮（为 null 的按钮不可见，不用避让），没有按钮时让开状态栏
+    var mb = WIN_INFO.menuButtons || {}, b = 0;
+    ['back', 'me', 'share'].forEach(function (k) { var x = mb[k]; if (x && (x.bottom || (x.top + x.height))) b = Math.max(b, x.bottom || (x.top + x.height)); });
+    if (!b) b = WIN_INFO.statusBarHeight || (WIN_INFO.safeArea && WIN_INFO.safeArea.top) || 0;
+    var pr0 = document.createElement('div'); pr0.style.cssText = 'position:fixed;top:0;left:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
+    document.body.appendChild(pr0); var st0 = parseFloat(getComputedStyle(pr0).paddingTop) || 0; pr0.parentNode.removeChild(pr0);
+    document.documentElement.style.setProperty('--xhs-top', Math.max(0, Math.round(b + 6 - st0)) + 'px');   // 安全区那段另外算过了
+    return;
+  }
   var pr = document.createElement('div'); pr.style.cssText = 'position:fixed;top:0;left:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
   document.body.appendChild(pr); var safeT = parseFloat(getComputedStyle(pr).paddingTop) || 0; pr.parentNode.removeChild(pr);
   var standalone = isStandalone();
