@@ -1527,7 +1527,18 @@ function showResult(html, cls) { lastResult = {html:html, cls:cls}; showOverlay(
 function addBack(act) {
   var o = $('overlay'); if (!o) return;
   var b = document.createElement('button'); b.className = 'pg-back'; b.setAttribute('data-act', act); b.setAttribute('aria-label', '返回');
-  b.innerHTML = '<img alt="" src="./assets/img/ui/ui_back.webp?v=' + BUILD_V + '">'; o.appendChild(b);
+  b.innerHTML = '<img alt="" src="./assets/img/ui/ui_back.webp?v=' + BUILD_V + '">';
+  // 返回键放在弹窗缎带（没有缎带就是卡片）的左上角，不再贴在屏幕左上角（会和小红书的返回键重叠）
+  var card = o.querySelector('.card');
+  if (!card) { o.appendChild(b); return; }
+  b.classList.add('on-card'); card.style.position = card.style.position || 'relative'; card.appendChild(b);
+  var place = function () {
+    var rib = card.querySelector('.lp-ribbon, .sp-ribbon, .ps-tab'), cr = card.getBoundingClientRect();
+    var r = rib ? rib.getBoundingClientRect() : cr;
+    // 缎带两端会伸出卡片：横向按卡片左边、纵向按缎带顶边，压在缎带主体的左上角
+    b.style.left = (Math.max(r.left, cr.left) - cr.left - 6).toFixed(1) + 'px'; b.style.top = (r.top - cr.top - 12).toFixed(1) + 'px';
+  };
+  place(); setTimeout(place, 60); setTimeout(place, 400); setTimeout(place, 1600);
 }
 function hasBridge() { return !!(window.xhs && window.xhs.miniTool && typeof window.xhs.miniTool.postNote === 'function'); }
 function rr(ctx, x, y, w, h, r) {
