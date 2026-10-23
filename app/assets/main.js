@@ -1323,6 +1323,7 @@ function fit() {
   st.style.transform = 'translateY(' + (top / 2).toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
   st.style.setProperty('--topgap', Math.max(0, (H - 1280 * sc) / 2 / sc).toFixed(1) + 'px');   // 可用区域里舞台上方多出来的空白（舞台像素）
   st.style.setProperty('--tops', '0px');
+  st.style.setProperty('--hudup', (30 / sc).toFixed(1) + 'px');   // 顶栏再往上 30 个屏幕像素
 }
 window.addEventListener('resize', fit);
 window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });

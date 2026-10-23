@@ -1491,3 +1491,4 @@ html,body{background-color:#D3662A}
 .lvmap .lm-stat{top:calc(var(--sat) + 14px + var(--xhs-top)) !important}
 /* 弹窗返回键：在缎带左上角 */
 .pg-back.on-card{position:absolute;z-index:6;width:36px;left:0;top:0}
+#app.scene .hud{top:calc(14px - var(--topgap, 0px) + var(--tops, 0px) - var(--hudup, 0px))}
