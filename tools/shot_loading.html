@@ -1,0 +1,21 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block}</style></head>
+<body><iframe id="f" src="index.html?shot=loading"></iframe>
+<script>
+// 截图用：加载页定格在「烤肠已经填满」的状态
+var f = document.getElementById('f');
+f.onload = function () {
+  var w = f.contentWindow, d = w.document;
+  setTimeout(function () {
+    // 开始页和地图都盖掉，只留一份加载页（填满）
+    var box = d.createElement('div'); box.className = 'ld'; box.style.zIndex = 999;
+    box.innerHTML = '<div class="ld-box"><svg class="ld-saus" viewBox="0 0 60 128" aria-hidden="true">' +
+      '<g fill="#F7C795"><path d="M30 6c11 0 19 8 19 20v42c0 12-8 20-19 20S11 80 11 68V26C11 14 19 6 30 6z"/><rect x="27" y="84" width="6" height="40" rx="3"/></g>' +
+      '<path d="M18 34l24-9M18 50l24-9M18 66l24-9" stroke="#E3864A" stroke-width="3.2" stroke-linecap="round" fill="none"/></svg>' +
+      '<div class="ld-txt">LOADING<span>...</span></div></div>';
+    d.body.appendChild(box);
+    var st = d.createElement('style'); st.textContent = '.ld *{animation:none !important;transition:none !important}.ld-txt span{opacity:1 !important}.ld{background-size:100% auto !important}'; d.head.appendChild(st);
+    document.title = 'READY';
+  }, 4000);
+};
+</script></body></html>
