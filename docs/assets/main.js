@@ -892,8 +892,24 @@ function startDrag(tool, e) {
   var g = document.createElement('div'); g.className = 'ghost ' + kind; g.style.setProperty('--c', color);
   g.innerHTML = '<i class="' + (kind === 'sauce' ? 'bottle' : 'shaker') + '"></i>';
   document.body.appendChild(g);
-  drag = {type:'topping', kind:kind, v:v, color:color, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null};
+  drag = {type:'topping', kind:kind, v:v, color:color, g:g, x0:e.clientX, y0:e.clientY, moved:false, over:null,
+          tx:e.clientX, ty:e.clientY, gx:e.clientX, gy:e.clientY + 18, rot:0};
   moveDrag(e);
+  heavyFollow(drag);
+}
+// 重重的手感：每帧只追上手指的一部分距离（像拎着沉东西），按横向速度往一边歪
+function heavyFollow(d) {
+  var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
+  (function step() {
+    if (drag !== d) return;
+    var ex = d.tx - d.gx, ey = d.ty - d.gy;
+    d.gx += ex * .2; d.gy += ey * .2;
+    var want = Math.max(-28, Math.min(28, ex * .55)) + (d.g.classList.contains('pour') ? -18 : 0);
+    d.rot += (want - d.rot) * .25;
+    d.g.style.left = d.gx.toFixed(1) + 'px'; d.g.style.top = d.gy.toFixed(1) + 'px';
+    d.g.style.transform = 'translate(-50%,-90%) rotate(' + d.rot.toFixed(1) + 'deg) scale(1.12)';
+    raf(step);
+  })();
 }
 function startItemDrag(e, k, j) {
   var g = document.createElement('div'); g.className = 'ghost itemg';
@@ -927,7 +943,8 @@ function startBagDrag(e, k) {
 }
 function moveDrag(e) {
   if (!drag) return;
-  drag.g.style.left = e.clientX + 'px'; drag.g.style.top = e.clientY + 'px';
+  if (drag.type === 'topping') { drag.tx = e.clientX; drag.ty = e.clientY; }   // 调料瓶由 heavyFollow 慢慢跟上
+  else { drag.g.style.left = e.clientX + 'px'; drag.g.style.top = e.clientY + 'px'; }
   if (drag.type === 'scrape') {
     var sl0 = R && R.slots[drag.slot];
     drag.dist += Math.abs(e.clientX - drag.lx) + Math.abs(e.clientY - drag.ly); drag.lx = e.clientX; drag.ly = e.clientY;
@@ -1275,7 +1292,25 @@ window.addEventListener('resize', fit);
 window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });
 
 /* ============ 弹层 ============ */
-function showOverlay(html, cls) { var o = $('overlay'); o.innerHTML = '<div class="card' + (cls ? ' ' + cls : '') + '">' + html + '</div>'; o.hidden = false; o.scrollTop = 0; }
+function showOverlay(html, cls) {
+  var o = $('overlay'); o.innerHTML = '<div class="card' + (cls ? ' ' + cls : '') + '">' + html + '</div>'; o.hidden = false; o.scrollTop = 0;
+  // 弹窗里的部件一起出现：图片都加载好（最多等 0.6 秒）再显示整张卡片
+  var card = o.firstChild, imgs = [].slice.call(card.querySelectorAll('img')).filter(function (im) { return !im.complete; });
+  if (!imgs.length) return;
+  card.style.visibility = 'hidden'; card.style.animation = 'none';
+  var left = imgs.length, shown = false;
+  var show = function () { if (shown) return; shown = true; card.style.visibility = ''; void card.offsetWidth; card.style.animation = ''; };
+  imgs.forEach(function (im) { var f = function () { if (--left <= 0) show(); }; im.addEventListener('load', f); im.addEventListener('error', f); });
+  setTimeout(show, 600);
+}
+// 弹窗、商店、结算用到的图提前加载好，打开弹窗时不会一块一块冒出来
+(function preloadPopImgs() {
+  var D = './assets/img/', V = '?v=' + BUILD_V, list = ['pop/goal','pop/panel','pop/play','pop/ribbon','pop/slot','pop/star','pop/star_empty',
+    'res/bank_pill','res/btn2','res/clock','res/coin','res/heart','res/ic_home','res/ic_levels','res/ic_retry','res/ic_share','res/ic_shop','res/ic_upgrade','res/orders','res/stat_row',
+    'shop/awning','shop/bank','shop/ribbon','shop/sku_row','shop/up_boxb','shop/up_cam','shop/up_fire','shop/up_horn','shop/up_nonstick','shop/up_smart','shop/up_spicer',
+    'items/candy','items/flower','items/hourglass'];
+  setTimeout(function () { list.forEach(function (n) { var im = new Image(); im.src = D + n + '.webp' + V; }); }, 300);
+})();
 function hideOverlay() { $('overlay').hidden = true; }
 var menuShopOpen = false;   // 开始菜单里的道具商店：点按钮展开 / 收起
 function menu() {
