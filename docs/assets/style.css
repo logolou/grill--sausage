@@ -1499,3 +1499,5 @@ html,body{background-color:#D3662A}
 .lvmap .lm-ico.home img{width:70%;height:auto}
 .lvmap .lm-ico.home{width:48px;height:auto;border-radius:0;background:none;box-shadow:none;display:block}
 .lvmap .lm-ico.home img{width:100%;height:auto;-webkit-filter:drop-shadow(0 3px 3px rgba(80,30,0,.35));filter:drop-shadow(0 3px 3px rgba(80,30,0,.35))}
+/* 设置页叉号：大框（橘色外框）右上角 */
+.sp .sp-x{position:absolute;z-index:6;top:auto;right:-10px !important;width:38px;height:38px}

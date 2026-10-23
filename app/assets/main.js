@@ -1728,13 +1728,19 @@ function shopBack(from) {
   return '<button class="b red" data-act="intro" data-i="' + nxt + '">去第 ' + (nxt + 1) + ' 关</button><button class="b" data-act="menu">关卡列表</button>';
 }
 // 框式弹窗（商店 / 设置共用）：顶部标签头 + 粗描边面板
-function framePop(title, body, back, shopDeco) {
+function framePop(title, body, back, shopDeco, closeX) {
   var V = '?v=' + BUILD_V;
   var head = shopDeco
     ? '<img class="sp-awning" alt="" src="./assets/img/shop/awning.webp' + V + '"><div class="sp-ribbon"><img alt="" src="./assets/img/shop/ribbon.webp' + V + '"><b>' + title + '</b></div>'
     : '<div class="ps-tab sp-tab">' + title + '</div>';
   showOverlay('<div class="sp' + (shopDeco ? ' deco' : '') + '">' + head + '<div class="ps-panel sp-panel">' + body + '</div></div>', 'lvpop wide');
-  if (back) addBack(back);
+  if (back && closeX) {
+    // 设置页：右上角叉号，压在大框的外框角上
+    var pn = $('overlay').querySelector('.sp'), x = document.createElement('button');
+    x.className = 'ps-x sp-x'; x.setAttribute('data-act', back); x.setAttribute('aria-label', '关闭'); pn.appendChild(x);
+    var px = function () { var pp = pn.querySelector('.sp-panel'); if (pp) x.style.top = (pp.offsetTop - 14) + 'px'; };
+    px(); setTimeout(px, 60); setTimeout(px, 500);
+  } else if (back) addBack(back);
 }
 function priceBtn(act, i, cost, ok) {
   return '<button class="sp-price' + (ok ? '' : ' off') + '" data-act="' + act + '" data-i="' + i + '"' + (ok ? '' : ' disabled') + '><span><i class="cur">$</i>' + cost + '</span></button>';
@@ -2063,7 +2069,7 @@ function titleSettings(msg) {
     row(ICON_BOOK, '游戏教学', '<button class="st-btn" data-act="retut">重新看一遍</button>') +
     (msg ? '<div class="st-msg">' + msg + '</div>' : '') +
     '<div class="st-ver">版本 ' + BUILD_V + ' · ' + (isStandalone() ? '主屏幕' : '浏览器') + '<br>' + viewDiag() + '</div>' +
-    '<div class="sp-foot"><button class="sp-big list" data-act="tclose"><span>返回</span></button><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose');
+    '<div class="sp-foot"><button class="sp-big list" data-act="tclose"><span>返回</span></button><button class="sp-big go" data-act="tclose"><span>好的</span></button></div>', 'tclose', false, true);
 }
 
 /* ============ 关卡地图：放学路上 10 个站点，过一关亮一个 ============ */
