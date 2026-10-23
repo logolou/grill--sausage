@@ -1492,3 +1492,5 @@ html,body{background-color:#D3662A}
 .lvmap .lm-ico.back,.lvmap .lm-ico.set{top:auto !important;bottom:calc(var(--sab, 0px) + 22px);width:44px}
 .lvmap .lm-ico.back{left:16px}.lvmap .lm-ico.set{right:16px}
 .lvmap .lm-ico.back,.lvmap .lm-ico.set{position:fixed !important}
+/* 王姐对话框和顶栏同高（再往上一点），盖住暂停键 */
+#app.scene .coach:not(.bottom){top:calc(6px - var(--topgap, 0px) + var(--tops, 0px) - var(--hudup, 0px));z-index:40}
