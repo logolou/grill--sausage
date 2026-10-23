@@ -1302,28 +1302,38 @@ function syncAppH() {
 syncAppH();
 window.addEventListener('resize', syncAppH);
 function fit() {
-  // 主界面是 720×1280 的舞台：整张等比缩小到放得下，左右 / 上下空出来的地方由背景图铺满
+  // 主界面是 720×1280 的舞台：整张等比缩小到放得下，左右 / 上下空出来的地方由背景图铺满。
+  // 顶部要让开状态栏 + 小红书自己的返回/分享按钮：舞台只排在这条线以下，背景图仍然铺到最顶
   var st = $('stage'); if (!st) return;
   syncAppH();
-  var W = window.innerWidth || document.documentElement.clientWidth, H = realH();
+  var pr = document.createElement('div'); pr.style.cssText = 'position:fixed;top:0;left:0;height:0;padding-top:env(safe-area-inset-top);visibility:hidden';
+  document.body.appendChild(pr); var safeT = parseFloat(getComputedStyle(pr).paddingTop) || 0; pr.parentNode.removeChild(pr);
+  var xhs = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--xhs-top')) || 0, top = safeT + xhs;
+  var W = window.innerWidth || document.documentElement.clientWidth, H = realH() - top;
   var sc = Math.min(W / 720, H / 1280);
-  st.style.transform = 'scale(' + sc.toFixed(4) + ')';
-  st.style.setProperty('--topgap', Math.max(0, (H - 1280 * sc) / 2 / sc).toFixed(1) + 'px');   // 舞台上方多出来的空白（舞台像素）
+  st.style.transform = 'translateY(' + (top / 2).toFixed(1) + 'px) scale(' + sc.toFixed(4) + ')';
+  st.style.setProperty('--topgap', Math.max(0, (H - 1280 * sc) / 2 / sc).toFixed(1) + 'px');   // 可用区域里舞台上方多出来的空白（舞台像素）
+  st.style.setProperty('--tops', '0px');
 }
 window.addEventListener('resize', fit);
 window.addEventListener('orientationchange', function () { setTimeout(fit, 200); });
 
 /* ============ 弹层 ============ */
+var BG_OK = {};   // 已经加载好的背景图
 function showOverlay(html, cls) {
   var o = $('overlay'); o.innerHTML = '<div class="card' + (cls ? ' ' + cls : '') + '">' + html + '</div>'; o.hidden = false; o.scrollTop = 0;
   // 弹窗里的部件一起出现：图片都加载好（最多等 0.6 秒）再显示整张卡片
   var card = o.firstChild, imgs = [].slice.call(card.querySelectorAll('img')).filter(function (im) { return !im.complete; });
+  [card].concat([].slice.call(card.querySelectorAll('*'))).forEach(function (el) {
+    var bg = getComputedStyle(el).backgroundImage, m = bg && bg !== 'none' && bg.match(/url\(["']?([^"')]+)["']?\)/);
+    if (m && !BG_OK[m[1]]) { var im = new Image(); im.src = m[1]; if (!im.complete) imgs.push(im); im.onload = function () { BG_OK[m[1]] = 1; }; }
+  });
   if (!imgs.length) return;
   card.style.visibility = 'hidden'; card.style.animation = 'none';
   var left = imgs.length, shown = false;
   var show = function () { if (shown) return; shown = true; card.style.visibility = ''; void card.offsetWidth; card.style.animation = ''; };
   imgs.forEach(function (im) { var f = function () { if (--left <= 0) show(); }; im.addEventListener('load', f); im.addEventListener('error', f); });
-  setTimeout(show, 600);
+  setTimeout(show, 1500);
 }
 // 弹窗、商店、结算用到的图提前加载好，打开弹窗时不会一块一块冒出来
 (function preloadPopImgs() {
@@ -1331,7 +1341,7 @@ function showOverlay(html, cls) {
     'res/bank_pill','res/btn2','res/clock','res/coin','res/heart','res/ic_home','res/ic_levels','res/ic_retry','res/ic_share','res/ic_shop','res/ic_upgrade','res/orders','res/stat_row',
     'shop/awning','shop/bank','shop/ribbon','shop/sku_row','shop/up_boxb','shop/up_cam','shop/up_fire','shop/up_horn','shop/up_nonstick','shop/up_smart','shop/up_spicer',
     'items/candy','items/flower','items/hourglass'];
-  setTimeout(function () { list.forEach(function (n) { var im = new Image(); im.src = D + n + '.webp' + V; }); }, 300);
+  setTimeout(function () { list.forEach(function (n) { var a = new Image(); a.src = D + n + '.webp' + V; var b = new Image(); b.src = D + n + '.webp'; }); }, 300);
 })();
 function hideOverlay() { $('overlay').hidden = true; }
 var menuShopOpen = false;   // 开始菜单里的道具商店：点按钮展开 / 收起
@@ -2117,7 +2127,8 @@ function showMap() {
     stage.style.width = w + 'px'; stage.style.height = hh + 'px'; stage.style.left = (W - w) / 2 + 'px'; stage.style.top = (H - hh) / 2 + 'px';
     [].forEach.call(mp.querySelectorAll('.lm-node'), function (b) { var t = b.querySelector('b'); if (t) t.style.fontSize = (b.offsetWidth * (b.classList.contains('lock') ? .3 : .24)).toFixed(1) + 'px'; });
     var side = mp.querySelector('.lm-side'), p10 = MAP_PADS[9];
-    side.style.top = Math.max(50, (H - hh) / 2 + MAP_SIDE_Y * sc) + 'px';   // 升级小摊 / 道具商店：放在校门下面一点
+    var hudB = (mp.querySelector('.lm-ico.back') || {getBoundingClientRect: function () { return {top: 10}; }}).getBoundingClientRect().top + 46;   // 返回键下面（图还没加载时也按 35px 高算）
+    side.style.top = Math.max(hudB, (H - hh) / 2 + MAP_SIDE_Y * sc) + 'px';   // 升级小摊 / 道具商店：放在校门下面一点
   }
   fitMap(); window.addEventListener('resize', function () { if (mp.parentNode) fitMap(); });
 }

@@ -1470,3 +1470,13 @@ html,body{background-color:#D3662A}
 .ghost.sauce,.ghost.spice{transition:none !important;-webkit-filter:drop-shadow(0 14px 10px rgba(60,20,0,.45));filter:drop-shadow(0 14px 10px rgba(60,20,0,.45))}
 /* 存款条里的 $ 恢复正常粗细 */
 .sp-bank .cur{-webkit-text-stroke:0 !important;margin-right:0 !important}
+/* 小红书里页面顶部右上角 / 左上角有它自己的返回、分享按钮：地图顶栏整体往下让开 */
+:root{--xhs-top:46px}
+.lm-ico.back,.lm-ico.set{top:calc(var(--sat) + 10px + var(--xhs-top))}
+.lm-stat{top:calc(var(--sat) + 14px + var(--xhs-top))}
+.lm-bank{top:calc(var(--sat) + 10px + var(--xhs-top))}
+/* 游戏顶栏和王姐：从屏幕顶往下让开状态栏 + 小红书按钮 */
+#app.scene .hud{top:calc(14px - var(--topgap, 0px) + var(--tops, 0px))}
+#app.scene .coach:not(.bottom){top:calc(10px - var(--topgap, 0px) + var(--tops, 0px))}
+.lvmap .lm-ico.back,.lvmap .lm-ico.set{top:calc(var(--sat) + 10px + var(--xhs-top)) !important}
+.lvmap .lm-stat{top:calc(var(--sat) + 14px + var(--xhs-top)) !important}

@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000}iframe{border:0;width:100%;height:100%;display:block}</style></head>
+<body><iframe id="f" src="index.html?shot=1#debug"></iframe>
+<script>
+// 截图用：自动进到第 9 关，摆好 3 位客人、4 根烤肠、一个装了脆肠的盒子，然后暂停
+var f = document.getElementById('f');
+function W(t) { return new Promise(function (z) { setTimeout(z, t); }); }
+f.onload = async function () {
+  var w = f.contentWindow, d = w.document;
+  try { var g = JSON.parse(w.localStorage.getItem('sausage-stall') || '{}'); g.music = false; g.sfx = false; g.cleared = Math.max(g.cleared || 0, 10); g.seen = {itemShop:1, oilTut:1, skewer:1, scrape:1}; g.up = g.up || {}; w.localStorage.setItem('sausage-stall', JSON.stringify(g)); } catch (e) {}
+  var st0 = d.createElement('style'); st0.textContent = ':root{--xhs-top:0px !important}#app.scene{border-radius:0 !important}.guide,.hand{display:none !important}'; (d.head || d.documentElement).appendChild(st0);
+  await W(3500); w.dispatchEvent(new w.Event('resize'));
+  function T(sel) { var e = d.querySelector(sel); if (!e) return; var r = e.getBoundingClientRect(), o = {bubbles:true, clientX:r.x + r.width / 2, clientY:r.y + r.height / 2, pointerId:1}; e.dispatchEvent(new w.PointerEvent('pointerdown', o)); e.dispatchEvent(new w.PointerEvent('pointerup', o)); e.dispatchEvent(new w.MouseEvent('click', o)); }
+  T('[data-act=tstart]'); await W(1200);
+  var ov = d.getElementById('overlay'); ov.hidden = false; ov.innerHTML = '<button data-act="go" data-i="8">x</button>'; T('#overlay button'); await W(1500);
+  T('#overlay [data-act=play]'); await W(1500);
+  var S = w.__sausage, R = S.state(); R.tut = null; R.stock = 4; R.slots.forEach(function (sl) { sl.dirt = false; });
+  for (var k = 0; k < 4; k++) S.act('place', k);
+  var A = [30, 62, 80, 55], B = [25, 58, 76, 50];
+  for (var n = 0; n < 900 && R.cust.filter(function (c) { return c.state === 'wait'; }).length < 3; n++) {
+    R.spawnT = Math.min(R.spawnT, .01); S.tick(.05);
+    R.slots.forEach(function (sl, i) { if (sl.s) { sl.s.a = A[i]; sl.s.b = B[i]; } });
+  }
+  R.cust.forEach(function (c) { c.pat = c.patMax * .85; });
+  R.net = 18; R.stock = 2; R.oil = 70; R.boxes[0].items = [{band:'脆', sauce:'番茄', spice:'孜然'}];
+  R.paused = true; S.render(); ov.hidden = true;
+  [].forEach.call(d.querySelectorAll('.guide'), function (g) { g.remove(); });
+  var st = d.createElement('style'); st.textContent = '#app.scene{border-radius:0 !important}.guide{display:none !important}'; d.head.appendChild(st);
+  document.title = 'READY';
+};
+</script></body></html>
