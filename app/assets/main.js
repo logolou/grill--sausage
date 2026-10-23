@@ -1459,7 +1459,11 @@ function intro(i) {
       '<button class="lp-play" data-act="go" data-i="' + i + '"><img alt="" src="' + POP + 'play.webp' + V + '"><span>' + (L.tutorial ? '开始教学' : '开始出摊') + '</span></button>' +
     '</div>' +
   '</div>', 'lvpop');
-  addBack('menu');
+  // 关卡开始弹窗：右上角叉号，回到地图
+  var lp = $('overlay').querySelector('.lp'), x = document.createElement('button');
+  x.className = 'ps-x lp-x'; x.setAttribute('data-act', 'menu'); x.setAttribute('aria-label', '关闭'); lp.appendChild(x);
+  var px = function () { var pn = lp.querySelector('.lp-panel'); if (pn) x.style.top = (pn.offsetTop - 14) + 'px'; };
+  px(); setTimeout(px, 60); setTimeout(px, 500);
 }
 // 结算弹窗：飘带标题 + 三行成绩（金币 / 爱心或时间 / 成交）+ 存款条 + 主按钮 + 一排圆形小按钮（参考美术结算预览图）
 // 过关时星星背后的放射光（内联 SVG：16 道渐隐光束，慢慢转）
@@ -1767,7 +1771,7 @@ function shop() {
   }).join('');
   var foot = inGame ? '<button class="sp-big go" data-act="menu"><span>回到暂停</span></button>'
     : fromRes ? '<button class="sp-big go" data-act="shareback"><span>返回结算</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>'
-    : '<button class="sp-big go" data-act="intro" data-i="' + nxt + '"><span>去第 ' + (nxt + 1) + ' 关</span></button><button class="sp-big list" data-act="menu"><span>关卡列表</span></button>';
+    : '<button class="sp-big list" data-act="menu"><span>返回地图</span></button>';
   framePop('升级小摊', bankBar() + '<div class="sp-list">' + rows + '</div><div class="sp-foot">' + foot + '</div>',
     inGame ? 'menu' : fromRes ? 'shareback' : 'menu', true);
 }
