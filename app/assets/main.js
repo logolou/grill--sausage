@@ -916,15 +916,20 @@ function startDrag(tool, e) {
 }
 // 重重的手感：每帧只追上手指的一部分距离（像拎着沉东西），按横向速度往一边歪
 function heavyFollow(d) {
+  // 更重：位置追得更慢（像弹簧拖着沉东西），瓶身像钟摆一样甩、会过冲再荡回来，并且垂在手指下方
   var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
+  var vx = 0, vy = 0, rv = 0;
   (function step() {
     if (drag !== d) return;
-    var ex = d.tx - d.gx, ey = d.ty - d.gy;
-    d.gx += ex * .2; d.gy += ey * .2;
-    var want = Math.max(-28, Math.min(28, ex * .55)) + (d.g.classList.contains('pour') ? -18 : 0);
-    d.rot += (want - d.rot) * .25;
+    var ex = d.tx - d.gx, ey = d.ty + 14 - d.gy;
+    vx = (vx + ex * .045) * .78; vy = (vy + ey * .045) * .78;   // 弹簧 + 阻尼：起步慢、停得也慢
+    d.gx += vx; d.gy += vy;
+    var want = Math.max(-34, Math.min(34, -vx * 3.2)) + (d.g.classList.contains('pour') ? -20 : 0);
+    rv = (rv + (want - d.rot) * .08) * .86;                     // 钟摆：甩过头再荡回来
+    d.rot += rv;
+    var sag = Math.min(1.16, 1.08 + Math.abs(vx + vy) * .004);
     d.g.style.left = d.gx.toFixed(1) + 'px'; d.g.style.top = d.gy.toFixed(1) + 'px';
-    d.g.style.transform = 'translate(-50%,-90%) rotate(' + d.rot.toFixed(1) + 'deg) scale(1.12)';
+    d.g.style.transform = 'translate(-50%,-90%) rotate(' + d.rot.toFixed(1) + 'deg) scale(' + sag.toFixed(3) + ')';
     raf(step);
   })();
 }
