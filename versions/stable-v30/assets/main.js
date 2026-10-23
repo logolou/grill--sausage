@@ -1919,7 +1919,7 @@ var TITLE_STOP = .805;   // 镜头最后停的位置：屏幕底边落在长图�
 function showTitle() {
   var ts = document.createElement('div'); ts.id = 'title'; ts.className = 'ts';
   ts.innerHTML = '<i class="ts-tint top"></i><i class="ts-tint bot"></i><div class="ts-col"><i class="ts-pattern"></i><img class="ts-bg" alt="" src="' + TITLE_IMG + 'title_pan_bg.webp?v=' + BUILD_V + '">' +
-    '<canvas class="ts-orbit back"></canvas><img class="ts-logo" alt="我在学校门口买烤肠" src="' + TITLE_IMG + 'logo_title.webp?v=' + BUILD_V + '"><canvas class="ts-orbit front"></canvas>' +
+    '<canvas class="ts-orbit back"></canvas><img class="ts-logo" alt="我在学校门口卖烤肠" src="' + TITLE_IMG + 'logo_title.webp?v=' + BUILD_V + '"><canvas class="ts-orbit front"></canvas>' +
     '<div class="ts-btns"><button class="ts-btn start" data-act="tstart"><img alt="开始游戏" src="' + TITLE_IMG + 'btn_start.webp?v=' + BUILD_V + '"></button>' +
     '<button class="ts-btn set" data-act="tsettings"><img alt="设置" src="' + TITLE_IMG + 'btn_settings.webp?v=' + BUILD_V + '"></button></div>' +
     '<div class="ts-load">加载中…</div></div>';
